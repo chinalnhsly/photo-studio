@@ -18,8 +18,8 @@ model User {
   avatar    String?   // 头像URL
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  orders    Order[]
-  bookings  Booking[]
+  orders    Order[]   // 添加订单关系
+  bookings  Booking[] // 添加预约关系
 }
 
 // 角色枚举
@@ -59,7 +59,8 @@ model Order {
   updatedAt DateTime  @updatedAt
   user      User      @relation(fields: [userId], references: [id])
   package   Package   @relation(fields: [packageId], references: [id])
-  booking   Booking?
+  booking   Booking?  
+  photos    Photo[]   // 添加照片关系
 
   @@index([status])
   @@index([userId])
@@ -107,6 +108,7 @@ model Photo {
   url       String   // 照片URL
   thumbnail String?  // 缩略图URL
   orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id]) // 添加订单关系
   type      PhotoType
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

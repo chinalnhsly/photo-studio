@@ -8,12 +8,23 @@ const api = axios.create({
   },
 });
 
+export interface RegisterData {
+  email: string;
+  password: string;
+  name: string;
+  role: string;
+  phone?: string;
+}
+
 export const auth = {
   login: (data: LoginRequest) => 
     api.post<LoginResponse>('/auth/login', data),
     
-  register: (data: LoginRequest & { name: string }) =>
+  register: (data: RegisterData) =>
     api.post<User>('/users/register', data),
+
+  resetPassword: (email: string) =>
+    api.post('/auth/reset-password', { email }),
 };
 
 // 请求拦截器：添加 token
