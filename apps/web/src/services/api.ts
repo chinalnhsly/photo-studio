@@ -1,8 +1,11 @@
 import axios from 'axios';
-import type { LoginRequest, LoginResponse, User } from '@photo-studio/shared/types';
+import type { LoginRequest, LoginResponse } from '@/types/auth';
+import type { User } from '@prisma/client';
 
-const api = axios.create({
-  baseURL: 'http://localhost:3000',
+const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+export const api = axios.create({
+  baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -17,9 +20,15 @@ export interface RegisterData {
 }
 
 export const auth = {
-  login: (data: LoginRequest) => 
-    api.post<LoginResponse>('/auth/login', data),
-    
+  login: async (data: LoginRequest) => {
+    try {
+      const response = await api.post<LoginResponse>('/auth/login', data);
+      return response;
+    } catch (error: any) {
+      console.error('Login error:', error.response?.data);
+      throw error;
+    }
+  },
   register: (data: RegisterData) =>
     api.post<User>('/users/register', data),
 

@@ -1,15 +1,12 @@
 import { useState } from 'react';
 import { Card, Form, Input, Button, message, Tabs, Select } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../../services/api';
+import { Role } from '@prisma/client';
+import { auth } from '@/services/api';
+import type { LoginRequest, LoginResponse } from '@/types/auth';
 import styles from './index.module.css';
 
-enum Role {
-  USER = 'USER',
-  STAFF = 'STAFF',
-  ADMIN = 'ADMIN'
-}
-
+// 定义标签页类型
 type TabKey = 'login' | 'register' | 'resetPassword';
 
 const roleOptions = [
@@ -36,8 +33,8 @@ export default function LoginPage() {
       localStorage.setItem('user', JSON.stringify(data.user));
       message.success('登录成功');
       navigate('/dashboard');
-    } catch (error) {
-      message.error('登录失败');
+    } catch (error: any) {
+      message.error(error.response?.data?.message || '登录失败');
     } finally {
       setLoading(false);
     }

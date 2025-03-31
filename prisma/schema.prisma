@@ -14,7 +14,7 @@ model User {
   password  String
   name      String
   role      Role      @default(USER)
-  phone     String?
+  phone     String?   // 添加可选的电话字段
   avatar    String?   // 头像URL
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

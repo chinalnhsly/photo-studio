@@ -13,13 +13,22 @@
     "test": "turbo run test",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "seed": "ts-node prisma/seed.ts",
+    "prisma:seed": "prisma db seed"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.5",
     "@prisma/client": "5.22.0",
     "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
     "turbo": "^1.13.4",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "bcryptjs": "^3.0.2",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }

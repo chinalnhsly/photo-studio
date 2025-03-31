@@ -1,10 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // 设置更详细的日志级别
+  const app = await NestFactory.create(AppModule, {
+    logger: ['debug', 'error', 'warn', 'log'],
+  });
 
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
@@ -23,9 +26,10 @@ async function bootstrap() {
 
   app.enableCors();
 
-  const port = 3000;
+  const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`服务器已启动: http://localhost:${port}/api-docs`);
-  console.log(`按 Ctrl+C 停止服务器`);
+  
+  Logger.log(`服务器已启动: http://localhost:${port}/api-docs`);
+  Logger.log(`环境: ${process.env.NODE_ENV || 'development'}`);
 }
 bootstrap();

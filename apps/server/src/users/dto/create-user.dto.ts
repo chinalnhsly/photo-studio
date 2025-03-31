@@ -1,9 +1,9 @@
-import { IsEmail, IsString, MinLength, IsEnum, IsOptional, Matches } from 'class-validator';
+import { IsEmail, IsString, IsEnum, IsOptional, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'test@example.com' })
+  @ApiProperty({ example: 'user@example.com' })
   @IsEmail()
   email: string;
 
@@ -12,17 +12,17 @@ export class CreateUserDto {
   @MinLength(6)
   password: string;
 
-  @ApiProperty({ example: 'John Doe' })
+  @ApiProperty({ example: '张三' })
   @IsString()
   name: string;
 
   @ApiProperty({ enum: Role, default: Role.USER })
   @IsEnum(Role)
   @IsOptional()
-  role?: Role;
+  role?: Role = Role.USER;
 
-  @ApiProperty({ example: '13800138000', required: false })
+  @ApiProperty({ required: false })
   @IsOptional()
-  @Matches(/^1\d{10}$/, { message: '请输入有效的手机号' })
+  @IsString()
   phone?: string;
 }
