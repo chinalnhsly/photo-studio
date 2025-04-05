@@ -20,6 +20,7 @@ model User {
   appointments  Appointment[]
   reviews       Review[]
   memberPoints  MembershipPoints?
+  photoTasks    PhotoTask[]
 }
 
 model Category {
@@ -194,6 +195,29 @@ model Coupon {
 
   @@index([campaignId])
   @@map("coupons")
+}
+
+enum PhotoTaskStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model PhotoTask {
+  id          Int             @id @default(autoincrement())
+  customerId  Int
+  customer    User           @relation(fields: [customerId], references: [id])
+  taskDate    DateTime
+  status      PhotoTaskStatus @default(PENDING)  // 改为使用枚举类型
+  notes       String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@map("photo_tasks")
+  @@index([customerId])
+  @@index([taskDate])
+  @@index([status])
 }
 
 enum CouponType {
