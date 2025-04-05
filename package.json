@@ -29,6 +29,6 @@
     "@types/node": "^20.0.0"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "schema": "apps/server/prisma/schema.prisma"
   }
 }

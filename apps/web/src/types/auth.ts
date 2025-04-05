@@ -7,7 +7,25 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   access_token: string;
-  user: User;
+  user: {
+    id: number;
+    email: string;
+    name: string;
+    role: string;
+  };
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  name: string;
+}
+
+export interface RegisterResponse {
+  id: number;
+  email: string;
+  name: string;
+  role: string;
 }
 
 export type { User, Role };

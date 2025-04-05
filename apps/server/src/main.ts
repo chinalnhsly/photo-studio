@@ -4,7 +4,6 @@ import { ValidationPipe, Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  // 设置更详细的日志级别
   const app = await NestFactory.create(AppModule, {
     logger: ['debug', 'error', 'warn', 'log'],
   });
@@ -15,8 +14,8 @@ async function bootstrap() {
   }));
 
   const config = new DocumentBuilder()
-    .setTitle('影楼管理系统 API')
-    .setDescription('影楼管理系统后端接口文档')
+    .setTitle('Photo Studio API')
+    .setDescription('摄影工作室管理系统 API 文档')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
@@ -25,11 +24,13 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   app.enableCors();
-
-  const port = process.env.PORT || 3000;
-  await app.listen(port);
   
-  Logger.log(`服务器已启动: http://localhost:${port}/api-docs`);
+  app.setGlobalPrefix('api');
+
+  await app.listen(3000, '0.0.0.0');
+  
+  const url = await app.getUrl();
+  Logger.log(`服务器已启动: ${url}/api-docs`);
   Logger.log(`环境: ${process.env.NODE_ENV || 'development'}`);
 }
 bootstrap();

@@ -1,29 +1,25 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from '../pages/login';
-import DashboardLayout from '../layouts/DashboardLayout';
-import ProductList from '../pages/products';
-import CategoryManage from '../pages/products/components/CategoryManage';
-import { useAuth } from '../hooks/useAuth';
+import { PrivateRoute } from '../components/PrivateRoute';
+import { Dashboard } from '../pages/dashboard';
+import { Overview } from '../pages/dashboard/Overview';
+import { OrderList } from '../pages/orders/OrderList';
+import { ProductList } from '../pages/products/ProductList';
+import { Login } from '../pages/auth/Login';
 
 export default function Router() {
-  const { isAuthenticated } = useAuth();
-  
-  console.log('路由初始化, 认证状态:', isAuthenticated);
-
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-      <Route
-        path="/"
-        element={
-          isAuthenticated ? <DashboardLayout /> : <Navigate to="/login" replace />
-        }
-      >
-        <Route path="" element={<Navigate to="dashboard" replace />} />
-        <Route path="dashboard" element={<div>仪表盘</div>} />
-        <Route path="product-list" element={<ProductList key="product-list" />} /> {/* 添加key强制刷新 */}
-        <Route path="categories" element={<CategoryManage key="categories" />} /> {/* 添加key强制刷新 */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={
+        <PrivateRoute>
+          <Dashboard />
+        </PrivateRoute>
+      }>
+        <Route index element={<Overview />} />
+        <Route path="orders" element={<OrderList />} />
+        <Route path="products" element={<ProductList />} />
       </Route>
+      <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }

@@ -1,50 +1,80 @@
+# Photo Studio Management System
 
-# 影楼管理系统
+A comprehensive management system for photo studios built with NestJS and React.
 
-基于 NestJS + React + PostgreSQL 的影楼管理系统。
+## Features
 
-## 技术栈
+- User Authentication & Authorization
+- Product Management
+- Order Management
+- Inventory Management
+- Customer Management
+- Photography Task Management
+- Marketing Campaign Management
+- Financial Statistics
 
-- 后端：NestJS + TypeScript + PostgreSQL
-- 前端：React + TypeScript + Ant Design Pro
-- 工具：Prisma + pnpm + TurboRepo
+## Tech Stack
 
-## 开发环境设置
+- Frontend: React 18 + TypeScript + Ant Design Pro
+- Backend: NestJS 9 + TypeScript
+- Database: PostgreSQL + Redis
+- ORM: Prisma
+- Package Manager: pnpm
+- Monorepo: TurboRepo
 
-1. 安装依赖
+## Getting Started
+
+### Prerequisites
+
+- Node.js 16+
+- pnpm 8+
+- PostgreSQL 14+
+- Redis 6+
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone https://github.com/YOUR_USERNAME/photo-studio.git
+cd photo-studio
+```
+
+2. Install dependencies
 ```bash
 pnpm install
 ```
 
-2. 配置环境变量
+3. Set up environment variables
 ```bash
-cp .env.example .env
-# 修改 .env 中的配置
+cp apps/server/.env.example apps/server/.env
+# Edit .env with your database credentials
 ```
 
-3. 启动开发服务器
+4. Generate Prisma client
 ```bash
-# 后端服务器
 cd apps/server
+pnpm prisma generate
+pnpm prisma db push
+```
+
+5. Start development servers
+```bash
+# From root directory
 pnpm dev
-
-# 前端开发服务器 (新开终端)
-cd apps/web
-pnpm dev
 ```
 
-## API 文档
-
-访问 http://localhost:3000/api-docs 查看 Swagger API 文档。
-
-## 目录结构
+## Project Structure
 
 ```
-├── apps
-│   ├── server          # NestJS 后端
-│   └── web             # React 前端
-├── packages
-│   └── shared          # 共享代码
-├── prisma              # 数据库模型
-└── package.json
+photo-studio/
+├── apps/
+│   ├── server/        # NestJS backend
+│   └── web/          # React frontend
+├── packages/         # Shared packages
+├── package.json
+└── turbo.json
 ```
+
+## License
+
+ISC

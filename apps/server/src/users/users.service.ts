@@ -1,26 +1,26 @@
 import { Injectable, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { Role, User } from '@prisma/client';
+import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcryptjs';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto) {
-    const { email, password, name, role, phone } = createUserDto;
+  async register(registerDto: RegisterDto) {
+    const { email, password, name } = registerDto;
 
     // 检查邮箱是否已存在
-    const exists = await this.prisma.user.findUnique({
+    const existingUser = await this.prisma.user.findUnique({
       where: { email },
     });
 
-    if (exists) {
-      throw new ConflictException('邮箱已被注册');
+    if (existingUser) {
+      throw new ConflictException('该邮箱已被注册');
     }
 
-    // 加密密码
+    // 密码加密
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // 创建用户
@@ -29,15 +29,13 @@ export class UsersService {
         email,
         password: hashedPassword,
         name,
-        role: role as Role,
-        ...(phone ? { phone } : {})
+        role: 'USER',
       },
       select: {
         id: true,
         email: true,
         name: true,
         role: true,
-        phone: true,
         createdAt: true,
       },
     });
@@ -47,7 +45,7 @@ export class UsersService {
 
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
   }
 }

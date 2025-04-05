@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { User } from '../common/decorators/user.decorator';
 import type { User as UserEntity } from '@prisma/client';
+import { RegisterDto } from './dto/register.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -12,9 +13,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('register')
-  @ApiOperation({ summary: '注册新用户' })
-  async register(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @ApiOperation({ summary: '用户注册' })
+  async register(@Body() registerDto: RegisterDto) {
+    return this.usersService.register(registerDto);
   }
 
   @Get('profile')
