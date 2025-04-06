@@ -1,0 +1,172 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  email     String   @unique
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orders    Order[]
+  @@map("users")
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal   @db.Decimal(10,2)
+  categoryId  Int       @map("category_id")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  category    Category  @relation(fields: [categoryId], references: [id])
+  inventory   Inventory?
+  orderItems  OrderDetail[]
+
+  @@map("products")
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  products  Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  id           Int           @id @default(autoincrement())
+  userId       Int          @map("user_id")
+  status       OrderStatus  @default(PENDING)
+  totalAmount  Decimal      @default(0) @db.Decimal(10,2) @map("total_amount")
+  orderDate    DateTime     @default(now()) @map("order_date")
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  user         User         @relation(fields: [userId], references: [id])
+  orderDetails OrderDetail[]
+  payment      Payment?
+
+  @@map("orders")
+}
+
+model OrderDetail {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      @map("order_id")
+  productId Int      @map("product_id")
+  quantity  Int      @default(1)
+  unitPrice Decimal  @db.Decimal(10,2) @map("unit_price")
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_details")
+}
+
+model Inventory {
+  id        Int      @id @default(autoincrement())
+  productId Int      @unique @map("product_id")
+  quantity  Int      @default(0)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("inventory")
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  orderId       Int          @unique @map("order_id")
+  amount        Decimal      @db.Decimal(10,2)
+  status        PaymentStatus @default(UNPAID)
+  paymentDate   DateTime?    @map("payment_date")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  order         Order        @relation(fields: [orderId], references: [id])
+
+  @@map("payments")
+}
+
+model Customer {
+  id          Int       @id @default(autoincrement())
+  firstName   String    @map("first_name")
+  lastName    String    @map("last_name")
+  email       String    @unique
+  phone       String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  photoTasks  PhotoTask[]
+
+  @@map("customers")
+}
+
+model PhotoTask {
+  id          Int         @id @default(autoincrement())
+  customerId  Int         @map("customer_id")
+  assignedTo  Int?        @map("assigned_to")
+  taskDate    DateTime    @map("task_date")
+  status      TaskStatus  @default(PENDING)
+  notes       String?
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  employee    Employee?   @relation(fields: [assignedTo], references: [id])
+
+  @@map("photo_tasks")
+}
+
+model Employee {
+  id          Int         @id @default(autoincrement())
+  firstName   String      @map("first_name")
+  lastName    String      @map("last_name")
+  position    String
+  email       String      @unique
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  photoTasks  PhotoTask[]
+
+  @@map("employees")
+}
+
+model MarketingCampaign {
+  id            Int       @id @default(autoincrement())
+  name          String
+  description   String?
+  startDate     DateTime  @map("start_date")
+  endDate       DateTime  @map("end_date")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  coupons       Coupon[]
+
+  @@map("marketing_campaigns")
+}
+
+model Coupon {
+  id            Int       @id @default(autoincrement())
+  code          String    @unique
+  campaignId    Int       @map("campaign_id")
+  discount      Decimal   @db.Decimal(5,2)
+  validFrom     DateTime  @map("valid_from")
+  validTo       DateTime  @map("valid_to")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  campaign      MarketingCampaign @relation(fields: [campaignId], references: [id])
+
+  @@map("coupons")
+}
