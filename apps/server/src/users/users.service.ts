@@ -9,7 +9,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   async register(registerDto: RegisterDto) {
-    const { email, password, name } = registerDto;
+    const { email, password, firstName, lastName, phone } = registerDto;
 
     // 检查邮箱是否已存在
     const existingUser = await this.prisma.user.findUnique({
@@ -28,13 +28,16 @@ export class UsersService {
       data: {
         email,
         password: hashedPassword,
-        name,
+        firstName,
+        lastName,
+        phone,
         role: 'USER',
       },
       select: {
         id: true,
         email: true,
-        name: true,
+        firstName: true,
+        lastName: true,
         role: true,
         createdAt: true,
       },

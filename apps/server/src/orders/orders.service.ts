@@ -10,7 +10,7 @@ export class OrdersService {
 
   async create(createOrderDto: CreateOrderDto, userId: number) {
     return this.prisma.$transaction(async (tx) => {
-      // 1. 检查并获取商品信息
+      // 1. 检查商品是否存在和库存
       const products = await Promise.all(
         createOrderDto.items.map(item =>
           tx.product.findUnique({
@@ -19,12 +19,11 @@ export class OrdersService {
         )
       );
 
-      // 验证商品是否都存在
       if (products.some(p => !p)) {
         throw new BadRequestException('部分商品不存在');
       }
 
-      // 2. 计算订单总金额
+      // 2. 计算订单总额
       const totalAmount = createOrderDto.items.reduce((sum, item, index) => {
         const product = products[index]!;
         return sum + (Number(product.price) * item.quantity);
@@ -35,7 +34,7 @@ export class OrdersService {
         data: {
           userId,
           totalAmount,
-          status: OrderStatus.PENDING,
+          status: 'PENDING',
           orderItems: {
             create: createOrderDto.items.map((item, index) => ({
               productId: item.productId,

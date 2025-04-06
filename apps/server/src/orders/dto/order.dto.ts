@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsArray, IsEnum, ValidateNested, IsOptional } from 'class-validator';
+import { IsNumber, IsArray, IsEnum, ValidateNested, IsOptional, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrderStatus } from '@prisma/client';
 
@@ -8,16 +8,13 @@ export class OrderItemDto {
   @IsNumber()
   productId: number;
 
-  @ApiProperty({ example: 2 })
+  @ApiProperty({ example: 1 })
   @IsNumber()
+  @Min(1)
   quantity: number;
 }
 
 export class CreateOrderDto {
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  userId: number;
-
   @ApiProperty({ type: [OrderItemDto] })
   @IsArray()
   @ValidateNested({ each: true })

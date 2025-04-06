@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateCustomerDto, UpdateCustomerDto, CustomerFilterDto } from './dto/customer.dto';
-import { Prisma, Role } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -9,40 +10,57 @@ export class CustomersService {
   constructor(private prisma: PrismaService) {}
 
   async create(createCustomerDto: CreateCustomerDto) {
-    const { firstName, lastName, ...rest } = createCustomerDto;
-    
-    // 生成随机密码
-    const defaultPassword = Math.random().toString(36).slice(-8);
-    const hashedPassword = await bcrypt.hash(defaultPassword, 10);
+    try {
+      const { email, password, firstName, lastName, phone } = createCustomerDto;
+      
+      const existingCustomer = await this.prisma.$transaction(async (tx) => {
+        const user = await tx.user.findUnique({
+          where: { email }
+        });
 
-    const userData: Prisma.UserCreateInput = {
-      name: `${firstName} ${lastName}`,
-      email: rest.email,
-      phone: rest.phone,
-      password: hashedPassword,
-      role: Role.USER,
-    };
+        if (user) {
+          throw new ConflictException('该邮箱已被注册');
+        }
 
-    return this.prisma.user.create({
-      data: userData,
-    });
+        return tx.user.create({
+          data: {
+            email,
+            password: await bcrypt.hash(password, 10),
+            firstName,
+            lastName,
+            phone,
+            role: 'USER',
+          }
+        });
+      });
+
+      return existingCustomer;
+    } catch (error) {
+      throw new InternalServerErrorException('创建用户失败');
+    }
   }
 
   async findAll(filters: CustomerFilterDto) {
-    const where: Prisma.UserWhereInput = filters.search
-      ? {
-          OR: [
-            { name: { contains: filters.search, mode: 'insensitive' } },
-            { email: { contains: filters.search, mode: 'insensitive' } },
-            { phone: { contains: filters.search } },
-          ],
-          role: 'USER',
-        }
-      : { role: 'USER' };
+    const { search, page = 1, pageSize = 10 } = filters;
+    const skip = (page - 1) * pageSize;
+
+    const where: Prisma.UserWhereInput = {
+      role: Role.USER,
+      ...(search && {
+        OR: [
+          { firstName: { contains: search, mode: 'insensitive' } },
+          { lastName: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+          { phone: { contains: search } },
+        ],
+      }),
+    };
 
     const [items, total] = await Promise.all([
       this.prisma.user.findMany({
         where,
+        skip,
+        take: pageSize,
         include: {
           orders: {
             select: {
@@ -50,17 +68,30 @@ export class CustomersService {
               totalAmount: true,
               status: true,
               createdAt: true,
-            }
+            },
+          },
+          photoTasks: {
+            select: {
+              id: true,
+              taskDate: true,
+              status: true,
+            },
           },
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
       this.prisma.user.count({ where }),
     ]);
 
-    return { items, total };
+    return {
+      items,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
   }
 
   async findOne(id: number) {

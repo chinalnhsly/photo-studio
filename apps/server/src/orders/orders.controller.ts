@@ -7,7 +7,7 @@ import { User } from '../common/decorators/user.decorator';
 import { User as UserEntity } from '@prisma/client';
 
 @ApiTags('orders')
-@Controller('orders')
+@Controller('orders')  // 确保这里有正确的路由前缀
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class OrdersController {

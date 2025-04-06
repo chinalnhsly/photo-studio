@@ -1,17 +1,10 @@
-import { 
-  Controller, Get, Post, Body, Patch, Param, Delete, 
-  Query, UseGuards 
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CustomersService } from './customers.service';
-import { 
-  CreateCustomerDto, 
-  UpdateCustomerDto, 
-  CustomerFilterDto 
-} from './dto/customer.dto';
+import { CreateCustomerDto, UpdateCustomerDto, CustomerFilterDto } from './dto/customer.dto';
 
-@ApiTags('客户管理')
+@ApiTags('customers')
 @Controller('customers')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()

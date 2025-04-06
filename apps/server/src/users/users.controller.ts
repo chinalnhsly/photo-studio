@@ -26,11 +26,11 @@ export class UsersController {
     return user;
   }
 
-  @Get('name')
+  @Get('fullname')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiOperation({ summary: '仅获取用户姓名' })
-  getName(@User('name') name: string) {
-    return { name };
+  @ApiOperation({ summary: '获取用户全名' })
+  getFullName(@User('firstName') firstName: string, @User('lastName') lastName: string) {
+    return { fullName: `${firstName} ${lastName}` };
   }
 }
