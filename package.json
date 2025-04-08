@@ -1,0 +1,12 @@
+{
+  "name": "photostudio",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "mobile-app",
+    "web-app",
+    "admin-mobile",
+    "admin-web",
+    "server"
+  ]
+}
