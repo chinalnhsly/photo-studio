@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 进入mobile-app目录
-cd mobile-app
+# 确保在正确目录
+cd /home/liyong/photostudio/mobile-app
 
 # 清理现有文件
 rm -rf *
@@ -9,7 +9,7 @@ rm -rf *
 # 创建package.json
 cat > package.json << 'EOL'
 {
-  "name": "photostudio-mobile",
+  "name": "@photostudio/mobile-app",
   "version": "1.0.0",
   "private": true,
   "description": "影楼商城,订单预约,商品推荐,套系订单,客户看样片,物流收发",
@@ -27,19 +27,21 @@ cat > package.json << 'EOL'
 }
 EOL
 
-# 安装核心依赖
-yarn add @tarojs/cli@4.0.9 --exact
-yarn add @tarojs/runtime@4.0.9 @tarojs/taro@4.0.9 @tarojs/components@4.0.9 --exact
-yarn add @tarojs/react@4.0.9 @tarojs/plugin-framework-react@4.0.9 --exact
-yarn add react@18.0.0 react-dom@18.0.0 --exact
+# 在mobile-app目录中安装依赖
+cd /home/liyong/photostudio
+yarn workspace @photostudio/mobile-app add @tarojs/cli@4.0.9 --exact
+yarn workspace @photostudio/mobile-app add @tarojs/runtime@4.0.9 @tarojs/taro@4.0.9 @tarojs/components@4.0.9 --exact
+yarn workspace @photostudio/mobile-app add @tarojs/react@4.0.9 @tarojs/plugin-framework-react@4.0.9 --exact
+yarn workspace @photostudio/mobile-app add react@18.0.0 react-dom@18.0.0 --exact
 
 # 安装状态管理相关依赖
-yarn add @reduxjs/toolkit@1.9.7 react-redux@8.1.3 --exact
+yarn workspace @photostudio/mobile-app add @reduxjs/toolkit@1.9.7 react-redux@8.1.3 --exact
 
-# 安装样式相关依赖
-yarn add -D sass@1.69.7 --exact
+# 安装开发依赖
+yarn workspace @photostudio/mobile-app add -D sass@1.69.7 sass-loader@13.3.0 --exact
 
 # 创建项目结构
+cd /home/liyong/photostudio/mobile-app
 mkdir -p src/{assets,components,pages/{home,product,order,user},services,store}
 
 # 创建基础配置文件

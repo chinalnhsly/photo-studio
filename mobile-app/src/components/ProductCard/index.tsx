@@ -1,5 +1,5 @@
 import { View, Text, Image } from '@tarojs/components'
-import type { Product } from '../../types/product'
+import type { Product } from '@/types/business'
 import './index.scss'
 
 export interface ProductCardProps {

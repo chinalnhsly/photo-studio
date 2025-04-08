@@ -4,6 +4,7 @@ import cartReducer from './cart'
 import userReducer from './user'
 
 const rootReducer = combineReducers({
+  // 这里添加你的reducers
   product: productReducer,
   cart: cartReducer,
   user: userReducer

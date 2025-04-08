@@ -1,9 +1,32 @@
+import React, { useState, useCallback } from 'react'
 import { View, Text } from '@tarojs/components'
-import { useState, useCallback} from 'react'
-import type { CalendarProps, DayElement } from './types'
+import type { ViewProps } from '@tarojs/components'
+import type { CalendarProps, DayProps } from './types'
 import './index.scss'
 
-const Calendar = ({ value, onChange }: CalendarProps) => {
+// 日期组件
+const CalendarDay: React.FC<DayProps & ViewProps> = ({ 
+  date, 
+  isSelected, 
+  isEmpty,
+  ...props 
+}) => {
+  if (isEmpty) {
+    return <View className='calendar-day empty' {...props} />
+  }
+
+  return (
+    <View 
+      className={`calendar-day ${isSelected ? 'selected' : ''}`} 
+      {...props}
+    >
+      <Text>{date?.getDate()}</Text>
+    </View>
+  )
+}
+
+// 日历组件
+export const Calendar: React.FC<CalendarProps> = ({ value, onChange }) => {
   const [currentMonth, setCurrentMonth] = useState(value || new Date())
 
   // 辅助函数
@@ -28,18 +51,16 @@ const Calendar = ({ value, onChange }: CalendarProps) => {
     onChange?.(date)
   }, [onChange])
 
-  // 渲染函数
-  const renderCalendarGrid = useCallback((): DayElement[] => {
+  // 渲染日历网格
+  const renderCalendarGrid = useCallback(() => {
     const days = getDaysInMonth(currentMonth)
     const firstDay = getFirstDayOfMonth(currentMonth)
-    const totalDays: DayElement[] = []
+    const totalDays: React.ReactNode[] = []
 
     // 填充空白格子
     for (let i = 0; i < firstDay; i++) {
       totalDays.push(
-        <View key={`empty-${i}`} className='calendar-day empty'>
-          <Text></Text>
-        </View>
+        <CalendarDay key={`empty-${i}`} isEmpty />
       )
     }
 
@@ -49,13 +70,12 @@ const Calendar = ({ value, onChange }: CalendarProps) => {
       const isSelected = value?.getDate() === day
       
       totalDays.push(
-        <View 
+        <CalendarDay 
           key={`day-${day}`}
-          className={`calendar-day ${isSelected ? 'selected' : ''}`}
+          date={date}
+          isSelected={isSelected}
           onClick={() => onDateSelect(date)}
-        >
-          <Text>{day}</Text>
-        </View>
+        />
       )
     }
 

@@ -19,35 +19,24 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
+      "node_modules/@types"
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/components/*": ["src/components/*"],
-      "@/pages/*": ["src/pages/*"],
-      "@/store/*": ["src/store/*"],
-      "@/utils/*": ["src/utils/*"],
-      "@/types/*": ["src/types/*"],
+      "@tarojs/components/*": ["./node_modules/@tarojs/components/*"]
     },
+    "esModuleInterop": true,
+    "strict": true,
     "types": [
       "node",
-      "react",
-      "react-dom"
-    ],
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
+      "jest",
+      "webpack-env"
     ]
   },
   "include": [
     "src",
     "types",
-    "node_modules/@types"
+    "node_modules/@tarojs/components/types/index.d.ts"
   ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "compileOnSave": false
 }

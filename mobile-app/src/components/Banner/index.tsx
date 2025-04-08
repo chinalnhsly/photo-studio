@@ -1,9 +1,16 @@
-import { View } from '@tarojs/components'
-import { Swiper, SwiperItem, Image } from '@tarojs/components'
+import type { ComponentType } from 'react'
+import type { FC } from 'react'
+import { View, Swiper, SwiperItem, Image } from '@tarojs/components'
+
 import type { BannerProps } from './types'
 import './index.scss'
 
-const Banner = ({ imageList = [], className = '' }: BannerProps) => {
+const Banner: FC<BannerProps> = ({ 
+  imageList = [], 
+  className = '', 
+  swiperProps,
+  ...viewProps 
+}) => {
   const defaultImages = [
     { id: 1, url: 'https://example.com/banner1.jpg' },
     { id: 2, url: 'https://example.com/banner2.jpg' }
@@ -12,12 +19,13 @@ const Banner = ({ imageList = [], className = '' }: BannerProps) => {
   const images = imageList.length > 0 ? imageList : defaultImages
 
   return (
-    <View className={`banner-container ${className}`}>
+    <View className={`banner-container ${className}`} {...viewProps}>
       <Swiper
         className='banner'
         indicatorDots
         autoplay
         circular
+        {...swiperProps}
       >
         {images.map(image => (
           <SwiperItem key={image.id}>
@@ -34,4 +42,4 @@ const Banner = ({ imageList = [], className = '' }: BannerProps) => {
 }
 
 export type { BannerProps }
-export default Banner
+export default Banner as ComponentType<BannerProps>
