@@ -178,10 +178,10 @@ git add .                 # 添加全部修改
 git add 指定文件/目录      # 添加特定文件
 
 # 3. 提交变更（带版本号）
-git commit -m "feat: 添加影楼商城 [v1.1.6]"  # 示例格式
+git commit -m "feat: 添加用户管理模块 [v1.1.4]"  # 示例格式
 
 # 4. 创建版本标签（推荐语义化版本）
-git tag v1.1.6         # 格式 v主版本.次版本.修订号
+git tag v1.1.4         # 格式 v主版本.次版本.修订号
 
 # 5. 推送到远程仓库（同时推送标签）
 git push origin main --tags
@@ -260,77 +260,3 @@ git push origin main --tags
 npm version patch  # 自动升级版本号（适用于Node项目）
 ```
 或使用Git Flow等分支管理模型。
-
-
-让我帮你解决 GitHub 仓库连接的问题。原因是仓库地址格式不正确。
-
-步骤如下：
-
-1. 首先需要修改远程仓库地址：
-
-```bash
-# 在 /home/liyong/photostudio 目录下执行
-# 先删除错误的远程仓库配置
-git remote remove origin
-
-# 添加正确的远程仓库地址（使用以下格式之一）：
-# 如果使用 HTTPS：
-git remote add origin https://github.com/chinalnhsly/photo-studio.git
-
-# 或者如果使用 SSH：
-# git remote add origin git@github.com:chinalnhsly/photo-studio.git
-```
-
-2. 然后重新推送：
-
-```bash
-# 推送代码和标签
-git push -u origin main --tags
-```
-
-3. 如果还没有在 GitHub 上创建仓库，需要先：
-   - 登录 GitHub
-   - 点击右上角 "+" 按钮，选择 "New repository"
-   - 仓库名填写 "photo-studio"
-   - 不要选择初始化仓库选项
-   - 点击 "Create repository"
-
-4. 如果遇到认证问题，需要：
-   ```bash
-   # 配置 GitHub 认证信息
-   git config --global credential.helper store
-   # 然后在下次 push 时输入用户名和密码（或个人访问令牌）
-   ```
-
-完成这些步骤后，你的代码就应该能够成功推送到 GitHub 了。需要帮你执行这些命令吗？
-
-
-
-
-# 在 /home/liyong/photostudio 目录下执行
-# 获取远程更新
-git fetch origin
-
-# 强制更新本地 main 分支
-git reset --hard origin/main
-
-# 删除已存在的标签
-git tag -d v1.1.4
-
-
-#!/bin/bash
-
-# 提交所有更改
-git add .
-git commit -m "feat: 更新影楼商城代码 [v1.1.7]"
-
-# 创建新标签
-git tag v1.1.7
-
-# 推送到远程仓库
-git push origin main --force-with-lease
-git push origin --tags --force
-
-# 验证推送结果
-git status
-git log --oneline --decorate

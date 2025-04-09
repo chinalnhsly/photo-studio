@@ -1,29 +1,32 @@
 {
   "name": "photostudio",
+  "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "mobile-app",
+    "web-app",
+    "admin-mobile",
+    "admin-web",
+    "server"
   ],
-  "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "clean": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +"
-  },
   "dependencies": {
-    "@nestjs/common": "^10.0.0",
-    "@nestjs/jwt": "^10.0.0",
-    "bcrypt": "^5.1.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.17.30",
-    "turbo": "^1.10.0",
-    "typescript": "^5.0.0",
-    "@types/bcrypt": "^5.0.0"
+    "@reduxjs/toolkit": "^2.6.1",
+    "@types/react-redux": "^7.1.34",
+    "react-redux": "^9.2.0"
   },
   "resolutions": {
-    "@types/node": "^20.17.30"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0"
+  },
+  "engines": {
+    "node": ">=16",
+    "yarn": ">=1.22.0",
+    "npm": "please-use-yarn"
+  },
+  "packageManager": "yarn@1.22.22",
+  "devDependencies": {
+    "@types/react": "^18.3.20"
   }
 }

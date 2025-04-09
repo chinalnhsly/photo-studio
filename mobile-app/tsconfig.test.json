@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "@types/node",
+      "@types/webpack-env",
+      "@types/jest"
+    ]
+  }
+}
