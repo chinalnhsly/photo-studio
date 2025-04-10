@@ -39,5 +39,6 @@
     "showES6CompileOption": false
   },
   "compileType": "miniprogram",
-  "condition": {}
+  "condition": {},
+  "libVersion": "3.0.2"
 }

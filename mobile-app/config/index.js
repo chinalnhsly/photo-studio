@@ -1,12 +1,8 @@
-const path = require('path')
+const path = require('path');
 
 const config = {
-  // 必需的框架配置
-  framework: 'react',
-  
-  // 基础配置
-  projectName: 'mobile-app',
-  date: '2024-2-27',
+  projectName: 'photostudio-mobile',
+  date: '2023-6-15',
   designWidth: 750,
   deviceRatio: {
     640: 2.34 / 2,
@@ -15,38 +11,24 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  
-  // 插件配置
-  plugins: [
-    '@tarojs/plugin-framework-react'
-  ],
-  
-  // 定义常量
-  defineConstants: {
+  plugins: [],
+  defineConstants: {},
+  alias: {
+    '@': path.resolve(__dirname, '..', 'src'),
+    '@/components': path.resolve(__dirname, '..', 'src/components'),
+    '@/pages': path.resolve(__dirname, '..', 'src/pages'),
+    '@/assets': path.resolve(__dirname, '..', 'src/assets'),
+    '@/styles': path.resolve(__dirname, '..', 'src/styles'),
+    '@/utils': path.resolve(__dirname, '..', 'src/utils'),
+    '@/types': path.resolve(__dirname, '..', 'src/types')
   },
-  
-  // 复制选项
   copy: {
-    patterns: [
-    ],
-    options: {
-    }
+    patterns: [],
+    options: {}
   },
-  
-  // 缓存配置
-  cache: {
-    enable: true,
-    type: 'filesystem',
-    buildDependencies: {
-      config: [__filename]
-    }
-  },
-  
-  // 小程序配置
+  framework: 'react',
+  compiler: 'webpack5',
   mini: {
-    optimizeMainPackage: {
-      enable: true
-    },
     postcss: {
       pxtransform: {
         enable: true,
@@ -57,25 +39,49 @@ const config = {
         config: {
           limit: 1024
         }
+      },
+      cssModules: {
+        enable: false,
+        config: {
+          namingPattern: 'module',
+          generateScopedName: '[name]__[local]___[hash:base64:5]'
+        }
       }
+    },
+    webpackChain(chain, webpack) {
+      // 设置别名，解决路径问题
+      chain.resolve.alias
+        .set('@', path.resolve(__dirname, '..', 'src'))
+        .set('@/components', path.resolve(__dirname, '..', 'src/components'))
+        .set('@/pages', path.resolve(__dirname, '..', 'src/pages'))
+        .set('@/assets', path.resolve(__dirname, '..', 'src/assets'))
+        .set('@/styles', path.resolve(__dirname, '..', 'src/styles'))
+        .set('@/utils', path.resolve(__dirname, '..', 'src/utils'))
+        .set('@/types', path.resolve(__dirname, '..', 'src/types'));
     }
   },
-  
-  // H5配置
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
     postcss: {
       autoprefixer: {
-        enable: true
+        enable: true,
+        config: {}
+      },
+      cssModules: {
+        enable: false,
+        config: {
+          namingPattern: 'module',
+          generateScopedName: '[name]__[local]___[hash:base64:5]'
+        }
       }
     }
   }
-}
+};
 
 module.exports = function (merge) {
   if (process.env.NODE_ENV === 'development') {
-    return merge({}, config, require('./dev'))
+    return merge({}, config, require('./dev'));
   }
-  return merge({}, config, require('./prod'))
-}
+  return merge({}, config, require('./prod'));
+};

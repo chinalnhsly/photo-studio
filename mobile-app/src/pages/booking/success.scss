@@ -1,0 +1,99 @@
+.success-page {
+  padding: 40px 20px;
+  background-color: var(--background-color, #f8f9fa);
+  min-height: 100vh;
+  
+  .success-card {
+    background-color: var(--white, #fff);
+    border-radius: 16px;
+    padding: 40px 20px;
+    box-shadow: var(--shadow, 0 2px 12px 0 rgba(0, 0, 0, 0.05));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .success-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 30px;
+    }
+    
+    .success-title {
+      font-size: 36px;
+      font-weight: bold;
+      color: var(--primary-color, #ff6b81);
+      margin-bottom: 20px;
+    }
+    
+    .success-desc {
+      font-size: 28px;
+      color: var(--text-color, #333);
+      margin-bottom: 10px;
+    }
+    
+    .success-id {
+      font-size: 24px;
+      color: var(--light-text, #999);
+      margin-bottom: 30px;
+    }
+    
+    .tips-section {
+      width: 100%;
+      border-top: 1px dashed #eee;
+      padding-top: 20px;
+      
+      .tips-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        display: block;
+      }
+      
+      .tips-item {
+        display: flex;
+        margin-bottom: 15px;
+        
+        .tips-dot {
+          margin-right: 10px;
+          color: var(--primary-color, #ff6b81);
+          font-size: 30px;
+        }
+        
+        .tips-text {
+          font-size: 24px;
+          color: var(--text-color, #333);
+          flex: 1;
+        }
+      }
+    }
+  }
+  
+  .action-buttons {
+    margin-top: 40px;
+    display: flex;
+    justify-content: space-between;
+    
+    .action-btn {
+      width: calc(50% - 10px);
+      height: 90px;
+      line-height: 90px;
+      text-align: center;
+      border-radius: 45px;
+      font-size: 28px;
+      
+      &::after {
+        border: none;
+      }
+      
+      &.home {
+        background-color: #f8f8f8;
+        color: var(--text-color, #333);
+      }
+      
+      &.detail {
+        background-color: var(--primary-color, #ff6b81);
+        color: #fff;
+      }
+    }
+  }
+}

@@ -1,48 +1,34 @@
-// 基础类型定义
-export interface BaseCategory {
-  id: number
-  name: string
-  icon?: string
-  parentId?: number
-  children?: BaseCategory[]
-}
-
-// 商品分类
-export interface ProductCategory extends BaseCategory {
-  type: 'product'
-}
-
-// 商品信息
+// 定义Product接口
 export interface Product {
-  id: number
-  name: string
-  price: number
-  originalPrice?: number
-  description: string
-  images: string[]
-  category: ProductCategory
-  tags: string[]
-  appointments?: AppointmentSlot[]
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  category?: string;
+  sales?: number;
+  description?: string;
+  images?: string[];
+  originalPrice?: number;
+  discount?: number;
+  tags?: string[];
 }
 
-export interface AppointmentSlot {
-  id: string
-  date: string
-  startTime: string
-  endTime: string
-  status: 'available' | 'booked' | 'disabled'
-  maxQuota: number
-  bookedQuota: number
-  available: boolean
+// 定义Order接口
+export interface Order {
+  id: string;
+  products: Array<{productId: string; quantity: number}>;
+  totalPrice: number;
+  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+  createTime: string;
 }
 
-export interface OrderInfo {
-  id: number
-  productId: number
-  appointmentId: number
-  userId: number
-  status: 'pending' | 'paid' | 'completed' | 'cancelled'
-  amount: number
-  createTime: string
-  paymentTime?: string
+// 定义User接口
+export interface User {
+  id: string;
+  name: string;
+  avatar?: string;
+  phone?: string;
+  level?: number;
 }
+
+// 无需重复导出，上面已经使用export interface导出了

@@ -69,7 +69,7 @@ export default function ProductDetail() {
     
     // 跳转到预约确认页
     Taro.navigateTo({
-      url: `/pages/order/booking/index?productId=${id}&date=${selectedDate}&slot=${selectedSlot}`
+      url: `/pages/booking/index?productId=${product.id}&productName=${encodeURIComponent(product.name)}`
     })
   }
   

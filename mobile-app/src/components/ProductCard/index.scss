@@ -1,37 +1,15 @@
 .product-card {
-  background-color: var(--white);
+  background-color: #ffffff;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
   width: 100%;
   
-  .product-image-wrapper {
-    position: relative;
+  .product-image {
     width: 100%;
-    height: 0;
-    padding-bottom: 100%;
-    overflow: hidden;
-    
-    .product-image {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      object-fit: cover;
-    }
-    
-    .product-tag {
-      position: absolute;
-      top: 16px;
-      left: 0;
-      background-color: var(--primary-color);
-      color: var(--white);
-      font-size: 24px;
-      padding: 4px 12px;
-      border-radius: 0 16px 16px 0;
-    }
+    height: 200px;
+    object-fit: cover;
   }
   
   .product-info {
@@ -40,12 +18,12 @@
     .product-name {
       font-size: 28px;
       font-weight: bold;
-      color: var(--text-color);
+      color: #333333;
       margin-bottom: 12px;
       display: -webkit-box;
       -webkit-box-orient: vertical;
+      /* autoprefixer: ignore next */
       -webkit-line-clamp: 2;
-      line-clamp: 2;
       overflow: hidden;
     }
     
@@ -55,13 +33,13 @@
       margin-bottom: 10px;
       
       .product-price {
-        color: var(--primary-color);
-        font-size: 36px;
+        color: #ff6b81;
+        font-size: 32px;
         font-weight: bold;
       }
       
       .product-original-price {
-        color: var(--light-text);
+        color: #999999;
         font-size: 24px;
         text-decoration: line-through;
         margin-left: 10px;
@@ -71,19 +49,10 @@
     .product-bottom-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      
-      .product-discount {
-        font-size: 22px;
-        color: var(--white);
-        background-color: var(--primary-color);
-        padding: 2px 8px;
-        border-radius: 10px;
-      }
       
       .product-sales {
-        font-size: 22px;
-        color: var(--light-text);
+        font-size: 24px;
+        color: #999999;
       }
     }
   }

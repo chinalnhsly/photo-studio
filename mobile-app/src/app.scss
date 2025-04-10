@@ -1,3 +1,5 @@
+@import "./styles/global.scss";
+
 /* 全局样式设置 */
 page {
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica,
@@ -131,3 +133,5 @@ page {
   font-size: 28px;
   color: #999;
 }
+
+/* 其他全局样式 */
