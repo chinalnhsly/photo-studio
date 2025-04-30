@@ -1,0 +1,91 @@
+.photographerListPage {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  :global(.ant-card) {
+    margin-bottom: 24px;
+  }
+  
+  .photographerInfo {
+    display: flex;
+    align-items: center;
+    
+    :global(.ant-avatar) {
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    
+    .nameSection {
+      .name {
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+      
+      .level {
+        :global(.ant-tag) {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+  
+  .contactInfo {
+    > div {
+      margin-bottom: 4px;
+      color: rgba(0, 0, 0, 0.65);
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .rating {
+    display: flex;
+    align-items: center;
+    
+    :global(.ant-rate) {
+      font-size: 14px;
+      margin-right: 8px;
+    }
+    
+    .ratingValue {
+      color: rgba(0, 0, 0, 0.45);
+    }
+  }
+  
+  .filterForm {
+    padding: 24px;
+    background: #fff;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+  
+  .tableActions {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  
+  .tableFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+  }
+}
+
+// 响应式调整
+@media (max-width: 768px) {
+  .photographerListPage {
+    padding: 16px;
+    
+    .photographerInfo {
+      .nameSection {
+        .name {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

@@ -1,9 +1,0 @@
-// 多行文本截断mixin
-@mixin line-clamp($lines) {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  /* autoprefixer: ignore next */
-  -webkit-line-clamp: $lines;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}

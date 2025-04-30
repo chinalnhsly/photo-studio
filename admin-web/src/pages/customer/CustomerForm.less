@@ -1,0 +1,35 @@
+.customer-form-card {
+  margin: 24px;
+  
+  .avatar-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .avatar-uploader {
+      width: 128px;
+      height: 128px;
+      
+      .ant-upload {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+  
+  // 添加样式解决TextArea不支持prefix属性的问题
+  .address-field {
+    display: flex;
+    align-items: flex-start;
+    
+    .address-prefix {
+      margin-top: 7px;
+      margin-right: 8px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+    
+    .ant-input {
+      flex: 1;
+    }
+  }
+}

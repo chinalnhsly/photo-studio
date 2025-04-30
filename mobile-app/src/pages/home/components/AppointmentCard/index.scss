@@ -1,0 +1,73 @@
+.appointment-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  .appointment-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    display: block;
+  }
+  
+  .time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    
+    .time-slot {
+      width: calc(33.33% - 10px);
+      height: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 5px;
+      border-radius: 8px;
+      
+      &.available {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+      }
+      
+      &.unavailable {
+        background-color: #f1f3f5;
+        opacity: 0.6;
+      }
+      
+      &.selected {
+        background-color: #ffe5e8;
+        border: 1px solid #ff6b81;
+      }
+      
+      .time {
+        font-size: 28px;
+        color: #333;
+      }
+      
+      .status {
+        font-size: 22px;
+        color: #777;
+        margin-top: 6px;
+      }
+    }
+  }
+  
+  .appointment-button {
+    background-color: #ff6b81;
+    color: white;
+    font-size: 30px;
+    height: 80px;
+    line-height: 80px;
+    border-radius: 40px;
+    letter-spacing: 2px;
+    
+    &[disabled] {
+      background-color: #e9ecef;
+      color: #adb5bd;
+    }
+  }
+}

@@ -1,0 +1,210 @@
+.review-list-component {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  
+  // 加载状态
+  .review-list-loading {
+    padding: 40px 0;
+    text-align: center;
+    color: #999;
+  }
+  
+  // 评价统计头部
+  .review-header {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+    
+    .review-stats {
+      display: flex;
+      justify-content: space-around;
+      
+      .stats-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        .stats-value {
+          font-size: 20px;
+          font-weight: 600;
+          color: #ff4d4f;
+          margin-bottom: 4px;
+        }
+        
+        .stats-label {
+          font-size: 12px;
+          color: #999;
+        }
+      }
+    }
+  }
+  
+  // 空评价状态
+  .empty-review {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 12px;
+    }
+    
+    .empty-text {
+      font-size: 14px;
+      color: #999;
+    }
+  }
+  
+  // 评价列表
+  .review-scroll {
+    padding: 0 16px;
+  }
+  
+  // 单个评价项
+  .review-item {
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    // 用户信息
+    .review-user {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: #f5f5f5;
+        margin-right: 10px;
+      }
+      
+      .user-info {
+        flex: 1;
+        
+        .user-name {
+          font-size: 14px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 2px;
+          display: block;
+        }
+        
+        .review-time {
+          font-size: 12px;
+          color: #999;
+        }
+      }
+      
+      .review-rating {
+        margin-left: auto;
+      }
+    }
+    
+    // 评价内容
+    .review-content {
+      margin-bottom: 12px;
+      
+      .review-text {
+        font-size: 14px;
+        color: #333;
+        line-height: 1.5;
+        margin-bottom: 8px;
+        display: block;
+      }
+      
+      // 标签列表
+      .review-tags {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+        
+        .review-tag {
+          margin-right: 8px;
+          margin-bottom: 8px;
+          border-radius: 4px;
+          font-size: 12px;
+          background-color: #f5f5f5;
+          border: none;
+          color: #666;
+        }
+      }
+      
+      // 图片列表
+      .review-images {
+        display: flex;
+        flex-wrap: wrap;
+        
+        .review-image {
+          width: 80px;
+          height: 80px;
+          border-radius: 4px;
+          margin-right: 8px;
+          margin-bottom: 8px;
+          background-color: #f0f0f0;
+        }
+      }
+    }
+    
+    // 商家回复
+    .reply-content {
+      background-color: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      
+      .reply-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 4px;
+        
+        .at-icon {
+          margin-right: 4px;
+        }
+        
+        .reply-title {
+          font-size: 12px;
+          color: #666;
+          font-weight: 500;
+        }
+      }
+      
+      .reply-text {
+        font-size: 12px;
+        color: #666;
+        line-height: 1.5;
+      }
+    }
+  }
+  
+  // 没有更多数据
+  .no-more {
+    text-align: center;
+    padding: 12px 0;
+    color: #999;
+    font-size: 12px;
+  }
+  
+  // 查看更多按钮
+  .view-more-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 0;
+    border-top: 1px solid #f0f0f0;
+    color: #666;
+    font-size: 14px;
+    
+    .at-icon {
+      margin-left: 4px;
+    }
+  }
+}

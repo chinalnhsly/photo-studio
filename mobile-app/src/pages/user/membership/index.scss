@@ -1,0 +1,271 @@
+.membership-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 20px;
+  
+  // 加载状态
+  .membership-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #999;
+  }
+  
+  // 错误状态
+  .membership-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+    
+    text {
+      color: #999;
+      margin-bottom: 20px;
+    }
+    
+    .retry-button {
+      background-color: #1890ff;
+      color: #fff;
+      width: 200px;
+      height: 40px;
+      line-height: 40px;
+      border-radius: 20px;
+    }
+  }
+  
+  // 会员卡片
+  .member-card {
+    margin: 16px;
+    padding: 20px;
+    border-radius: 12px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      
+      .level-icon {
+        width: 30px;
+        height: 30px;
+        margin-right: 8px;
+      }
+      
+      .level-name {
+        font-size: 20px;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+      
+      .level-tag {
+        background-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        border: none;
+      }
+    }
+    
+    .card-content {
+      display: flex;
+      justify-content: space-between;
+      z-index: 1;
+      position: relative;
+      
+      .points-info {
+        .points-value {
+          font-size: 32px;
+          font-weight: 600;
+          display: block;
+          margin-bottom: 4px;
+        }
+        
+        .points-label {
+          font-size: 14px;
+          opacity: 0.8;
+        }
+      }
+      
+      .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        
+        .card-number, .join-date {
+          font-size: 12px;
+          opacity: 0.8;
+          margin-bottom: 4px;
+        }
+      }
+    }
+    
+    .card-background {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.1;
+      z-index: 0;
+    }
+  }
+  
+  // 等级进度
+  .level-progress-container {
+    margin: 0 16px 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      
+      .progress-title {
+        font-size: 14px;
+        color: #333;
+      }
+      
+      .progress-text {
+        font-size: 14px;
+        color: #1890ff;
+      }
+    }
+    
+    .progress-bar {
+      margin-bottom: 12px;
+    }
+    
+    .progress-levels {
+      display: flex;
+      justify-content: space-between;
+      
+      .current-level, .next-level {
+        display: flex;
+        align-items: center;
+        
+        .level-icon-small {
+          width: 20px;
+          height: 20px;
+          margin-right: 4px;
+        }
+        
+        text {
+          font-size: 12px;
+          color: #666;
+        }
+      }
+    }
+  }
+  
+  // 会员特权
+  .privileges-container {
+    margin: 0 16px 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      
+      .section-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+      }
+      
+      .section-more {
+        font-size: 14px;
+        color: #999;
+      }
+    }
+    
+    .privileges-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      
+      .privilege-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        
+        .at-icon {
+          margin-bottom: 8px;
+        }
+        
+        .privilege-name {
+          font-size: 14px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 4px;
+        }
+        
+        .privilege-desc {
+          font-size: 12px;
+          color: #999;
+          text-align: center;
+        }
+      }
+    }
+  }
+  
+  // 积分任务
+  .tasks-container {
+    margin: 0 16px 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .task-list {
+      .task-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .task-info {
+          .task-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+            display: block;
+          }
+          
+          .task-desc {
+            font-size: 12px;
+            color: #999;
+          }
+        }
+        
+        .task-button {
+          background-color: #1890ff;
+          color: #fff;
+          font-size: 14px;
+          padding: 0 16px;
+          height: 32px;
+          line-height: 32px;
+          border-radius: 16px;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,180 @@
+.photographer-reviews-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  
+  // 顶部导航
+  .header {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    
+    .back-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+  
+  // 加载状态
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #999;
+  }
+  
+  // 空状态
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    
+    .empty-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 16px;
+    }
+    
+    .empty-text {
+      font-size: 14px;
+      color: #999;
+    }
+  }
+  
+  // 评价列表滚动区域
+  .reviews-scroll {
+    height: calc(100vh - 44px);
+  }
+  
+  // 评价列表
+  .reviews-list {
+    padding: 16px;
+    
+    .review-item {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      padding: 16px;
+      
+      .review-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        
+        .user-info {
+          display: flex;
+          align-items: center;
+          
+          .username {
+            font-size: 15px;
+            font-weight: 500;
+            color: #333;
+            margin-right: 8px;
+          }
+        }
+        
+        .review-time {
+          font-size: 14px;
+          color: #999;
+        }
+      }
+      
+      .review-content {
+        .content-text {
+          font-size: 14px;
+          color: #333;
+          line-height: 1.5;
+          margin-bottom: 12px;
+          display: block;
+        }
+        
+        .review-images {
+          display: flex;
+          margin-bottom: 12px;
+          
+          .review-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            margin-right: 8px;
+            background-color: #f0f0f0;
+          }
+          
+          .image-more {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+          }
+        }
+        
+        .review-tags {
+          display: flex;
+          flex-wrap: wrap;
+          margin-bottom: 12px;
+          
+          .tag {
+            margin-right: 8px;
+            margin-bottom: 8px;
+            background-color: #f5f5f5;
+          }
+        }
+      }
+      
+      .admin-reply {
+        background-color: #f5f7fa;
+        padding: 12px;
+        border-radius: 8px;
+        
+        .reply-label {
+          color: #1890ff;
+          font-weight: 500;
+          font-size: 14px;
+          margin-bottom: 4px;
+          display: block;
+        }
+        
+        .reply-content {
+          font-size: 14px;
+          color: #666;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+  
+  // 底部加载更多
+  .no-more {
+    text-align: center;
+    padding: 16px;
+    color: #999;
+    font-size: 12px;
+  }
+}

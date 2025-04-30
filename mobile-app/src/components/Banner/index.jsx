@@ -1,45 +1,42 @@
-import type { ComponentType } from 'react'
-import type { FC } from 'react'
-import { View, Swiper, SwiperItem, Image } from '@tarojs/components'
+import React from 'react';
+import { Swiper, SwiperItem, Image } from '@tarojs/components';
+import './index.scss';
 
-import type { BannerProps } from './types'
-import './index.scss'
-
-const Banner: FC<BannerProps> = ({ 
-  imageList = [], 
-  className = '', 
-  swiperProps,
-  ...viewProps 
-}) => {
-  const defaultImages = [
-    { id: 1, url: 'https://example.com/banner1.jpg' },
-    { id: 2, url: 'https://example.com/banner2.jpg' }
-  ]
-
-  const images = imageList.length > 0 ? imageList : defaultImages
-
+/**
+ * Banner 轮播图组件
+ * @param {Object} props - 组件属性
+ * @param {Array} props.banners - Banner图片列表
+ * @param {Function} props.onClick - 点击事件处理函数
+ */
+const Banner = ({ banners = [], onClick }) => {
+  const defaultBanners = banners.length > 0 ? banners : [
+    { id: '1', image: 'https://placehold.co/750x300/FFC0CB/fff?text=促销活动' },
+    { id: '2', image: 'https://placehold.co/750x300/E6E6FA/fff?text=新品上线' },
+    { id: '3', image: 'https://placehold.co/750x300/F0FFF0/fff?text=限时优惠' }
+  ];
+  
+  const handleClick = (banner) => {
+    if (onClick) {
+      onClick(banner);
+    }
+  };
+  
   return (
-    <View className={`banner-container ${className}`} {...viewProps}>
-      <Swiper
-        className='banner'
-        indicatorDots
-        autoplay
-        circular
-        {...swiperProps}
-      >
-        {images.map(image => (
-          <SwiperItem key={image.id}>
-            <Image 
-              className='banner-image'
-              src={image.url} 
-              mode='aspectFill'
-            />
-          </SwiperItem>
-        ))}
-      </Swiper>
-    </View>
-  )
-}
+    <Swiper 
+      className='banner-swiper'
+      indicatorColor='#ffffff50'
+      indicatorActiveColor='#ffffff'
+      circular
+      indicatorDots
+      autoplay
+    >
+      {defaultBanners.map(banner => (
+        <SwiperItem key={banner.id} onClick={() => handleClick(banner)}>
+          <Image className='banner-image' src={banner.image} mode='aspectFill' />
+        </SwiperItem>
+      ))}
+    </Swiper>
+  );
+};
 
-export type { BannerProps }
-export default Banner as ComponentType<BannerProps>
+export default Banner;

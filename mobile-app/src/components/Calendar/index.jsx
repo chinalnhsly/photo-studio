@@ -1,101 +1,115 @@
-import React, { useState, useCallback } from 'react'
-import { View, Text } from '@tarojs/components'
-import type { ViewProps } from '@tarojs/components'
-import type { CalendarProps, DayProps } from './types'
-import './index.scss'
+import React, { useState } from 'react';
+import { View, Text } from '@tarojs/components';
+import './index.scss';
 
-// 日期组件
-const CalendarDay: React.FC<DayProps & ViewProps> = ({ 
-  date, 
-  isSelected, 
-  isEmpty,
-  ...props 
-}) => {
-  if (isEmpty) {
-    return <View className='calendar-day empty' {...props} />
-  }
-
-  return (
-    <View 
-      className={`calendar-day ${isSelected ? 'selected' : ''}`} 
-      {...props}
-    >
-      <Text>{date?.getDate()}</Text>
-    </View>
-  )
-}
-
-// 日历组件
-export const Calendar: React.FC<CalendarProps> = ({ value, onChange }) => {
-  const [currentMonth, setCurrentMonth] = useState(value || new Date())
-
-  // 辅助函数
-  const getDaysInMonth = useCallback((date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
-  }, [])
-
-  const getFirstDayOfMonth = useCallback((date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth(), 1).getDay()
-  }, [])
-
-  // 事件处理函数
-  const handleMonthChange = useCallback((delta: number) => {
-    setCurrentMonth(prev => {
-      const next = new Date(prev)
-      next.setMonth(prev.getMonth() + delta)
-      return next
-    })
-  }, [])
-
-  const onDateSelect = useCallback((date: Date) => {
-    onChange?.(date)
-  }, [onChange])
-
-  // 渲染日历网格
-  const renderCalendarGrid = useCallback(() => {
-    const days = getDaysInMonth(currentMonth)
-    const firstDay = getFirstDayOfMonth(currentMonth)
-    const totalDays: React.ReactNode[] = []
-
-    // 填充空白格子
-    for (let i = 0; i < firstDay; i++) {
-      totalDays.push(
-        <CalendarDay key={`empty-${i}`} isEmpty />
-      )
+/**
+ * 简易日历组件
+ * @param {Object} props - 组件属性
+ * @param {Function} props.onDaySelect - 选择日期的回调函数
+ * @param {Date} props.selectedDate - 已选择的日期
+ */
+const Calendar = ({ onDaySelect, selectedDate: propSelectedDate }) => {
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(propSelectedDate || null);
+  
+  // 生成当月的天数数组
+  const generateDays = (year, month) => {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    
+    const days = [];
+    
+    // 前面的空白填充
+    for (let i = 0; i < firstDayOfMonth; i++) {
+      days.push(null);
     }
-
-    // 填充日期格子
-    for (let day = 1; day <= days; day++) {
-      const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
-      const isSelected = value?.getDate() === day
-      
-      totalDays.push(
-        <CalendarDay 
-          key={`day-${day}`}
-          date={date}
-          isSelected={isSelected}
-          onClick={() => onDateSelect(date)}
-        />
-      )
+    
+    // 填充当月天数
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push(new Date(year, month, i));
     }
-
-    return totalDays
-  }, [currentMonth, value, getDaysInMonth, getFirstDayOfMonth, onDateSelect])
-
+    
+    return days;
+  };
+  
+  const days = generateDays(currentMonth.getFullYear(), currentMonth.getMonth());
+  
+  const handlePrevMonth = () => {
+    const prevMonth = new Date(currentMonth);
+    prevMonth.setMonth(prevMonth.getMonth() - 1);
+    setCurrentMonth(prevMonth);
+  };
+  
+  const handleNextMonth = () => {
+    const nextMonth = new Date(currentMonth);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    setCurrentMonth(nextMonth);
+  };
+  
+  const handleDaySelect = (day) => {
+    if (!day) return;
+    
+    setSelectedDate(day);
+    if (onDaySelect) {
+      onDaySelect(day);
+    }
+  };
+  
+  // 检查日期是否是今天
+  const isToday = (date) => {
+    if (!date) return false;
+    
+    const today = new Date();
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+  };
+  
+  // 检查日期是否被选中
+  const isSelected = (date) => {
+    if (!date || !selectedDate) return false;
+    
+    return date.getDate() === selectedDate.getDate() &&
+           date.getMonth() === selectedDate.getMonth() &&
+           date.getFullYear() === selectedDate.getFullYear();
+  };
+  
+  // 格式化为YYYY年MM月
+  const formatYearMonth = (date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    return `${year}年${month}月`;
+  };
+  
+  const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+  
   return (
     <View className='calendar'>
       <View className='calendar-header'>
-        <Text onClick={() => handleMonthChange(-1)}>{'<'}</Text>
-        <Text>
-          {currentMonth.getFullYear()}年{currentMonth.getMonth() + 1}月
-        </Text>
-        <Text onClick={() => handleMonthChange(1)}>{'>'}</Text>
+        <Text className='prev-month' onClick={handlePrevMonth}>{'<'}</Text>
+        <Text className='current-month'>{formatYearMonth(currentMonth)}</Text>
+        <Text className='next-month' onClick={handleNextMonth}>{'>'}</Text>
       </View>
-      <View className='calendar-grid'>
-        {renderCalendarGrid()}
+      
+      <View className='weekdays'>
+        {weekdays.map((day, index) => (
+          <Text key={index} className='weekday'>{day}</Text>
+        ))}
+      </View>
+      
+      <View className='days'>
+        {days.map((day, index) => (
+          <View 
+            key={index} 
+            className={`day-cell ${!day ? 'empty' : ''} ${isToday(day) ? 'today' : ''} ${isSelected(day) ? 'selected' : ''}`}
+            onClick={() => handleDaySelect(day)}
+          >
+            {day && <Text className='day-text'>{day.getDate()}</Text>}
+          </View>
+        ))}
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Calendar
+export default Calendar;

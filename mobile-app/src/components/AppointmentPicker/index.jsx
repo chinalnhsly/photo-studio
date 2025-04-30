@@ -1,7 +1,7 @@
 import { View, Text } from '@tarojs/components'
 import { Calendar } from '@/components'
 import { useState } from 'react'
-import type { AppointmentSlot } from '@/types/business'
+// import type { AppointmentSlot } from '@/types/business'
 import './index.scss'
 
 interface Props {

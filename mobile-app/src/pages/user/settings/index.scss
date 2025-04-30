@@ -1,0 +1,37 @@
+.settings-page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 15px 0;
+  
+  .settings-section {
+    background-color: #fff;
+    margin-bottom: 15px;
+    
+    .settings-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 15px;
+      border-bottom: 1px solid #f0f0f0;
+      
+      .label {
+        font-size: 30px;
+        color: #333;
+      }
+      
+      .value {
+        font-size: 28px;
+        color: #999;
+      }
+    }
+  }
+  
+  .clear-cache-btn {
+    margin: 20px 15px;
+    background-color: #fff;
+    color: #ff6b81;
+    border: 1px solid #ff6b81;
+    font-size: 30px;
+  }
+}

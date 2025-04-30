@@ -1,0 +1,238 @@
+.review-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-bottom: 50px;
+  
+  .product-card {
+    display: flex;
+    background-color: white;
+    padding: 20px;
+    
+    .product-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 8px;
+      margin-right: 15px;
+    }
+    
+    .product-info {
+      flex: 1;
+      
+      .product-name {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 10px;
+        display: block;
+      }
+      
+      .product-desc {
+        font-size: 24px;
+        color: #666;
+        line-height: 1.4;
+        display: block;
+      }
+    }
+  }
+  
+  .rating-section {
+    background-color: white;
+    margin-top: 20px;
+    padding: 20px;
+    
+    .section-title {
+      font-size: 30px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
+    }
+    
+    .rating-stars {
+      display: flex;
+      align-items: center;
+      
+      .star {
+        font-size: 50px;
+        color: #ddd;
+        margin-right: 10px;
+        
+        &.active {
+          color: #ffb400;
+        }
+      }
+      
+      .rating-text {
+        margin-left: 10px;
+        font-size: 28px;
+        color: #666;
+      }
+    }
+  }
+  
+  .content-section {
+    background-color: white;
+    margin-top: 20px;
+    padding: 20px;
+    position: relative;
+    
+    .section-title {
+      font-size: 30px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
+    }
+    
+    .review-textarea {
+      width: 100%;
+      height: 200px;
+      background-color: #f5f7fa;
+      border-radius: 8px;
+      padding: 15px;
+      font-size: 28px;
+      box-sizing: border-box;
+    }
+    
+    .word-count {
+      font-size: 24px;
+      color: #999;
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+    }
+  }
+  
+  .photos-section {
+    background-color: white;
+    margin-top: 20px;
+    padding: 20px;
+    
+    .section-title {
+      font-size: 30px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
+    }
+    
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      
+      .photo-item {
+        width: 100%;
+        aspect-ratio: 1/1;
+        position: relative;
+        
+        .photo {
+          width: 100%;
+          height: 100%;
+          border-radius: 8px;
+        }
+        
+        .delete-btn {
+          position: absolute;
+          top: -10px;
+          right: -10px;
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background-color: rgba(0, 0, 0, 0.7);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 24px;
+        }
+      }
+      
+      .photo-upload {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border: 1px dashed #ddd;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f7fa;
+        
+        .upload-icon {
+          font-size: 50px;
+          color: #999;
+          margin-bottom: 10px;
+        }
+        
+        .upload-text {
+          font-size: 24px;
+          color: #999;
+        }
+      }
+    }
+  }
+  
+  .anonymous-section {
+    background-color: white;
+    margin-top: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    
+    .checkbox {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      &.checked {
+        background-color: #ff6b81;
+        border-color: #ff6b81;
+      }
+      
+      .check {
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+      }
+    }
+    
+    .anonymous-text {
+      font-size: 28px;
+      color: #333;
+    }
+  }
+  
+  .submit-section {
+    margin-top: 40px;
+    padding: 0 20px;
+    
+    .submit-btn {
+      width: 100%;
+      height: 90px;
+      line-height: 90px;
+      background-color: #ff6b81;
+      color: white;
+      font-size: 32px;
+      border-radius: 45px;
+      
+      &::after {
+        border: none;
+      }
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 28px;
+  color: #999;
+}

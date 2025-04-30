@@ -1,27 +1,28 @@
 {
+  "description": "影楼商城小程序",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
   "miniprogramRoot": "dist/",
+  "compileType": "miniprogram",
   "projectname": "影楼商城",
-  "description": "摄影工作室小程序商城",
-  "appid": "wx12345678901234",
   "setting": {
-    "urlCheck": false,
     "es6": true,
     "enhance": true,
     "postcss": true,
     "preloadBackgroundData": false,
     "minified": true,
-    "newFeature": false,
+    "newFeature": true,
     "coverView": true,
-    "nodeModules": false,
+    "nodeModules": true,
     "autoAudits": false,
-    "showShadowRootInWxmlPanel": true,
+    "showShadowRootInWxmlPanel": false,
     "scopeDataCheck": false,
     "uglifyFileName": false,
     "checkInvalidKey": true,
     "checkSiteMap": true,
     "uploadWithSourceMap": true,
-    "compileHotReLoad": false,
-    "lazyloadPlaceholderEnable": false,
     "useMultiFrameRuntime": true,
     "useApiHook": true,
     "useApiHostProcess": true,
@@ -30,15 +31,20 @@
       "disablePlugins": [],
       "outputPath": ""
     },
-    "enableEngineNative": false,
-    "useIsolateContext": true,
-    "userConfirmedBundleSwitch": false,
-    "packNpmManually": false,
-    "packNpmRelationList": [],
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./"
+      }
+    ],
     "minifyWXSS": true,
-    "showES6CompileOption": false
+    "disableUseStrict": false,
+    "minifyWXML": true,
+    "showES6CompileOption": false,
+    "useCompilerPlugins": false
   },
-  "compileType": "miniprogram",
-  "condition": {},
-  "libVersion": "3.0.2"
+  "appid": "wx9cc0b9d42349bc3e",
+  "libVersion": "2.19.4",
+  "condition": {}
 }

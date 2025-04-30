@@ -1,0 +1,270 @@
+.review-detail-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  
+  // 加载和错误状态
+  .loading-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    
+    text {
+      color: #999;
+      margin-bottom: 16px;
+    }
+    
+    .back-button {
+      width: 120px;
+      height: 36px;
+      line-height: 36px;
+      background-color: #1890ff;
+      color: #fff;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+  }
+  
+  // 顶部导航
+  .header {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    
+    .back-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+  
+  // 评价卡片
+  .review-card {
+    margin: 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
+    .review-header {
+      margin-bottom: 16px;
+      
+      .user-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        
+        .username {
+          font-weight: 500;
+          font-size: 16px;
+          color: #333;
+        }
+        
+        .review-time {
+          font-size: 14px;
+          color: #999;
+        }
+      }
+      
+      .rating-row {
+        display: flex;
+        align-items: center;
+        
+        .recommended-tag {
+          margin-left: 12px;
+        }
+      }
+    }
+    
+    .review-content {
+      .content-text {
+        font-size: 15px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 16px;
+        display: block;
+      }
+      
+      .review-images {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        
+        .review-image {
+          width: 100px;
+          height: 100px;
+          border-radius: 8px;
+          margin-right: 8px;
+          margin-bottom: 8px;
+          background-color: #f0f0f0;
+        }
+      }
+      
+      .review-tags {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        
+        .tag {
+          margin-right: 8px;
+          margin-bottom: 8px;
+          background-color: #f5f5f5;
+        }
+      }
+    }
+    
+    .admin-reply {
+      background-color: #f5f7fa;
+      padding: 12px;
+      border-radius: 8px;
+      border-left: 3px solid #1890ff;
+      
+      .reply-label {
+        color: #1890ff;
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 4px;
+        display: block;
+      }
+      
+      .reply-content {
+        font-size: 14px;
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 8px;
+        display: block;
+      }
+      
+      .reply-time {
+        font-size: 12px;
+        color: #999;
+        text-align: right;
+        display: block;
+      }
+    }
+  }
+  
+  // 摄影师卡片
+  .photographer-card {
+    margin: 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 8px;
+    }
+    
+    .photographer-info {
+      display: flex;
+      align-items: center;
+      
+      .photographer-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        margin-right: 12px;
+        background-color: #f0f0f0;
+      }
+      
+      .photographer-details {
+        flex: 1;
+        
+        .photographer-name {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 8px;
+          display: block;
+        }
+        
+        .photographer-rating {
+          display: flex;
+          align-items: center;
+          
+          .rating-value {
+            margin-left: 8px;
+            font-size: 14px;
+            color: #ffb400;
+          }
+        }
+      }
+      
+      .view-button {
+        width: 80px;
+        height: 36px;
+        line-height: 36px;
+        background-color: #f5f5f5;
+        color: #666;
+        font-size: 14px;
+        border-radius: 18px;
+      }
+    }
+  }
+  
+  // 预约卡片
+  .booking-card {
+    margin: 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    
+    .card-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 8px;
+    }
+    
+    .booking-info {
+      .info-item {
+        display: flex;
+        margin-bottom: 12px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .info-label {
+          width: 80px;
+          font-size: 14px;
+          color: #999;
+        }
+        
+        .info-value {
+          flex: 1;
+          font-size: 14px;
+          color: #333;
+        }
+      }
+    }
+  }
+}

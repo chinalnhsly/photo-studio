@@ -1,0 +1,55 @@
+.package-list-page {
+  padding: 24px;
+  background: #f0f2f5;
+
+  .package-info {
+    display: flex;
+    align-items: center;
+
+    .package-cover {
+      margin-right: 16px;
+      
+      .ant-image {
+        border-radius: 4px;
+        overflow: hidden;
+      }
+    }
+
+    .package-details {
+      display: flex;
+      flex-direction: column;
+      
+      .package-name {
+        font-weight: 500;
+        margin-bottom: 4px;
+        
+        a {
+          color: rgba(0, 0, 0, 0.85);
+          &:hover {
+            color: #1890ff;
+          }
+        }
+      }
+      
+      .package-category {
+        margin-top: 4px;
+      }
+    }
+  }
+  
+  .package-price-info {
+    display: flex;
+    flex-direction: column;
+    
+    .current-price {
+      font-weight: bold;
+      color: #f5222d;
+    }
+    
+    .original-price {
+      text-decoration: line-through;
+      color: #bfbfbf;
+      font-size: 12px;
+    }
+  }
+}

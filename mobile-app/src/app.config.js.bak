@@ -1,0 +1,37 @@
+export default {
+  pages: [
+    'pages/booking/index', 'pages/cart/index', 'pages/cart/index', 'pages/category/index', 'pages/category/index', 'pages/home/index', 'pages/home/components/AppointmentCard/index', 'pages/home/components/AppointmentCard/index', 'pages/home/components/CategoryNav/index', 'pages/home/components/CategoryNav/index', 'pages/home/components/ProductList/index', 'pages/home/components/ProductList/index', 'pages/home/components/TopNav/index', 'pages/home/components/TopNav/index', 'pages/home/Layout/index', 'pages/home/Layout/index', 'pages/index/index', 'pages/index/components/ProductList/index', 'pages/index/components/ProductList/index', 'pages/marketing/group-buy/index', 'pages/payment/index', 'pages/portfolio/index', 'pages/product/index', 'pages/product/detail/index', 'pages/product/detail/index', 'pages/product/list/index', 'pages/product/list/index', 'pages/search/index', 'pages/shop/index', 'pages/test/index', 'pages/user/index', 'pages/user/index', 'pages/user/address/index', 'pages/user/bookings/index', 'pages/user/favorites/index', 'pages/user/login/index', 'pages/user/orders/index', 'pages/user/register/index', 'pages/user/settings/index', 
+  ],
+  window: {
+    backgroundTextStyle: 'light',
+    navigationBarBackgroundColor: '#fff',
+    navigationBarTitleText: '影楼商城',
+    navigationBarTextStyle: 'black'
+  },
+  tabBar: {
+    color: '#999999',
+    selectedColor: '#ff6b81',
+    backgroundColor: '#ffffff',
+    borderStyle: 'black',
+    list: [
+      {
+        pagePath: 'pages/home/index',
+        text: '首页',
+        iconPath: 'assets/icons/home.png',
+        selectedIconPath: 'assets/icons/home-active.png'
+      },
+      {
+        pagePath: 'pages/category/index',
+        text: '分类',
+        iconPath: 'assets/icons/category.png',
+        selectedIconPath: 'assets/icons/category-active.png'
+      },
+      {
+        pagePath: 'pages/user/index',
+        text: '我的',
+        iconPath: 'assets/icons/user.png',
+        selectedIconPath: 'assets/icons/user-active.png'
+      }
+    ]
+  }
+}

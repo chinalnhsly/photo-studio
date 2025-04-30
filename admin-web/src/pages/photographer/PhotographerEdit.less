@@ -1,0 +1,137 @@
+.photographerEditPage {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .pageHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    
+    h2 {
+      margin: 0 0 0 16px;
+    }
+  }
+  
+  .formSection {
+    margin-bottom: 24px;
+  }
+  
+  .formActions {
+    margin-top: 24px;
+    text-align: center;
+  }
+  
+  .avatarSection {
+    .avatarUploader {
+      display: flex;
+      justify-content: center;
+      
+      :global(.ant-upload) {
+        width: 128px;
+        height: 128px;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+      
+      .avatarWrapper {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+    
+    .avatarTips {
+      text-align: center;
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 12px;
+      margin-top: 16px;
+    }
+  }
+  
+  .statusSection {
+    margin-top: 24px;
+    
+    .statusItem {
+      margin-bottom: 16px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .statusLabel {
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      
+      .statusValue {
+        font-weight: 500;
+      }
+    }
+  }
+  
+  .skillsList {
+    margin-bottom: 16px;
+    
+    .skillItem {
+      background: #f9f9f9;
+      border: 1px solid #f0f0f0;
+      border-radius: 4px;
+      padding: 12px;
+      height: 100%;
+      
+      .skillHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+      
+      .skillLevel {
+        .levelText {
+          font-size: 12px;
+          color: rgba(0, 0, 0, 0.45);
+        }
+        
+        :global(.ant-rate) {
+          font-size: 14px;
+        }
+      }
+    }
+    
+    .emptySkills {
+      text-align: center;
+      color: rgba(0, 0, 0, 0.45);
+      padding: 16px;
+      background: #f9f9f9;
+      border-radius: 4px;
+    }
+  }
+  
+  .portfolioActions {
+    margin-top: 24px;
+    text-align: center;
+  }
+}
+
+// 响应式调整
+@media (max-width: 768px) {
+  .photographerEditPage {
+    padding: 16px;
+    
+    .pageHeader {
+      h2 {
+        font-size: 18px;
+      }
+    }
+  }
+}

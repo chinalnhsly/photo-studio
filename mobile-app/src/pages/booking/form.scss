@@ -1,0 +1,181 @@
+.booking-form-page {
+  min-height: 100vh;
+  background-color: #f7f8fa;
+  padding-bottom: 120px;
+  
+  .booking-info {
+    background-color: white;
+    margin: 20px;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .info-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 25px;
+      display: block;
+    }
+    
+    .info-row {
+      display: flex;
+      margin-bottom: 20px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+      
+      .info-label {
+        width: 160px;
+        font-size: 28px;
+        color: #666;
+      }
+      
+      .info-value {
+        flex: 1;
+        font-size: 28px;
+        color: #333;
+      }
+    }
+  }
+  
+  .form-section {
+    background-color: white;
+    margin: 20px;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .section-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 25px;
+      display: block;
+    }
+    
+    .form-group {
+      .form-item {
+        margin-bottom: 30px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .form-label {
+          font-size: 28px;
+          color: #666;
+          margin-bottom: 15px;
+          display: block;
+        }
+        
+        .form-input {
+          width: 100%;
+          height: 80px;
+          background-color: #f5f7fa;
+          border-radius: 8px;
+          font-size: 28px;
+          padding: 0 20px;
+          color: #333;
+        }
+        
+        .form-textarea {
+          width: 100%;
+          height: 200px;
+          background-color: #f5f7fa;
+          border-radius: 8px;
+          font-size: 28px;
+          padding: 20px;
+          color: #333;
+        }
+        
+        .picker-value {
+          width: 100%;
+          height: 80px;
+          line-height: 80px;
+          background-color: #f5f7fa;
+          border-radius: 8px;
+          font-size: 28px;
+          padding: 0 20px;
+          color: #333;
+          position: relative;
+          
+          &::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 12px solid #999;
+          }
+        }
+      }
+    }
+  }
+  
+  .policy-notice {
+    text-align: center;
+    font-size: 26px;
+    color: #999;
+    margin: 30px 0;
+    
+    .policy-link {
+      color: var(--primary-color, #ff6b81);
+    }
+  }
+  
+  .bottom-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    
+    .price-info {
+      flex: 1;
+      
+      .price-label {
+        font-size: 28px;
+        color: #666;
+        margin-right: 10px;
+      }
+      
+      .price-value {
+        font-size: 36px;
+        font-weight: bold;
+        color: var(--primary-color, #ff6b81);
+      }
+    }
+    
+    .submit-btn {
+      width: 200px;
+      height: 80px;
+      line-height: 80px;
+      background-color: var(--primary-color, #ff6b81);
+      color: white;
+      border-radius: 40px;
+      font-size: 30px;
+      font-weight: bold;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 28px;
+  color: #999;
+}

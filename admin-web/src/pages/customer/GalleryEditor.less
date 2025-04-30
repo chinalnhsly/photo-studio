@@ -1,0 +1,179 @@
+/* 创建 less 样式文件，而不是 scss */
+
+.gallery-editor-page {
+  padding: 24px;
+  
+  .gallery-editor-card {
+    background: #fff;
+  }
+  
+  // 照片网格布局
+  .gallery-photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+    
+    .gallery-photo {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+      transition: all 0.3s;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        
+        .photo-actions {
+          opacity: 1;
+        }
+      }
+      
+      &.selected {
+        border: 2px solid #1890ff;
+      }
+      
+      &.dragging {
+        opacity: 0.4;
+      }
+      
+      &.cover {
+        border: 2px solid #52c41a;
+      }
+      
+      .photo-img-container {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 75%;
+        overflow: hidden;
+        
+        img {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        
+        .cover-badge {
+          position: absolute;
+          top: 8px;
+          left: 8px;
+          z-index: 2;
+        }
+        
+        .photo-selected-indicator {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background-color: #1890ff;
+          color: white;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
+        }
+      }
+      
+      .photo-actions {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.6);
+        padding: 8px;
+        display: flex;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+        
+        button {
+          color: white;
+          
+          &:hover {
+            color: #ff4d4f;
+          }
+        }
+      }
+    }
+  }
+  
+  // 照片添加模态框
+  .add-photos-modal {
+    .selection-header {
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    
+    .available-photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      
+      .available-photo {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        
+        &:hover {
+          border-color: #d9d9d9;
+        }
+        
+        &.selected {
+          border-color: #1890ff;
+        }
+        
+        img {
+          width: 100%;
+          height: 150px;
+          object-fit: cover;
+        }
+        
+        .photo-selected-indicator {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          background-color: #1890ff;
+          color: white;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+  
+  // 客户信息
+  .customer-info-container {
+    margin-top: 16px;
+  }
+  
+  // 拖拽提示
+  .drag-instructions {
+    margin-bottom: 16px;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  
+  // 照片管理头部
+  .photos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .photo-count {
+      color: rgba(0, 0, 0, 0.45);
+    }
+  }
+}

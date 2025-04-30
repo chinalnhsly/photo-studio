@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { View, Text, Swiper, SwiperItem, Image } from '@tarojs/components'
 import Taro, { useRouter, useLoad } from '@tarojs/taro'
-// 去掉依赖外部工具函数
-// import { wrapElement } from '../../../components/SafeRenderer'
-// 导入样式
+import { AtRate, AtIcon } from 'taro-ui'
+import ReviewList from '../../../components/ReviewList'
 import './index.scss'
 
 // Mock数据
@@ -21,6 +20,8 @@ const productDetail = {
   ],
   description: '本套餐包含：\n1. 专业摄影师全程跟拍\n2. 多组场景任选\n3. 30张精修照片\n4. 赠送精美相册一本\n5. 赠送电子相册\n6. 婚纱礼服3套任选',
   services: ['免费试纱', '赠送精美相册', '赠送化妆服务', '提供礼服选择'],
+  reviewCount: 12,
+  rating: 4.5,
   // 可预约日期，实际应从API获取
   availableDates: [
     { date: '2023-06-20', slots: ['上午', '下午'] },
@@ -197,6 +198,41 @@ export default function ProductDetail() {
       <View className='description-section'>
         <Text className='section-title'>套餐详情</Text>
         <Text className='description-text'>{product.description}</Text>
+      </View>
+      
+      {/* 评价区块 - 改进版 */}
+      <View className="detail-section review-section">
+        <View className="section-header">
+          <View className="section-title-row">
+            <Text className="section-title">用户评价</Text>
+            <Text className="review-count">({product?.reviewCount || 0}条)</Text>
+          </View>
+          
+          <View className="review-summary">
+            <View className="rating-value">
+              <Text className="value">{product?.rating?.toFixed(1) || '0.0'}</Text>
+              <Text className="max">/5</Text>
+            </View>
+            <AtRate value={product?.rating || 0} size={16} />
+            
+            <View 
+              className="view-all" 
+              onClick={() => Taro.navigateTo({ url: `/pages/product/reviews/index?productId=${product?.id}` })}
+            >
+              <Text>查看全部</Text>
+              <AtIcon value="chevron-right" size="14" color="#999" />
+            </View>
+          </View>
+        </View>
+        
+        {/* 评价列表组件 */}
+        <ReviewList 
+          productId={Number(id)}
+          maxHeight="800px" 
+          limit={3}
+          showHeader={false}
+          showMoreButton={true}
+        />
       </View>
       
       {/* 预约时间选择 */}

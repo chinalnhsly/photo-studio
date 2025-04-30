@@ -8,7 +8,7 @@
     background-color: var(--white, #ffffff);
     border-radius: 16px;
     padding: 20px;
-    box-shadow: var(--shadow, 0 2px 12px 0 rgba(0, 0, 0, 0.05));
+    box-shadow: var(--shadow, 0 2px 8px rgba(0, 0, 0, 0.05));
     
     .card-header {
       display: flex;
@@ -51,10 +51,11 @@
       .product-name {
         font-size: 28px;
         color: var(--text-color, #333333);
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
         overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; 
+        -webkit-box-orient: vertical;
       }
       
       .product-price-row {

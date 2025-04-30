@@ -1,0 +1,529 @@
+.review-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 80px; // 为底部按钮留出空间
+  
+  // 加载状态
+  .review-page-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #999;
+  }
+  
+  // 错误状态
+  .review-page-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+    
+    text {
+      color: #999;
+      margin-bottom: 20px;
+    }
+    
+    .back-button {
+      width: 120px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background-color: #1890ff;
+      color: #fff;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+  }
+  
+  // 页面头部
+  .page-header {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
+    .back-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+  
+  // 商品信息
+  .product-info {
+    background-color: #fff;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    
+    .product-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 4px;
+      background-color: #f5f5f5;
+      margin-right: 12px;
+    }
+    
+    .product-details {
+      flex: 1;
+      
+      .product-name {
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 4px;
+        display: block;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+      
+      .product-price {
+        font-size: 14px;
+        color: #ff4d4f;
+        font-weight: 500;
+      }
+    }
+  }
+  
+  // 评价表单
+  .review-form {
+    background-color: #fff;
+    
+    // 通用表单区块样式
+    .form-section {
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      
+      .section-title {
+        font-size: 15px;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 12px;
+        display: block;
+      }
+    }
+    
+    // 评分部分
+    .rating-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .rating-stars {
+        margin-bottom: 8px;
+      }
+      
+      .rating-text {
+        font-size: 14px;
+        color: #ff9800;
+      }
+    }
+    
+    // 评价内容部分
+    .content-section {
+      position: relative;
+      
+      .review-textarea {
+        width: 100%;
+        height: 120px;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+        padding: 12px;
+        font-size: 14px;
+        color: #333;
+        box-sizing: border-box;
+      }
+      
+      .word-count {
+        position: absolute;
+        right: 24px;
+        bottom: 24px;
+        font-size: 12px;
+        color: #999;
+      }
+    }
+    
+    // 标签选择部分
+    .tags-section {
+      .tags-container {
+        display: flex;
+        flex-wrap: wrap;
+        
+        .tag-item {
+          margin-right: 12px;
+          margin-bottom: 12px;
+          padding: 8px 12px;
+          border-radius: 16px;
+          font-size: 12px;
+          background-color: #f5f5f5;
+          border: none;
+          
+          &.active {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            border: none;
+          }
+        }
+      }
+    }
+    
+    // 上传图片部分
+    .upload-section {
+      .image-uploader {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+        
+        .image-item {
+          width: 80px;
+          height: 80px;
+          margin-right: 8px;
+          margin-bottom: 8px;
+          position: relative;
+          
+          .upload-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 4px;
+          }
+          
+          .remove-icon {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+        
+        .upload-button {
+          width: 80px;
+          height: 80px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #f9f9f9;
+          border-radius: 4px;
+          border: 1px dashed #d9d9d9;
+        }
+      }
+      
+      .upload-tip {
+        font-size: 12px;
+        color: #ff9800;
+      }
+    }
+    
+    // 匿名评价部分
+    .anonymous-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #333;
+      
+      .checkbox {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        border: 1px solid #d9d9d9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        &.checked {
+          background-color: #1890ff;
+          border-color: #1890ff;
+        }
+      }
+    }
+  }
+  
+  // 底部按钮
+  .bottom-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    
+    .submit-button {
+      width: 100%;
+      height: 44px;
+      line-height: 44px;
+      background-color: #1890ff;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 22px;
+      text-align: center;
+    }
+  }
+}
+
+.order-review-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 120px; // 为底部按钮留出空间
+  
+  // 加载状态
+  .order-review-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #999;
+  }
+  
+  // 错误状态
+  .order-review-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+    
+    text {
+      color: #999;
+      margin-bottom: 20px;
+    }
+    
+    .back-button {
+      width: 120px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background-color: #1890ff;
+      color: #fff;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+  }
+  
+  // 商品信息卡片
+  .product-card {
+    background-color: #fff;
+    margin: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    
+    .product-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 4px;
+      margin-right: 12px;
+      background-color: #f5f5f5;
+    }
+    
+    .product-info {
+      flex: 1;
+      
+      .product-name {
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 8px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+      
+      .product-price {
+        font-size: 16px;
+        color: #ff4d4f;
+        font-weight: 500;
+      }
+    }
+  }
+  
+  // 公共部分样式
+  .section-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 16px;
+    display: block;
+  }
+  
+  // 评分部分
+  .rating-section {
+    background-color: #fff;
+    margin: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    
+    .rating-wrapper {
+      display: flex;
+      align-items: center;
+      
+      .rating-text {
+        margin-left: 12px;
+        font-size: 14px;
+        color: #ff9800;
+      }
+    }
+  }
+  
+  // 评价内容部分
+  .content-section {
+    background-color: #fff;
+    margin: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    position: relative;
+    
+    .review-textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #333;
+      border: 1px solid #e8e8e8;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    .char-count {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      font-size: 12px;
+      color: #999;
+    }
+  }
+  
+  // 标签部分
+  .tags-section {
+    background-color: #fff;
+    margin: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    
+    .tags-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+      
+      .at-tag {
+        margin-right: 12px;
+        margin-bottom: 12px;
+        
+        &.tag-active {
+          background-color: #e6f7ff;
+          color: #1890ff;
+          border-color: #1890ff;
+        }
+        
+        &.tag-normal {
+          background-color: #f5f5f5;
+          color: #666;
+          border-color: #d9d9d9;
+        }
+      }
+    }
+    
+    .tag-hint {
+      font-size: 12px;
+      color: #999;
+    }
+  }
+  
+  // 上传图片部分
+  .upload-section {
+    background-color: #fff;
+    margin: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    
+    .upload-hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 12px;
+      display: block;
+    }
+  }
+  
+  // 匿名评价设置
+  .anonymous-section {
+    background-color: #fff;
+    margin: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    
+    .anonymous-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 12px;
+    }
+    
+    .anonymous-hint {
+      font-size: 12px;
+      color: #999;
+      margin-top: 8px;
+    }
+  }
+  
+  // 底部按钮
+  .bottom-buttons {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    background-color: #fff;
+    padding: 12px 16px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    padding-bottom: env(safe-area-inset-bottom);
+    
+    .cancel-button, .submit-button {
+      flex: 1;
+      height: 44px;
+      line-height: 44px;
+      font-size: 16px;
+      border-radius: 22px;
+    }
+    
+    .cancel-button {
+      background-color: #f5f5f5;
+      color: #666;
+      margin-right: 12px;
+    }
+    
+    .submit-button {
+      background-color: #1890ff;
+      color: #fff;
+    }
+  }
+}

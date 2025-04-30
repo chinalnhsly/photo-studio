@@ -1,0 +1,337 @@
+// 文件夹列表相关样式
+.folder-list {
+  margin-bottom: 16px;
+  
+  .folder-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    
+    &:hover {
+      background-color: #f0f0f0;
+      
+      .folder-actions {
+        display: flex;
+      }
+    }
+    
+    &.selected {
+      background-color: #e6f7ff;
+    }
+  }
+  
+  .folder-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    overflow: hidden;
+    
+    .expand-icon {
+      margin-right: 4px;
+      width: 12px;
+      font-size: 10px;
+      cursor: pointer;
+      color: rgba(0, 0, 0, 0.45);
+    }
+    
+    .expand-placeholder {
+      width: 12px;
+      margin-right: 4px;
+    }
+    
+    .folder-icon {
+      margin-right: 8px;
+      color: #faad14;
+      
+      &.all-photos {
+        color: #1890ff;
+      }
+      
+      &.favorite {
+        color: #f5222d;
+      }
+    }
+    
+    .folder-name {
+      color: rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+    
+    .folder-count {
+      margin-left: 8px;
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.45);
+      flex-shrink: 0;
+    }
+    
+    .public-icon {
+      margin-left: 8px;
+      color: #52c41a;
+    }
+  }
+  
+  .folder-actions {
+    display: none;
+    margin-left: 16px;
+    
+    .action-button {
+      margin-left: 8px;
+      cursor: pointer;
+      color: rgba(0, 0, 0, 0.45);
+      
+      &:hover {
+        color: #1890ff;
+      }
+      
+      &.delete-button:hover {
+        color: #ff4d4f;
+      }
+    }
+  }
+  
+  .folder-separator {
+    height: 1px;
+    background-color: #f0f0f0;
+    margin: 8px 0;
+  }
+  
+  .sub-folders {
+    margin-top: 4px;
+  }
+}
+
+// 照片库主页面相关样式
+.photo-library-container {
+  display: flex;
+  height: 100%;
+  
+  .folder-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    border-right: 1px solid #f0f0f0;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  
+  .photo-content {
+    flex: 1;
+    padding: 16px;
+    overflow-y: auto;
+    
+    .photo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      
+      .folder-title {
+        font-size: 18px;
+        font-weight: bold;
+        
+        .folder-path {
+          color: rgba(0, 0, 0, 0.45);
+          font-weight: normal;
+          font-size: 14px;
+          margin-left: 8px;
+        }
+      }
+      
+      .header-actions {
+        display: flex;
+        gap: 8px;
+      }
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 48px 0;
+      color: rgba(0, 0, 0, 0.45);
+    }
+    
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+  }
+}
+
+// 响应式布局
+@media (max-width: 768px) {
+  .photo-library-container {
+    flex-direction: column;
+    
+    .folder-sidebar {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid #f0f0f0;
+      padding: 12px;
+    }
+  }
+}
+
+// 照片查看器样式
+.viewer-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  z-index: 10;
+  
+  .photo-info {
+    display: flex;
+    align-items: center;
+    
+    .photo-name {
+      font-size: 16px;
+      margin-right: 8px;
+    }
+    
+    .photo-count {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+  
+  .viewer-actions .ant-btn {
+    color: white;
+  }
+}
+
+.viewer-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: none;
+  height: 60px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  
+  &:hover {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+  }
+  
+  &.prev-button {
+    left: 0;
+  }
+  
+  &.next-button {
+    right: 0;
+  }
+}
+
+.photo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  cursor: move;
+}
+
+.viewer-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+  
+  .ant-btn {
+    color: white;
+  }
+}
+
+.photo-details-panel {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 300px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  height: calc(100% - 120px);
+  overflow-y: auto;
+  z-index: 10;
+  padding: 16px;
+  
+  .panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 8px;
+    
+    h3 {
+      margin: 0;
+      color: white;
+    }
+  }
+  
+  .panel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .detail-item {
+    display: flex;
+    flex-direction: column;
+    
+    .label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    
+    .value {
+      font-size: 14px;
+    }
+  }
+  
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+    
+    .tag {
+      background: rgba(24, 144, 255, 0.2);
+      border: 1px solid rgba(24, 144, 255, 0.4);
+      border-radius: 2px;
+      padding: 2px 8px;
+      font-size: 12px;
+    }
+  }
+}

@@ -1,0 +1,49 @@
+.employee-list-page {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .employee-info {
+    display: flex;
+    align-items: center;
+    
+    .employee-avatar {
+      margin-right: 8px;
+    }
+    
+    .employee-name {
+      a {
+        color: rgba(0, 0, 0, 0.85);
+        
+        &:hover {
+          color: #1890ff;
+        }
+      }
+    }
+  }
+  
+  .import-modal {
+    .upload-area {
+      padding: 16px;
+      border: 1px dashed #d9d9d9;
+      border-radius: 4px;
+      background-color: #fafafa;
+      text-align: center;
+      
+      .upload-tip {
+        margin-top: 16px;
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 12px;
+        
+        a {
+          display: block;
+          margin-top: 8px;
+        }
+      }
+    }
+  }
+  
+  // 响应式调整
+  @media (max-width: 576px) {
+    padding: 12px;
+  }
+}

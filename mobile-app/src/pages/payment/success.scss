@@ -1,192 +1,137 @@
-.payment-success {
+.payment-success-page {
   min-height: 100vh;
   background-color: var(--background-color, #f8f9fa);
-  padding-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 30px;
   
-  .success-header {
+  .success-icon-wrap {
+    width: 160px;
+    height: 160px;
+    border-radius: 80px;
+    background-color: #f0fff0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    padding: 60px 0;
-    background-color: var(--white, #ffffff);
+    justify-content: center;
+    margin-bottom: 40px;
     
     .success-icon {
       width: 100px;
       height: 100px;
-      margin-bottom: 20px;
+      border-radius: 50px;
+      background-color: #52c41a;
+      color: white;
+      font-size: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+  }
+  
+  .success-info {
+    text-align: center;
+    margin-bottom: 60px;
     
     .success-title {
-      font-size: 40px;
+      font-size: 36px;
       font-weight: bold;
-      color: var(--text-color, #333333);
+      color: #333;
       margin-bottom: 20px;
+      display: block;
+    }
+    
+    .success-amount {
+      font-size: 60px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      display: block;
     }
     
     .success-desc {
       font-size: 28px;
-      color: var(--light-text, #999999);
+      color: #999;
     }
   }
   
-  .order-info {
-    margin: 20px;
-    background-color: var(--white, #ffffff);
+  .notice-box {
+    width: 100%;
+    background-color: white;
     border-radius: 16px;
     padding: 30px 20px;
-    box-shadow: var(--shadow, 0 2px 12px 0 rgba(0, 0, 0, 0.05));
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-bottom: 60px;
     
-    .info-row {
+    .notice-header {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 20px;
+      align-items: center;
+      margin-bottom: 30px;
       
-      &:last-child {
-        margin-bottom: 0;
+      .notice-line {
+        flex: 1;
+        height: 1px;
+        background-color: #eee;
       }
       
-      .info-label {
-        color: var(--light-text, #999999);
+      .notice-title {
+        padding: 0 20px;
         font-size: 28px;
-      }
-      
-      .info-value {
-        color: var(--text-color, #333333);
-        font-size: 28px;
-        
-        &.price {
-          font-weight: bold;
-          color: var(--primary-color, #ff6b81);
-        }
+        color: #666;
       }
     }
-  }
-  
-  .tips-section {
-    margin: 20px;
-    background-color: var(--white, #ffffff);
-    border-radius: 16px;
-    padding: 20px;
-    box-shadow: var(--shadow, 0 2px 12px 0 rgba(0, 0, 0, 0.05));
     
-    .tips-title {
-      font-size: 30px;
-      font-weight: bold;
-      color: var(--text-color, #333333);
-      margin-bottom: 20px;
-    }
-    
-    .tips-content {
-      .tips-item {
+    .notice-content {
+      .notice-item {
         display: flex;
-        align-items: flex-start;
         margin-bottom: 15px;
         
-        &:last-child {
-          margin-bottom: 0;
-        }
-        
-        .tip-dot {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background-color: var(--primary-color, #ff6b81);
+        .notice-dot {
           margin-right: 10px;
-          margin-top: 12px;
+          color: #ff6b81;
+          font-size: 30px;
         }
         
-        .tip-text {
+        .notice-text {
           flex: 1;
           font-size: 26px;
-          color: var(--light-text, #999999);
+          color: #666;
           line-height: 1.6;
         }
       }
     }
   }
   
+  .countdown-tips {
+    font-size: 24px;
+    color: #999;
+    margin-bottom: 40px;
+  }
+  
   .action-buttons {
+    width: 100%;
     display: flex;
-    margin: 40px 20px;
+    justify-content: space-between;
     
     .action-btn {
-      flex: 1;
-      height: 80px;
-      line-height: 80px;
-      margin: 0 10px;
-      border-radius: 40px;
-      font-size: 30px;
+      width: 48%;
+      height: 90px;
+      line-height: 90px;
+      border-radius: 45px;
+      font-size: 28px;
       
       &::after {
         border: none;
       }
       
-      &.view-order {
-        background-color: var(--primary-color, #ff6b81);
+      &.home {
+        background-color: #f5f5f5;
+        color: #666;
+      }
+      
+      &.view {
+        background-color: #ff6b81;
         color: white;
-      }
-      
-      &.back-home {
-        background-color: white;
-        color: var(--text-color, #333333);
-        border: 1px solid #ddd;
-      }
-    }
-  }
-  
-  .marketing-section {
-    margin: 40px 20px 20px;
-    
-    .marketing-title {
-      text-align: center;
-      font-size: 28px;
-      color: var(--light-text, #999999);
-      margin-bottom: 30px;
-      position: relative;
-    }
-    
-    .coupon-banner {
-      background: linear-gradient(135deg, #ff6b81, #ff8e9b);
-      border-radius: 16px;
-      height: 160px;
-      display: flex;
-      align-items: center;
-      padding: 0 30px;
-      box-shadow: var(--shadow, 0 2px 12px 0 rgba(0, 0, 0, 0.05));
-      
-      .coupon-icon {
-        width: 60px;
-        height: 60px;
-        margin-right: 20px;
-      }
-      
-      .coupon-content {
-        flex: 1;
-        
-        .coupon-title {
-          font-size: 34px;
-          font-weight: bold;
-          color: white;
-          margin-bottom: 10px;
-          display: block;
-        }
-        
-        .coupon-desc {
-          font-size: 24px;
-          color: rgba(255, 255, 255, 0.9);
-        }
-      }
-      
-      .coupon-btn {
-        width: 120px;
-        height: 50px;
-        line-height: 50px;
-        text-align: center;
-        background-color: white;
-        color: var(--primary-color, #ff6b81);
-        border-radius: 25px;
-        font-weight: bold;
-        font-size: 26px;
       }
     }
   }

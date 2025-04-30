@@ -1,7 +1,7 @@
 const path = require('path');
 
 const config = {
-  projectName: 'photostudio-mobile',
+  projectName: 'minimal-taro',
   date: '2023-6-15',
   designWidth: 750,
   deviceRatio: {
@@ -11,25 +11,28 @@ const config = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: [],
+  plugins: [
+    '@tarojs/plugin-framework-react'
+  ],
   defineConstants: {},
-  alias: {
-    '@': path.resolve(__dirname, '..', 'src'),
-    '@/components': path.resolve(__dirname, '..', 'src/components'),
-    '@/pages': path.resolve(__dirname, '..', 'src/pages'),
-    '@/assets': path.resolve(__dirname, '..', 'src/assets'),
-    '@/styles': path.resolve(__dirname, '..', 'src/styles'),
-    '@/utils': path.resolve(__dirname, '..', 'src/utils'),
-    '@/types': path.resolve(__dirname, '..', 'src/types')
-  },
   copy: {
     patterns: [],
     options: {}
+  },
+  alias: {
+    "@": path.resolve(__dirname, "..", "src"),
+    "@/components": path.resolve(__dirname, "..", "src/components"),
+    "@/store": path.resolve(__dirname, "..", "src/store"),
+    "@/utils": path.resolve(__dirname, "..", "src/utils"),
+    "@/assets": path.resolve(__dirname, "..", "src/assets")
   },
   framework: 'react',
   compiler: 'webpack5',
   mini: {
     postcss: {
+    sass: {
+      resource: []
+    },
       pxtransform: {
         enable: true,
         config: {}
@@ -39,41 +42,19 @@ const config = {
         config: {
           limit: 1024
         }
-      },
-      cssModules: {
-        enable: false,
-        config: {
-          namingPattern: 'module',
-          generateScopedName: '[name]__[local]___[hash:base64:5]'
-        }
       }
-    },
-    webpackChain(chain, webpack) {
-      // 设置别名，解决路径问题
-      chain.resolve.alias
-        .set('@', path.resolve(__dirname, '..', 'src'))
-        .set('@/components', path.resolve(__dirname, '..', 'src/components'))
-        .set('@/pages', path.resolve(__dirname, '..', 'src/pages'))
-        .set('@/assets', path.resolve(__dirname, '..', 'src/assets'))
-        .set('@/styles', path.resolve(__dirname, '..', 'src/styles'))
-        .set('@/utils', path.resolve(__dirname, '..', 'src/utils'))
-        .set('@/types', path.resolve(__dirname, '..', 'src/types'));
     }
   },
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
     postcss: {
+    sass: {
+      resource: []
+    },
       autoprefixer: {
         enable: true,
         config: {}
-      },
-      cssModules: {
-        enable: false,
-        config: {
-          namingPattern: 'module',
-          generateScopedName: '[name]__[local]___[hash:base64:5]'
-        }
       }
     }
   }
@@ -81,7 +62,7 @@ const config = {
 
 module.exports = function (merge) {
   if (process.env.NODE_ENV === 'development') {
-    return merge({}, config, require('./dev'));
+    return merge({}, config, require('./dev'))
   }
-  return merge({}, config, require('./prod'));
-};
+  return merge({}, config, require('./prod'))
+}

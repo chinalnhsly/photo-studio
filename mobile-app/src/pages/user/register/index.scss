@@ -1,0 +1,145 @@
+.register-page {
+  min-height: 100vh;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 0 40px;
+  
+  .header {
+    margin-top: 80px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    .logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 30px;
+    }
+    
+    .title {
+      font-size: 36px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    .sub-title {
+      font-size: 26px;
+      color: #999;
+    }
+  }
+  
+  .register-form {
+    .form-item {
+      margin-bottom: 30px;
+      
+      .input-label {
+        font-size: 28px;
+        color: #666;
+        margin-bottom: 15px;
+      }
+      
+      .input {
+        height: 90px;
+        background-color: #f5f7fa;
+        border-radius: 45px;
+        font-size: 28px;
+        padding: 0 30px;
+        color: #333;
+      }
+      
+      .code-input-container {
+        display: flex;
+        align-items: center;
+        
+        .code-input {
+          flex: 1;
+          height: 90px;
+          background-color: #f5f7fa;
+          border-radius: 45px;
+          font-size: 28px;
+          padding: 0 30px;
+          color: #333;
+          margin-right: 20px;
+        }
+        
+        .code-btn {
+          width: 200px;
+          height: 90px;
+          line-height: 90px;
+          text-align: center;
+          font-size: 26px;
+          color: var(--primary-color, #ff6b81);
+          background-color: rgba(255, 107, 129, 0.1);
+          border-radius: 45px;
+          
+          &.disabled {
+            color: #999;
+            background-color: #f5f7fa;
+          }
+        }
+      }
+    }
+    
+    .policy-checkbox {
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      margin-bottom: 40px;
+      
+      .checkbox {
+        width: 36px;
+        height: 36px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        &.checked {
+          border-color: var(--primary-color, #ff6b81);
+          background-color: var(--primary-color, #ff6b81);
+        }
+        
+        .check-mark {
+          color: white;
+          font-size: 24px;
+          font-weight: bold;
+        }
+      }
+      
+      .policy-text {
+        font-size: 26px;
+        color: #666;
+        
+        .policy-link {
+          color: var(--primary-color, #ff6b81);
+        }
+      }
+    }
+    
+    .register-btn {
+      width: 100%;
+      height: 90px;
+      line-height: 90px;
+      background-color: var(--primary-color, #ff6b81);
+      color: white;
+      font-size: 32px;
+      border-radius: 45px;
+    }
+    
+    .login-link {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 28px;
+      color: #666;
+      
+      .link {
+        color: var(--primary-color, #ff6b81);
+      }
+    }
+  }
+}

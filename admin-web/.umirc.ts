@@ -1,0 +1,60 @@
+import { defineConfig } from 'umi';
+import routes from './config/routes';
+import path from 'path';
+import webpack from 'webpack';
+
+export default defineConfig({
+  nodeModulesTransform: {
+    type: 'none',
+  },
+  routes,
+  fastRefresh: {},
+  // 禁用 MFSU 功能，解决依赖问题
+  mfsu: false,
+  cssLoader: {
+    localsConvention: 'camelCase',
+  },
+  extraPostCSSPlugins: [],
+  theme: {
+    'primary-color': '#1890ff',
+    'link-color': '#1890ff',
+  },
+  proxy: {
+    '/api': {
+      target: 'http://localhost:8080',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+  },
+  dva: {
+    immer: true,
+    hmr: false,
+  },
+  hash: true,
+  antd: {
+    // 禁用 React 严格模式，减轻 findDOMNode 警告
+    config: {
+      disableReactStrictMode: true
+    }
+  },
+  ignoreMomentLocale: true,
+  targets: {
+    ie: 11,
+  },
+  alias: {
+    '@ant-design/icons/lib/dist': '@ant-design/icons/lib/index.es.js',
+    'react': path.resolve(__dirname, './node_modules/react'),
+    'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
+    // 添加兼容层，解决 ColorPicker 不存在问题
+    'antd/es/color-picker': path.resolve(__dirname, './src/components/CompatAntd'),
+    'antd/lib/color-picker': path.resolve(__dirname, './src/components/CompatAntd'),
+  },
+  webpack5: {}, 
+  // 删除 externals 配置，让 webpack 正常打包 React
+  chainWebpack(config) {
+    // 添加全局 React 提供
+    config.plugin('provide-react').use(webpack.ProvidePlugin, [{
+      React: 'react',
+    }]);
+  }
+});

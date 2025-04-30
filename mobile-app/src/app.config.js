@@ -3,15 +3,10 @@ export default {
     'pages/home/index',
     'pages/category/index',
     'pages/user/index',
-    'pages/product/list/index',
-    'pages/product/detail/index',
-    'pages/search/index',
-    'pages/user/bookings/index',
-    'pages/user/bookings/detail',
-    'pages/user/favorites/index',
-    'pages/portfolio/index',
-    'pages/portfolio/detail',
-    'pages/payment/index'
+    'pages/index/index',
+    'pages/shop/index',
+    'pages/product/index',
+    'pages/booking/index'
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -20,9 +15,9 @@ export default {
     navigationBarTextStyle: 'black'
   },
   tabBar: {
-    color: '#999999',
+    color: '#999',
     selectedColor: '#ff6b81',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     borderStyle: 'black',
     list: [
       {

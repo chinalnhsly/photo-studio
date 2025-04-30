@@ -1,0 +1,153 @@
+.customer-detail-page {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .action-card {
+    margin-bottom: 24px;
+    
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  
+  .info-card {
+    margin-bottom: 24px;
+    
+    .customer-header {
+      display: flex;
+      margin-bottom: 24px;
+      
+      .customer-avatar-section {
+        position: relative;
+        margin-right: 24px;
+        
+        .customer-vip-badge {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+        }
+      }
+      
+      .customer-basic-info {
+        flex: 1;
+        
+        h4 {
+          margin-bottom: 8px;
+        }
+        
+        .customer-tags {
+          margin-bottom: 12px;
+          
+          .ant-tag {
+            margin-bottom: 4px;
+          }
+        }
+        
+        .customer-contacts {
+          .contact-item {
+            margin-bottom: 4px;
+            color: rgba(0, 0, 0, 0.65);
+            
+            .anticon {
+              margin-right: 8px;
+            }
+          }
+        }
+      }
+      
+      .customer-stats {
+        text-align: right;
+        
+        .ant-statistic {
+          margin-bottom: 16px;
+        }
+      }
+    }
+  }
+  
+  .tabs-card {
+    .preferences-section {
+      .preference-item {
+        display: flex;
+        margin-bottom: 16px;
+        
+        .preference-label {
+          width: 100px;
+          color: rgba(0, 0, 0, 0.65);
+          font-weight: 500;
+        }
+        
+        .preference-value {
+          flex: 1;
+        }
+      }
+      
+      .preference-tags {
+        .ant-tag {
+          margin-bottom: 4px;
+        }
+      }
+    }
+    
+    .interactions-section {
+      padding: 8px 0;
+      
+      .interaction-item {
+        margin-bottom: 16px;
+        
+        .interaction-title {
+          margin-bottom: 8px;
+        }
+        
+        .interaction-content {
+          .interaction-notes, .interaction-staff {
+            margin-top: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 0;
+  }
+  
+  .customer-not-found {
+    text-align: center;
+    padding: 64px 0;
+    
+    .back-button {
+      margin-top: 24px;
+    }
+  }
+  
+  // 响应式调整
+  @media (max-width: 768px) {
+    padding: 12px;
+    
+    .customer-header {
+      flex-direction: column;
+      
+      .customer-avatar-section {
+        margin-bottom: 16px;
+        display: flex;
+        justify-content: center;
+      }
+      
+      .customer-stats {
+        display: flex;
+        justify-content: space-around;
+        text-align: center;
+        margin-top: 16px;
+        
+        .ant-statistic {
+          margin: 0 12px;
+        }
+      }
+    }
+  }
+}

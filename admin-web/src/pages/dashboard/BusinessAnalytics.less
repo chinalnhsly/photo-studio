@@ -1,0 +1,154 @@
+.business-analytics-page {
+  .filter-card {
+    margin-bottom: 16px;
+    
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      
+      .ant-typography {
+        margin-bottom: 0;
+      }
+      
+      .filter-controls {
+        display: flex;
+        align-items: center;
+      }
+    }
+    
+    .date-range-info {
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 14px;
+      
+      .anticon {
+        margin-right: 8px;
+      }
+    }
+  }
+  
+  .analytics-content {
+    .stats-row {
+      margin-bottom: 16px;
+      
+      .stat-title {
+        display: flex;
+        align-items: center;
+      }
+      
+      .stat-change {
+        font-size: 14px;
+        margin-left: 8px;
+      }
+    }
+    
+    .trends-card {
+      margin-bottom: 16px;
+    }
+    
+    .analysis-row {
+      margin-bottom: 16px;
+    }
+    
+    .card-title-with-icon {
+      display: flex;
+      align-items: center;
+      
+      .anticon {
+        margin-right: 8px;
+      }
+    }
+    
+    .top-packages-card {
+      margin-bottom: 16px;
+    }
+    
+    .photographer-performance-card {
+      .performance-table {
+        .table-header {
+          display: flex;
+          background-color: #fafafa;
+          padding: 12px 8px;
+          font-weight: bold;
+          border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .table-row {
+          display: flex;
+          padding: 12px 8px;
+          border-bottom: 1px solid #f0f0f0;
+          
+          &:hover {
+            background-color: #fafafa;
+          }
+        }
+        
+        .rank-cell {
+          width: 60px;
+          display: flex;
+          align-items: center;
+        }
+        
+        .name-cell {
+          flex: 1;
+          display: flex;
+          align-items: center;
+        }
+        
+        .data-cell {
+          width: 120px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .rating-cell {
+          width: 80px;
+          text-align: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  }
+}
+
+// 响应式布局
+@media (max-width: 768px) {
+  .business-analytics-page {
+    .filter-card {
+      .filter-header {
+        flex-direction: column;
+        align-items: flex-start;
+        
+        .filter-controls {
+          margin-top: 16px;
+          flex-wrap: wrap;
+          
+          .ant-picker {
+            margin-bottom: 8px;
+          }
+          
+          .ant-btn {
+            margin-top: 8px;
+          }
+        }
+      }
+    }
+    
+    .analytics-content {
+      .photographer-performance-card {
+        .performance-table {
+          overflow-x: auto;
+          
+          .table-header, .table-row {
+            min-width: 500px;
+          }
+        }
+      }
+    }
+  }
+}

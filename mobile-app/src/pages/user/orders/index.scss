@@ -1,0 +1,196 @@
+.order-list-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  
+  .tabs {
+    display: flex;
+    background-color: white;
+    padding: 10px 0;
+    
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      font-size: 28px;
+      padding: 15px 0;
+      color: #666;
+      position: relative;
+      
+      &.active {
+        color: #ff6b81;
+        font-weight: bold;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          left: 25%;
+          right: 25%;
+          bottom: 0;
+          height: 4px;
+          background-color: #ff6b81;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+  
+  .order-list-scroll {
+    flex: 1;
+  }
+  
+  .order-list {
+    padding: 20px;
+    
+    .order-item {
+      background-color: white;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #f5f5f5;
+        
+        .order-no {
+          font-size: 26px;
+          color: #666;
+        }
+        
+        .order-status {
+          font-size: 26px;
+          font-weight: bold;
+          
+          &.unpaid {
+            color: #ff6b81;
+          }
+          
+          &.paid {
+            color: #ff9f43;
+          }
+          
+          &.completed {
+            color: #2ecc71;
+          }
+          
+          &.cancelled {
+            color: #999;
+          }
+        }
+      }
+      
+      .order-content {
+        display: flex;
+        padding: 20px;
+        border-bottom: 1px solid #f5f5f5;
+        
+        .product-image {
+          width: 160px;
+          height: 160px;
+          border-radius: 8px;
+          margin-right: 20px;
+        }
+        
+        .product-info {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          
+          .product-name {
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            
+            // 方案1：使用字符串+unquote()绕过编译器检查
+            // display: unquote("-webkit-box");
+            // stylelint-disable-next-line property-no-unknown
+            // -webkit-line-clamp: 2;
+            // stylelint-disable-next-line property-no-unknown
+            -webkit-box-orient: vertical;
+            
+            // 方案2：提供标准替代方案
+            overflow: hidden;
+            text-overflow: ellipsis;
+            // 根据行高设置最大高度
+            line-height: 1.4;
+            max-height: 2.8em; /* 2 lines */
+          }
+          
+          .appointment-time {
+            font-size: 26px;
+            color: #666;
+            margin-bottom: auto;
+          }
+          
+          .price-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            
+            .price {
+              font-size: 32px;
+              font-weight: bold;
+              color: #333;
+            }
+          }
+        }
+      }
+      
+      .order-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding: 20px;
+        
+        .action-btn {
+          height: 60px;
+          line-height: 60px;
+          padding: 0 30px;
+          border-radius: 30px;
+          margin-left: 20px;
+          font-size: 26px;
+          
+          &.primary {
+            background-color: #ff6b81;
+            color: white;
+          }
+          
+          &.default {
+            background-color: #f5f5f5;
+            color: #333;
+          }
+          
+          &.cancel {
+            background-color: white;
+            color: #999;
+            border: 1px solid #ddd;
+          }
+        }
+      }
+    }
+  }
+  
+  .empty-orders, .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 0;
+    
+    .empty-icon {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 30px;
+    }
+    
+    .empty-text {
+      font-size: 30px;
+      color: #999;
+    }
+  }
+}

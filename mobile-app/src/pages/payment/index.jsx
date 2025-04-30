@@ -1,90 +1,81 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, Image, Button } from '@tarojs/components'
 import Taro, { useRouter } from '@tarojs/taro'
-import { mockApi } from '../../services/mock'
 import './index.scss'
 
-// 模拟订单数据
-const mockOrder = {
-  id: 'order_123456',
-  productId: '1',
-  productName: '高级婚纱摄影套餐',
-  productImage: 'https://images.unsplash.com/photo-1550005809-91ad75fb315f',
-  price: 3999,
-  originalPrice: 5999,
-  bookingInfo: {
-    date: '2023-07-20',
-    timeSlot: '上午 09:00-12:00',
-    contact: '张先生',
-    phone: '138****6666'
-  },
-  discounts: [
-    {
-      type: 'coupon',
-      name: '新用户优惠券',
-      amount: 200
-    },
-    {
-      type: 'member',
-      name: '会员折扣',
-      amount: 100
-    }
-  ],
-  totalAmount: 3699
-}
-
-export default function PaymentPage() {
+const PaymentPage = () => {
   const router = useRouter()
   const { orderId } = router.params
   
+  const [orderInfo, setOrderInfo] = useState(null)
+  const [selectedPayment, setSelectedPayment] = useState('wechat')
   const [loading, setLoading] = useState(true)
-  const [order, setOrder] = useState(null)
-  const [paying, setPaying] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState('wechat') // wechat, alipay
+  const [submitting, setSubmitting] = useState(false)
   
+  // 获取订单信息
   useEffect(() => {
-    // 模拟加载订单数据
-    const fetchOrder = () => {
+    const fetchOrderInfo = async () => {
       setLoading(true)
-      // 模拟接口请求延迟
+      
+      // 模拟API请求
       setTimeout(() => {
-        setOrder(mockOrder)
+        // 模拟订单数据
+        const mockOrderInfo = {
+          id: orderId || 'BO' + Date.now().toString().slice(-10),
+          serviceName: '婚纱照套餐',
+          serviceImage: 'https://img.freepik.com/free-photo/bride-groom-having-their-wedding-beach_23-2149043964.jpg',
+          date: '2023-10-15',
+          time: '14:00-16:00',
+          price: 2999,
+          originalPrice: 3999,
+          discount: 1000,
+          status: 'pending',
+          contactName: '张先生',
+          contactPhone: '138****1234',
+          peopleCount: '2人'
+        }
+        
+        setOrderInfo(mockOrderInfo)
         setLoading(false)
-      }, 500)
+      }, 600)
     }
     
-    fetchOrder()
+    fetchOrderInfo()
   }, [orderId])
   
+  // 处理支付方式变化
+  const handlePaymentChange = (value) => {
+    setSelectedPayment(value)
+  }
+  
   // 处理支付
-  const handlePayment = () => {
-    if (paying) return
-    
-    setPaying(true)
-    
-    // 模拟支付请求
-    setTimeout(() => {
-      // 实际开发中，这里应当调用微信支付API
-      Taro.showLoading({ title: '处理支付...' })
+  const handlePay = async () => {
+    try {
+      setSubmitting(true)
       
-      setTimeout(() => {
-        Taro.hideLoading()
-        
-        // 模拟支付成功
-        Taro.showToast({
-          title: '支付成功',
-          icon: 'success',
-          duration: 2000
-        })
-        
-        // 跳转到支付成功页
-        setTimeout(() => {
-          Taro.redirectTo({
-            url: `/pages/payment/success?orderId=${order.id}`
-          })
-        }, 1500)
-      }, 2000)
-    }, 500)
+      // 模拟支付过程
+      Taro.showLoading({
+        title: '支付处理中...'
+      })
+      
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      Taro.hideLoading()
+      
+      // 跳转到支付成功页面
+      Taro.redirectTo({
+        url: `/pages/payment/success?orderId=${orderInfo.id}&amount=${orderInfo.price}`
+      })
+      
+    } catch (error) {
+      Taro.hideLoading()
+      Taro.showToast({
+        title: '支付失败，请重试',
+        icon: 'none'
+      })
+    } finally {
+      setSubmitting(false)
+    }
   }
   
   if (loading) {
@@ -95,32 +86,31 @@ export default function PaymentPage() {
     )
   }
   
-  if (!order) {
+  if (!orderInfo) {
     return (
       <View className='error-container'>
         <Text>订单信息不存在</Text>
-        <Button className='back-btn' onClick={() => Taro.navigateBack()}>返回上一页</Button>
+        <Button className='back-btn' onClick={() => Taro.navigateBack()}>返回</Button>
       </View>
     )
   }
-
+  
   return (
     <View className='payment-page'>
-      {/* 订单信息 */}
       <View className='order-card'>
         <View className='card-header'>
           <Text className='card-title'>订单信息</Text>
-          <Text className='order-number'>订单号：{order.id}</Text>
+          <Text className='order-number'>订单号：{orderInfo.id}</Text>
         </View>
         
         <View className='product-info'>
-          <Image className='product-image' src={order.productImage} mode='aspectFill' />
+          <Image className='product-image' src={orderInfo.serviceImage} mode='aspectFill' />
           <View className='product-content'>
-            <Text className='product-name'>{order.productName}</Text>
-            <View className='product-price'>
-              <Text className='price'>¥{order.price}</Text>
-              {order.originalPrice > order.price && (
-                <Text className='original-price'>¥{order.originalPrice}</Text>
+            <Text className='product-name'>{orderInfo.serviceName}</Text>
+            <View className='product-price-row'>
+              <Text className='price'>¥{orderInfo.price}</Text>
+              {orderInfo.originalPrice > orderInfo.price && (
+                <Text className='original-price'>¥{orderInfo.originalPrice}</Text>
               )}
             </View>
           </View>
@@ -129,50 +119,50 @@ export default function PaymentPage() {
         <View className='booking-info'>
           <View className='info-row'>
             <Text className='info-label'>预约日期</Text>
-            <Text className='info-value'>{order.bookingInfo.date}</Text>
+            <Text className='info-value'>{orderInfo.date}</Text>
           </View>
           <View className='info-row'>
-            <Text className='info-label'>预约时段</Text>
-            <Text className='info-value'>{order.bookingInfo.timeSlot}</Text>
+            <Text className='info-label'>预约时间</Text>
+            <Text className='info-value'>{orderInfo.time}</Text>
           </View>
           <View className='info-row'>
             <Text className='info-label'>联系人</Text>
-            <Text className='info-value'>{order.bookingInfo.contact}</Text>
+            <Text className='info-value'>{orderInfo.contactName}</Text>
           </View>
           <View className='info-row'>
             <Text className='info-label'>联系电话</Text>
-            <Text className='info-value'>{order.bookingInfo.phone}</Text>
+            <Text className='info-value'>{orderInfo.contactPhone}</Text>
+          </View>
+          <View className='info-row'>
+            <Text className='info-label'>拍摄人数</Text>
+            <Text className='info-value'>{orderInfo.peopleCount}</Text>
           </View>
         </View>
       </View>
       
-      {/* 支付金额 */}
       <View className='payment-card'>
         <View className='card-header'>
-          <Text className='card-title'>支付金额</Text>
+          <Text className='card-title'>费用明细</Text>
         </View>
         
         <View className='price-detail'>
           <View className='price-row'>
-            <Text className='label'>商品金额</Text>
-            <Text className='value'>¥{order.price}</Text>
+            <Text className='label'>服务原价</Text>
+            <Text className='value'>¥{orderInfo.originalPrice}</Text>
           </View>
-          
-          {order.discounts && order.discounts.map((discount, index) => (
-            <View key={index} className='price-row discount'>
-              <Text className='label'>{discount.name}</Text>
-              <Text className='value'>-¥{discount.amount}</Text>
+          {orderInfo.discount > 0 && (
+            <View className='price-row discount'>
+              <Text className='label'>优惠金额</Text>
+              <Text className='value'>-¥{orderInfo.discount}</Text>
             </View>
-          ))}
-          
+          )}
           <View className='price-row total'>
-            <Text className='label'>实付金额</Text>
-            <Text className='value'>¥{order.totalAmount}</Text>
+            <Text className='label'>应付金额</Text>
+            <Text className='value'>¥{orderInfo.price}</Text>
           </View>
         </View>
       </View>
       
-      {/* 支付方式 */}
       <View className='payment-method-card'>
         <View className='card-header'>
           <Text className='card-title'>支付方式</Text>
@@ -180,44 +170,42 @@ export default function PaymentPage() {
         
         <View className='method-list'>
           <View 
-            className={`method-item ${paymentMethod === 'wechat' ? 'active' : ''}`}
-            onClick={() => setPaymentMethod('wechat')}
+            className='method-item' 
+            onClick={() => handlePaymentChange('wechat')}
           >
             <View className='method-icon wechat'>
-              <View className='icon-box'>微信</View>
+              <Text className='icon-box'>微</Text>
             </View>
             <Text className='method-name'>微信支付</Text>
-            {paymentMethod === 'wechat' && (
+            {selectedPayment === 'wechat' && (
               <View className='checked-icon'>✓</View>
             )}
           </View>
           
           <View 
-            className={`method-item ${paymentMethod === 'alipay' ? 'active' : ''}`}
-            onClick={() => setPaymentMethod('alipay')}
+            className='method-item' 
+            onClick={() => handlePaymentChange('alipay')}
           >
             <View className='method-icon alipay'>
-              <View className='icon-box'>支付宝</View>
+              <Text className='icon-box'>支</Text>
             </View>
             <Text className='method-name'>支付宝支付</Text>
-            {paymentMethod === 'alipay' && (
+            {selectedPayment === 'alipay' && (
               <View className='checked-icon'>✓</View>
             )}
           </View>
         </View>
       </View>
       
-      {/* 支付按钮 */}
       <View className='payment-action'>
         <View className='total-amount'>
-          <Text className='label'>合计：</Text>
-          <Text className='amount'>¥{order.totalAmount}</Text>
+          <Text className='label'>实付金额：</Text>
+          <Text className='amount'>¥{orderInfo.price}</Text>
         </View>
-        
         <Button 
           className='pay-btn' 
-          loading={paying}
-          onClick={handlePayment}
+          loading={submitting}
+          onClick={handlePay}
         >
           立即支付
         </Button>
@@ -225,3 +213,5 @@ export default function PaymentPage() {
     </View>
   )
 }
+
+export default PaymentPage
