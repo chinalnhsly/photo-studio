@@ -1,12 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Member } from './member.entity';
 import { PointLogType } from '../enums/point-log-type.enum';
 
@@ -18,17 +11,12 @@ export class PointLog {
   @Column()
   memberId: number;
 
-  @ManyToOne(() => Member, member => member.pointLogs)
-  @JoinColumn({ name: 'member_id' })
-  member: Member;
-
   @Column()
   points: number;
 
   @Column({
     type: 'enum',
-    enum: PointLogType,
-    default: PointLogType.OTHER
+    enum: PointLogType
   })
   type: PointLogType;
 
@@ -41,15 +29,30 @@ export class PointLog {
   @Column()
   balanceAfter: number;
 
-  @Column({ nullable: true })
-  orderId: number;
+  @ManyToOne(() => Member)
+  @JoinColumn({ name: 'memberId' })
+  member: Member;
 
-  @Column({ nullable: true })
-  operatorId: number;
+  @Column({ 
+    type: 'timestamptz',
+    name: 'expire_time',
+    nullable: true 
+  })
+  @ApiProperty({ description: '积分过期时间' })
+  expireTime: Date;
 
-  @CreateDateColumn()
+  @Column({ 
+    type: 'timestamptz',
+    name: 'used_time',
+    nullable: true 
+  })
+  @ApiProperty({ description: '使用时间' })
+  usedTime: Date;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -2,15 +2,17 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../user/entities/user.entity';
+import { MemberCard } from './member-card.entity';
+import { MemberPointLog } from './member-point-log.entity';
 import { MemberLevel } from './member-level.entity';
-import { PointLog } from './point-log.entity';
 
 @Entity('members')
 export class Member {
@@ -20,59 +22,62 @@ export class Member {
   @Column()
   userId: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
   @Column({ nullable: true })
   levelId: number;
 
-  @ManyToOne(() => MemberLevel, { nullable: true })
-  @JoinColumn({ name: 'level_id' })
-  level: MemberLevel;
-
-  @Column({ default: 0 })
+  @Column({ type: 'int', default: 0 })
   points: number;
 
-  @Column({ default: 0, type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   totalSpent: number;
-
-  @Column({ default: 0 })
-  orderCount: number;
-
-  @Column({ nullable: true })
-  phone: string;
-
-  @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
-  address: string;
-
-  @Column({ nullable: true, type: 'date' })
-  birthday: Date;
 
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ default: false })
-  isSubscribed: boolean;
-
   @Column({ nullable: true })
-  notes: string;
-
-  @Column({ nullable: true, type: 'date' })
-  lastPurchaseDate: Date;
-
-  @Column({ nullable: true, type: 'date' })
   lastActivityDate: Date;
 
-  @OneToMany(() => PointLog, pointLog => pointLog.member)
-  pointLogs: PointLog[];
+  @Column({ 
+    type: 'timestamptz',
+    name: 'membership_start',
+    nullable: true 
+  })
+  @ApiProperty({ description: '会员开始时间' })
+  membershipStart: Date;
 
-  @CreateDateColumn()
+  @Column({ 
+    type: 'timestamptz',
+    name: 'membership_end',
+    nullable: true 
+  })
+  @ApiProperty({ description: '会员结束时间' })
+  membershipEnd: Date;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId' })
+  user: User;
+
+  @ManyToOne(() => MemberLevel)
+  @JoinColumn({ name: 'levelId' })
+  level: MemberLevel;
+
+  @OneToMany(() => MemberCard, card => card.member)
+  cards: MemberCard[];
+
+  @OneToMany(() => MemberPointLog, pointLog => pointLog.member)
+  pointLogs: MemberPointLog[];
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
   updatedAt: Date;
 }

@@ -1,72 +1,110 @@
-import { IsNotEmpty, IsString, IsNumber, IsOptional, IsArray, IsBoolean, IsEmail, Min, Max } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { 
+  IsNotEmpty, 
+  IsString, 
+  IsOptional, 
+  IsEmail, 
+  IsNumber, 
+  Min, 
+  Max, 
+  IsBoolean,
+  IsArray
+} from 'class-validator';
 
 export class CreatePhotographerDto {
-  @ApiProperty({ description: '摄影师姓名' })
-  @IsNotEmpty({ message: '摄影师姓名不能为空' })
+  @ApiProperty({ example: '张摄影', description: '摄影师名称' })
+  @IsNotEmpty()
   @IsString()
   name: string;
 
-  @ApiProperty({ description: '摄影师简介' })
-  @IsNotEmpty({ message: '摄影师简介不能为空' })
-  @IsString()
-  biography: string;
-
-  @ApiProperty({ description: '摄影师头像' })
-  @IsNotEmpty({ message: '摄影师头像不能为空' })
-  @IsString()
-  avatar: string;
-
-  @ApiProperty({ description: '是否在职', required: false, default: true })
+  @ApiProperty({ 
+    example: '资深人像摄影师，擅长婚纱和儿童照片拍摄',
+    description: '个人简介' 
+  })
   @IsOptional()
-  @IsBoolean()
-  isActive?: boolean;
+  @IsString()
+  bio?: string;
 
-  @ApiProperty({ description: '评分', required: false, default: 5.0 })
+  @ApiProperty({ 
+    example: '资深人像摄影师，擅长婚纱和儿童照片拍摄，拥有10年摄影经验...',
+    description: '详细传记' 
+  })
+  @IsOptional()
+  @IsString()
+  biography?: string;
+
+  @ApiProperty({ example: 'https://example.com/avatar.jpg', description: '头像URL' })
+  @IsOptional()
+  @IsString()
+  avatar?: string;
+
+  @ApiProperty({ example: '婚纱, 儿童, 风景', description: '擅长风格' })
+  @IsOptional()
+  @IsString()
+  style?: string;
+
+  @ApiProperty({ example: 5, description: '工作经验（年）' })
   @IsOptional()
   @IsNumber()
-  @Min(1)
+  @Min(0)
+  experience?: number;
+
+  @ApiProperty({ example: 4.5, description: '评分', minimum: 0, maximum: 5 })
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
   @Max(5)
   rating?: number;
 
-  @ApiProperty({ description: '特长/风格ID列表', type: [Number], required: false })
-  @IsOptional()
-  @IsArray()
-  specialtyIds?: number[];
-
-  @ApiProperty({ description: '使用装备', type: [String], required: false })
-  @IsOptional()
-  @IsArray()
-  equipments?: string[];
-
-  @ApiProperty({ description: '联系电话', required: false })
+  @ApiProperty({ example: '13800138000', description: '联系电话' })
   @IsOptional()
   @IsString()
-  phoneNumber?: string;
+  phone?: string;
 
-  @ApiProperty({ description: '电子邮箱', required: false })
+  @ApiProperty({ example: 'photographer@example.com', description: '电子邮箱' })
   @IsOptional()
   @IsEmail()
   email?: string;
 
-  @ApiProperty({ description: '从业年限', required: false })
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  yearsOfExperience?: number;
-
-  @ApiProperty({ description: '语言能力', required: false })
-  @IsOptional()
-  @IsString()
-  languagesSpoken?: string;
-
-  @ApiProperty({ description: '是否接受加急订单', required: false, default: false })
+  @ApiProperty({ example: true, description: '是否接单', default: true })
   @IsOptional()
   @IsBoolean()
-  acceptsRushJobs?: boolean;
-
-  @ApiProperty({ description: '作品集图片', type: [String], required: false })
+  isActive?: boolean;
+  
+  @ApiProperty({ 
+    example: ['人像摄影', '婚纱摄影'],  
+    description: '专长领域',
+    type: [String]
+  })
+  @IsOptional()
+  @IsArray()
+  specialties?: string[];
+  
+  @ApiProperty({ 
+    example: ['https://example.com/portfolio1.jpg'],
+    description: '作品集图片',
+    type: [String] 
+  })
   @IsOptional()
   @IsArray()
   portfolioImages?: string[];
+  
+  @ApiProperty({ 
+    example: ['佳能 5D4', '24-70mm 镜头'], 
+    description: '使用设备', 
+    type: [String] 
+  })
+  @IsOptional()
+  @IsArray()
+  equipments?: string[];
+  
+  @ApiProperty({ example: '中文, 英文', description: '擅长语言' })
+  @IsOptional()
+  @IsString()
+  languagesSpoken?: string;
+  
+  @ApiProperty({ example: false, description: '是否接受加急工作' })
+  @IsOptional()
+  @IsBoolean()
+  acceptsRushJobs?: boolean;
 }

@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Connection, In } from 'typeorm';
-import { Order, OrderStatus } from './entities/order.entity';
+import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
 import { Product } from '../product/entities/product.entity';
-import { User } from '../user/entities/user.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment';
+import { OrderStatus } from './enums/order-status.enum';
 
 @Injectable()
 export class OrderService {
@@ -36,44 +36,14 @@ export class OrderService {
     await queryRunner.startTransaction();
     
     try {
-      // 查询商品信息
-      const products = await this.productRepository.findBy({ 
-        id: In(createOrderDto.items.map(item => item.productId)) 
-      });
-      
-      // 检查商品是否存在
-      if (products.length !== createOrderDto.items.length) {
-        throw new BadRequestException('部分商品不存在');
-      }
-      
-      // 商品库存和状态检查
-      for (const product of products) {
-        const item = createOrderDto.items.find(i => i.productId === product.id);
-        if (!product.isActive) {
-          throw new BadRequestException(`商品 ${product.name} 已下架`);
-        }
-        if (product.stock < item.quantity) {
-          throw new BadRequestException(`商品 ${product.name} 库存不足`);
-        }
-      }
+      // 验证商品信息
+      const products = await this.validateProducts(createOrderDto.items);
       
       // 计算订单金额
       let totalAmount = 0;
-      const orderItems: Partial<OrderItem>[] = [];
-      
       for (const item of createOrderDto.items) {
         const product = products.find(p => p.id === item.productId);
-        const subtotal = product.price * item.quantity;
-        totalAmount += subtotal;
-        
-        orderItems.push({
-          productId: product.id,
-          productName: product.name,
-          productImage: product.image,
-          price: product.price,
-          quantity: item.quantity,
-          subtotal
-        });
+        totalAmount += product.price * item.quantity;
       }
       
       // 创建订单
@@ -82,20 +52,17 @@ export class OrderService {
       order.userId = userId;
       order.totalAmount = totalAmount;
       order.discountAmount = 0; // 暂不考虑优惠
-      order.status = 'pending';
+      order.status = OrderStatus.PENDING; // 使用枚举值
       order.expireTime = moment().add(30, 'minutes').toDate(); // 30分钟内支付
       
       // 保存订单
       const savedOrder = await queryRunner.manager.save(Order, order);
       
       // 创建并保存订单项
-      for (const item of orderItems) {
-        const orderItem = new OrderItem();
-        Object.assign(orderItem, item);
-        orderItem.orderId = savedOrder.id;
-        await queryRunner.manager.save(OrderItem, orderItem);
-        
-        // 减库存
+      await this.createOrderItems(savedOrder, products, createOrderDto.items);
+      
+      // 减库存
+      for (const item of createOrderDto.items) {
         await queryRunner.manager.decrement(
           Product,
           { id: item.productId },
@@ -203,7 +170,7 @@ export class OrderService {
     }
     
     // 检查订单状态
-    if (order.status !== 'pending') {
+    if (order.status !== OrderStatus.PENDING) {
       throw new ConflictException('只有待支付状态的订单才能取消');
     }
     
@@ -214,7 +181,7 @@ export class OrderService {
     
     try {
       // 更新订单状态
-      order.status = 'cancelled';
+      order.status = OrderStatus.CANCELLED;
       order.cancelledAt = new Date();
       order.cancelReason = reason;
       
@@ -260,7 +227,7 @@ export class OrderService {
     const order = await this.getOrderByNumber(orderNumber);
     
     // 检查订单状态
-    if (order.status !== 'pending') {
+    if (order.status !== OrderStatus.PENDING) {
       throw new ConflictException('订单状态不是待支付');
     }
     
@@ -270,7 +237,7 @@ export class OrderService {
     }
     
     // 更新订单状态
-    order.status = 'paid';
+    order.status = OrderStatus.PAID;
     order.paymentMethod = paymentInfo.paymentMethod;
     order.transactionId = paymentInfo.transactionId;
     order.paidAt = new Date();
@@ -296,7 +263,7 @@ export class OrderService {
     const order = await this.getOrderById(id);
     
     // 检查订单状态
-    if (order.status !== 'paid') {
+    if (order.status !== OrderStatus.PAID) {
       throw new ConflictException('只有已支付的订单才能更新预约信息');
     }
     
@@ -306,7 +273,7 @@ export class OrderService {
     order.customerName = appointmentInfo.customerName;
     order.customerPhone = appointmentInfo.customerPhone;
     order.remark = appointmentInfo.remark;
-    order.status = 'scheduled';
+    order.status = OrderStatus.SCHEDULED;
     
     return this.orderRepository.save(order);
   }
@@ -319,12 +286,12 @@ export class OrderService {
     const order = await this.getOrderById(id);
     
     // 检查订单状态
-    if (order.status !== 'scheduled') {
+    if (order.status !== OrderStatus.SCHEDULED) {
       throw new ConflictException('只有已预约的订单才能标记为完成');
     }
     
     // 更新订单状态
-    order.status = 'completed';
+    order.status = OrderStatus.COMPLETED;
     order.completedAt = new Date();
     
     return this.orderRepository.save(order);
@@ -349,8 +316,8 @@ export class OrderService {
     // 查找过期未支付订单
     const expiredOrders = await this.orderRepository.find({
       where: {
-        status: 'pending',
-        expireTime: In(now.getTime())
+        status: OrderStatus.PENDING,
+        expireTime: In([now]), // 修正为数组
       },
       relations: ['items']
     });
@@ -367,7 +334,7 @@ export class OrderService {
     try {
       for (const order of expiredOrders) {
         // 更新订单状态
-        order.status = 'cancelled';
+        order.status = OrderStatus.CANCELLED;
         order.cancelledAt = now;
         order.cancelReason = '订单支付超时自动取消';
         
@@ -396,5 +363,78 @@ export class OrderService {
       // 释放资源
       await queryRunner.release();
     }
+  }
+
+  async create(productId: number, quantity: number) {
+    // TODO: 创建订单逻辑
+    return { orderId: 1, status: 'pending' };
+  }
+
+  async pay(orderId: number, paymentMethod: string) {
+    // TODO: 支付逻辑
+    return { orderId, status: 'paid', paymentMethod };
+  }
+
+  /**
+   * 标记订单为已支付
+   * @param orderId 订单ID
+   */
+  async markAsPaid(orderId: number): Promise<Order> {
+    const order = await this.orderRepository.findOne({
+      where: { id: orderId }
+    });
+
+    if (!order) {
+      throw new NotFoundException(`订单ID ${orderId} 不存在`);
+    }
+
+    order.status = OrderStatus.PAID;
+    order.paidAt = new Date();
+    return this.orderRepository.save(order);
+  }
+
+  private async validateProducts(items: Array<{ productId: number; quantity: number }>) {
+    const products = await this.productRepository.findBy({ 
+      id: In(items.map(item => item.productId)) 
+    });
+      
+    // 检查商品是否存在
+    if (products.length !== items.length) {
+      throw new BadRequestException('部分商品不存在');
+    }
+      
+    // 商品库存和状态检查
+    for (const product of products) {
+      const item = items.find(i => i.productId === product.id);
+      if (!product.isActive) {  // 修正字段名
+        throw new BadRequestException(`商品 ${product.name} 已下架`);
+      }
+      if (product.stock < item.quantity) {
+        throw new BadRequestException(`商品 ${product.name} 库存不足`);
+      }
+    }
+
+    return products;
+  }
+
+  private async createOrderItems(order: Order, products: Product[], items: Array<{ productId: number; quantity: number }>) {
+    const orderItems: Partial<OrderItem>[] = [];
+    
+    for (const item of items) {
+      const product = products.find(p => p.id === item.productId);
+      const subtotal = product.price * item.quantity;
+      
+      orderItems.push({
+        orderId: order.id,
+        productId: product.id,
+        name: product.name,
+        images: product.images,
+        price: product.price,
+        quantity: item.quantity,
+        subtotal
+      });
+    }
+
+    return this.orderItemRepository.save(orderItems);
   }
 }

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MemberService } from './member.service';
 import { MemberController } from './member.controller';
+import { MemberService } from './member.service';
 import { Member } from './entities/member.entity';
 import { MemberLevel } from './entities/member-level.entity';
 import { MemberCard } from './entities/member-card.entity';
-import { MemberPointLog } from './entities/member-point-log.entity';
+import { PointLog } from './entities/point-log.entity';
 import { User } from '../user/entities/user.entity';
 
 @Module({
@@ -14,12 +14,12 @@ import { User } from '../user/entities/user.entity';
       Member,
       MemberLevel,
       MemberCard,
-      MemberPointLog,
-      User,
-    ]),
+      PointLog,
+      User
+    ])
   ],
-  controllers: [MemberController],
   providers: [MemberService],
-  exports: [MemberService],
+  controllers: [MemberController],
+  exports: [MemberService]
 })
 export class MemberModule {}

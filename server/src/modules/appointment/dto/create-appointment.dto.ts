@@ -1,34 +1,29 @@
-import { IsNotEmpty, IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsString, IsOptional, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateAppointmentDto {
-  @ApiProperty({ description: '产品ID' })
   @IsNumber()
-  @IsNotEmpty()
+  @ApiProperty({ description: '产品ID' })
   productId: number;
 
-  @ApiProperty({ description: '预约日期，格式：YYYY-MM-DD' })
-  @IsString()
-  @IsNotEmpty()
+  @IsDateString()
+  @ApiProperty({ description: '预约日期' })
   date: string;
 
-  @ApiProperty({ description: '时间段ID' })
-  @IsString()
-  @IsNotEmpty()
-  timeSlotId: string;
+  @IsNumber()
+  @ApiProperty({ description: '时间槽ID' })
+  timeSlotId: number;
 
-  @ApiProperty({ description: '客户姓名' })
   @IsString()
-  @IsNotEmpty()
+  @ApiProperty({ description: '客户姓名' })
   customerName: string;
 
-  @ApiProperty({ description: '客户电话' })
   @IsString()
-  @IsNotEmpty()
+  @ApiProperty({ description: '客户电话' })
   customerPhone: string;
 
-  @ApiProperty({ description: '备注', required: false })
   @IsString()
   @IsOptional()
+  @ApiProperty({ description: '备注', required: false })
   remark?: string;
 }

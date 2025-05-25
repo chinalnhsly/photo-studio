@@ -6,9 +6,9 @@ import {
   ManyToOne,
   JoinColumn
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Member } from './member.entity';
-
-export type PointChangeType = 'earn' | 'redeem' | 'expire' | 'adjust';
+import { PointLogType } from '../enums/point-log-type.enum';
 
 @Entity('member_point_logs')
 export class MemberPointLog {
@@ -18,34 +18,62 @@ export class MemberPointLog {
   @Column()
   memberId: number;
 
-  @ManyToOne(() => Member, member => member.pointLogs)
+  @Column()
+  points: number;
+
+  @Column({
+    type: 'enum',
+    enum: PointLogType
+  })
+  type: PointLogType;
+
+  @Column({ nullable: true })
+  description: string;
+
+  @Column()
+  balanceBefore: number;
+
+  @Column()
+  balanceAfter: number;
+
+  @ManyToOne(() => Member)
   @JoinColumn({ name: 'memberId' })
   member: Member;
 
-  @Column({ type: 'int' })
-  points: number;
+  @Column({ 
+    type: 'timestamptz',
+    name: 'earned_time'
+  })
+  @ApiProperty({ description: '获得时间' })
+  earnedTime: Date;
 
-  @Column({ type: 'varchar', length: 20 })
-  type: PointChangeType;
+  @Column({ 
+    type: 'timestamptz',
+    name: 'expire_time',
+    nullable: true 
+  })
+  @ApiProperty({ description: '过期时间' })
+  expireTime: Date;
 
-  @Column({ nullable: true })
-  orderId: number;
+  @Column({ 
+    type: 'timestamptz',
+    name: 'point_date'
+  })
+  @ApiProperty({ description: '积分产生日期' })
+  pointDate: Date;
 
-  @Column({ nullable: true })
-  bookingId: number;
+  @Column({ 
+    type: 'timestamptz',
+    name: 'valid_until',
+    nullable: true 
+  })
+  @ApiProperty({ description: '积分有效期' })
+  validUntil: Date;
 
-  @Column({ type: 'text', nullable: true })
-  description: string;
-
-  @Column({ type: 'int', default: 0 })
-  balanceBefore: number;
-
-  @Column({ type: 'int', default: 0 })
-  balanceAfter: number;
-
-  @Column({ nullable: true })
-  operatorId: number;
-
-  @CreateDateColumn()
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 }

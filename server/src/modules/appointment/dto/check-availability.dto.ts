@@ -1,19 +1,19 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNumber, IsDateString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class CheckAvailabilityDto {
-  @ApiProperty({ description: '产品ID' })
   @IsNumber()
-  @IsNotEmpty()
+  @ApiProperty({ description: '产品ID' })
+  @Transform(({ value }) => Number(value))
   productId: number;
 
-  @ApiProperty({ description: '预约日期，格式：YYYY-MM-DD' })
-  @IsString()
-  @IsNotEmpty()
+  @IsDateString()
+  @ApiProperty({ description: '日期' })
   date: string;
 
+  @IsNumber()
   @ApiProperty({ description: '时间段ID' })
-  @IsString()
-  @IsNotEmpty()
-  timeSlotId: string;
+  @Transform(({ value }) => Number(value))
+  timeSlotId: number;
 }

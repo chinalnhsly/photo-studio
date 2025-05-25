@@ -1,9 +1,11 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, LessThanOrEqual, MoreThanOrEqual, Like } from 'typeorm';
+import { Repository, Between, LessThanOrEqual, MoreThanOrEqual, Like, IsNull } from 'typeorm';
 import { Member } from './entities/member.entity';
 import { MemberLevel } from './entities/member-level.entity';
+import { MemberCard } from './entities/member-card.entity';
 import { PointLog } from './entities/point-log.entity';
+import { CreateLevelDto } from './dto/create-level.dto';
 import { User } from '../user/entities/user.entity';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
@@ -21,6 +23,8 @@ export class MemberService {
     private readonly pointLogRepository: Repository<PointLog>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(MemberCard)
+    private readonly memberCardRepository: Repository<MemberCard>
   ) {}
 
   async findAll(options: any = {}) {
@@ -91,6 +95,17 @@ export class MemberService {
     return member;
   }
 
+  async findOneByUserId(userId: number) {
+    const member = await this.memberRepository.findOne({
+      where: { userId },
+      relations: ['level', 'cards']
+    });
+    if (!member) {
+      throw new NotFoundException('会员不存在');
+    }
+    return member;
+  }
+
   async create(createMemberDto: CreateMemberDto) {
     const { userId, levelId, ...rest } = createMemberDto;
 
@@ -158,34 +173,24 @@ export class MemberService {
     return this.memberRepository.remove(member);
   }
 
-  async addPoints(id: number, addPointsDto: AddPointsDto) {
-    const { points, description, type } = addPointsDto;
+  async addPoints(id: number, pointsDto: AddPointsDto) {
     const member = await this.findOne(id);
-
-    // 记录积分余额
     const balanceBefore = member.points;
     
-    // 更新会员积分
-    member.points += points;
-    if (member.points < 0) {
-      member.points = 0; // 积分不能为负数
-    }
-    
+    member.points += pointsDto.points;
     await this.memberRepository.save(member);
     
-    // 创建积分记录
-    const pointLog = this.pointLogRepository.create({
-      memberId: id,
-      points,
-      type,
-      description,
-      balanceBefore,
-      balanceAfter: member.points,
-    });
-    
+    const pointLog = new PointLog();
+    pointLog.memberId = id;
+    pointLog.points = pointsDto.points;
+    pointLog.type = pointsDto.type;
+    pointLog.description = pointsDto.description;
+    pointLog.balanceBefore = balanceBefore;
+    pointLog.balanceAfter = member.points;
+
     await this.pointLogRepository.save(pointLog);
-    
-    return member;
+
+    return { member, pointLog };
   }
 
   async getPoints(id: number) {
@@ -234,13 +239,40 @@ export class MemberService {
 
   async getMemberLevels() {
     return this.levelRepository.find({
-      order: { minimumPoints: 'ASC' },
+      order: { requiredPoints: 'ASC' } // 修正排序字段
     });
   }
 
-  async createMemberLevel(createLevelDto: any) {
+  async findAllLevels() {
+    return this.levelRepository.find();
+  }
+
+  async createLevel(createLevelDto: CreateLevelDto) {
     const level = this.levelRepository.create(createLevelDto);
     return this.levelRepository.save(level);
+  }
+
+  async updateLevel(id: number, updateLevelDto: Partial<CreateLevelDto>) {
+    const level = await this.levelRepository.findOne({ where: { id } });
+    if (!level) {
+      throw new NotFoundException('会员等级不存在');
+    }
+    Object.assign(level, updateLevelDto);
+    return this.levelRepository.save(level);
+  }
+
+  async removeLevel(id: number) {
+    const level = await this.levelRepository.findOne({
+      where: { id },
+      relations: ['members']
+    });
+    if (!level) {
+      throw new NotFoundException('会员等级不存在');
+    }
+    if (level.members?.length > 0) {
+      throw new BadRequestException('该等级下存在会员，无法删除');
+    }
+    return this.levelRepository.remove(level);
   }
 
   async updateMemberLevel(id: number, updateLevelDto: any) {
@@ -350,9 +382,44 @@ export class MemberService {
     };
   }
 
+  async getMemberStats() {
+    const totalMembers = await this.memberRepository.count();
+    const activeMembers = await this.memberRepository.count({
+      where: { isActive: true }
+    });
+    return { totalMembers, activeMembers };
+  }
+
   async updateMemberStatus(id: number, isActive: boolean) {
     const member = await this.findOne(id);
     member.isActive = isActive;
     return this.memberRepository.save(member);
+  }
+
+  async createMemberCard(memberId: number, cardData: any) {
+    const member = await this.findOne(memberId);
+    const card = this.memberCardRepository.create({
+      ...cardData,
+      member
+    });
+    return this.memberCardRepository.save(card);
+  }
+
+  async getMemberCards(memberId: number) {
+    const member = await this.findOne(memberId);
+    return this.memberCardRepository.find({
+      where: { member: { id: memberId } }
+    });
+  }
+
+  async updateMemberCard(cardId: number, updateData: any) {
+    const card = await this.memberCardRepository.findOne({
+      where: { id: cardId }
+    });
+    if (!card) {
+      throw new NotFoundException('会员卡不存在');
+    }
+    Object.assign(card, updateData);
+    return this.memberCardRepository.save(card);
   }
 }

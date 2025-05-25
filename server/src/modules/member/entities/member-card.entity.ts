@@ -1,13 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  JoinColumn
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { Member } from './member.entity';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('member_cards')
 export class MemberCard {
@@ -17,31 +10,63 @@ export class MemberCard {
   @Column()
   memberId: number;
 
-  @ManyToOne(() => Member, member => member.cards)
-  @JoinColumn({ name: 'memberId' })
-  member: Member;
-
-  @Column({ length: 50 })
-  cardType: string;
-
-  @Column({ length: 100 })
+  @Column()
   cardNumber: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   balance: number;
 
-  @Column({ type: 'date', nullable: true })
-  validUntil: Date;
-
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'text', nullable: true })
-  description: string;
+  @Column({ 
+    type: 'timestamptz',
+    name: 'issue_date'
+  })
+  @ApiProperty({ description: '发卡日期' })
+  issueDate: Date;
 
-  @CreateDateColumn()
+  @Column({ 
+    type: 'timestamptz',
+    name: 'activation_date',
+    nullable: true 
+  })
+  @ApiProperty({ description: '激活日期' })
+  activationDate: Date;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'expiry_date'
+  })
+  @ApiProperty({ description: '过期日期' })
+  expiryDate: Date;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'last_used_date',
+    nullable: true 
+  })
+  @ApiProperty({ description: '最后使用日期' })
+  lastUsedDate: Date;
+
+  @Column({ type: 'text', nullable: true })
+  remark: string;
+
+  @ManyToOne(() => Member, member => member.cards)
+  @JoinColumn({ name: 'memberId' })
+  member: Member;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
   updatedAt: Date;
 }

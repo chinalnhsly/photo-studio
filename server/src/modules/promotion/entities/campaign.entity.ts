@@ -8,6 +8,7 @@ import {
   JoinTable,
   OneToMany
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Product } from '../../product/entities/product.entity';
 import { Coupon } from './coupon.entity';
 
@@ -17,12 +18,15 @@ export type CampaignStatus = 'draft' | 'scheduled' | 'active' | 'paused' | 'comp
 @Entity('campaigns')
 export class Campaign {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ description: '活动ID' })
   id: number;
 
   @Column({ length: 100 })
+  @ApiProperty({ description: '活动名称' })
   name: string;
 
   @Column({ type: 'text', nullable: true })
+  @ApiProperty({ description: '活动描述' })
   description: string;
 
   @Column({ 
@@ -48,10 +52,20 @@ export class Campaign {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   minimumPurchase: number;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ 
+    type: 'timestamptz',  // 已经修改为 PostgreSQL 支持的类型
+    name: 'start_date',
+    nullable: true
+  })
+  @ApiProperty({ description: '活动开始时间' })
   startDate: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ 
+    type: 'timestamptz',  // 已经修改为 PostgreSQL 支持的类型
+    name: 'end_date',
+    nullable: true
+  })
+  @ApiProperty({ description: '活动结束时间' })
   endDate: Date;
 
   @Column({ nullable: true })
@@ -61,6 +75,7 @@ export class Campaign {
   used_count: number;
 
   @Column({ default: true })
+  @ApiProperty({ description: '是否激活' })
   isActive: boolean;
 
   @Column({ nullable: true })
@@ -89,9 +104,17 @@ export class Campaign {
   @OneToMany(() => Coupon, coupon => coupon.campaign)
   coupons: Coupon[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
   updatedAt: Date;
 }

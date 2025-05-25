@@ -1,16 +1,13 @@
-import { IsNotEmpty, IsArray, IsString, MaxLength, ArrayMinSize } from 'class-validator';
+import { IsArray, IsString, IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class BatchReplyDto {
-  @ApiProperty({ description: '评价ID数组', type: [Number] })
-  @IsNotEmpty()
   @IsArray()
-  @ArrayMinSize(1)
+  @ApiProperty({ description: '评价ID列表' })
   reviewIds: number[];
 
-  @ApiProperty({ description: '回复内容', maxLength: 500 })
-  @IsNotEmpty()
   @IsString()
-  @MaxLength(500)
+  @IsNotEmpty()
+  @ApiProperty({ description: '回复内容' })
   reply: string;
 }

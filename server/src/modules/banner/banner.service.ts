@@ -20,7 +20,7 @@ export class BannerService {
   async findAll(position?: string): Promise<Banner[]> {
     const query = this.bannerRepository.createQueryBuilder('banner')
       .where('banner.isActive = :isActive', { isActive: true })
-      .orderBy('banner.order', 'ASC');
+      .orderBy('banner.sortOrder', 'ASC');
 
     if (position) {
       query.andWhere('banner.position = :position', { position });
@@ -50,12 +50,12 @@ export class BannerService {
   async create(createBannerDto: CreateBannerDto): Promise<Banner> {
     // 获取当前最大排序值
     const maxOrderBanner = await this.bannerRepository.findOne({
-      order: { order: 'DESC' },
+      order: { sortOrder: 'DESC' },
     });
     
     const banner = this.bannerRepository.create({
       ...createBannerDto,
-      order: maxOrderBanner ? maxOrderBanner.order + 1 : 0,
+      sortOrder: maxOrderBanner ? maxOrderBanner.sortOrder + 1 : 0,
     });
     
     return this.bannerRepository.save(banner);
@@ -71,10 +71,9 @@ export class BannerService {
     const banner = await this.findOne(id);
     
     // 合并更新数据
-    const updatedBanner = this.bannerRepository.merge(banner, updateBannerDto);
+    Object.assign(banner, updateBannerDto);
     
-    await this.bannerRepository.save(updatedBanner);
-    return this.findOne(id);
+    return this.bannerRepository.save(banner);
   }
 
   /**
@@ -98,7 +97,7 @@ export class BannerService {
     
     try {
       for (let i = 0; i < ids.length; i++) {
-        await queryRunner.manager.update(Banner, ids[i], { order: i });
+        await queryRunner.manager.update(Banner, ids[i], { sortOrder: i });
       }
       
       await queryRunner.commitTransaction();
@@ -126,7 +125,7 @@ export class BannerService {
    */
   async findAllForAdmin(): Promise<Banner[]> {
     return this.bannerRepository.find({ 
-      order: { order: 'ASC', createdAt: 'DESC' } 
+      order: { sortOrder: 'ASC', createdAt: 'DESC' } 
     });
   }
 }

@@ -1,49 +1,26 @@
-import { IsNotEmpty, IsOptional, IsNumber, IsString, IsBoolean } from 'class-validator';
+import { IsString, IsNumber, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateMemberLevelDto {
+  @IsString()
   @ApiProperty({ description: '等级名称' })
-  @IsNotEmpty()
-  @IsString()
   name: string;
-  
+
+  @IsNumber()
   @ApiProperty({ description: '所需积分' })
-  @IsNotEmpty()
-  @IsNumber()
   requiredPoints: number;
-  
-  @ApiProperty({ description: '折扣率 (0-1)' })
-  @IsNotEmpty()
+
   @IsNumber()
-  discountRate: number;
-  
-  @ApiProperty({ description: '积分倍数' })
-  @IsNotEmpty()
-  @IsNumber()
-  pointsMultiplier: number;
-  
-  @ApiProperty({ description: '排序顺序', required: false })
-  @IsOptional()
-  @IsNumber()
-  sortOrder?: number;
-  
-  @ApiProperty({ description: '图标', required: false })
-  @IsOptional()
+  @ApiProperty({ description: '折扣率', example: 0.95 })
+  discount: number;
+
   @IsString()
-  icon?: string;
-  
-  @ApiProperty({ description: '颜色', required: false })
   @IsOptional()
-  @IsString()
-  color?: string;
-  
   @ApiProperty({ description: '等级权益', required: false })
-  @IsOptional()
-  @IsString()
   benefits?: string;
-  
-  @ApiProperty({ description: '是否激活', required: false })
+
+  @IsNumber()
   @IsOptional()
-  @IsBoolean()
-  isActive?: boolean;
+  @ApiProperty({ description: '等级排序', required: false })
+  sortOrder?: number;
 }

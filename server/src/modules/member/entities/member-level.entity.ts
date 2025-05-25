@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   OneToMany
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Member } from './member.entity';
 
 @Entity('member_levels')
@@ -16,30 +17,48 @@ export class MemberLevel {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column()
+  requiredPoints: number;
+
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  discount: number;
+
+  @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ default: 0 })
-  minimumPoints: number;
-
-  @Column({ nullable: true, default: 0, type: 'decimal', precision: 5, scale: 2 })
-  discountPercent: number;
-
-  @Column({ nullable: true })
-  icon: string;
-
-  @Column({ nullable: true })
-  color: string;
-
-  @Column({ default: false })
-  isDefault: boolean;
+  @Column({ type: 'int', default: 0 })
+  sortOrder: number;
 
   @OneToMany(() => Member, member => member.level)
   members: Member[];
 
-  @CreateDateColumn()
+  @Column({ 
+    type: 'timestamptz',
+    name: 'effective_date',
+    nullable: true 
+  })
+  @ApiProperty({ description: '等级生效时间' })
+  effectiveDate: Date;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'expiry_date',
+    nullable: true 
+  })
+  @ApiProperty({ description: '等级过期时间' })
+  expiryDate: Date;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
   updatedAt: Date;
 }

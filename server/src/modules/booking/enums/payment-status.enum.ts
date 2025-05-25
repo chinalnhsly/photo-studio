@@ -1,8 +1,7 @@
 export enum PaymentStatus {
   UNPAID = 'unpaid',
-  DEPOSIT_PAID = 'deposit_paid',
+  PARTIAL_PAID = 'partial_paid',
   PAID = 'paid',
   REFUNDED = 'refunded',
-  REFUND_PENDING = 'refund_pending',
-  PARTIALLY_REFUNDED = 'partially_refunded',
+  REFUND_PENDING = 'refund_pending'
 }

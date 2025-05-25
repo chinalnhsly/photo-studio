@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserMembership } from './user-membership.entity';
 
@@ -38,4 +38,34 @@ export class MemberLevel {
 
   @OneToMany(() => UserMembership, userMembership => userMembership.memberLevel)
   userMemberships: UserMembership[];
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'valid_from',
+    nullable: true 
+  })
+  @ApiProperty({ description: '等级生效时间' })
+  validFrom: Date;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'valid_until',
+    nullable: true 
+  })
+  @ApiProperty({ description: '等级失效时间' })
+  validUntil: Date;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
+  updatedAt: Date;
 }

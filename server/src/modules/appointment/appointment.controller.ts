@@ -38,20 +38,11 @@ export class AppointmentController {
   @Get('check-availability')
   @ApiOperation({ summary: '检查时间段是否可用' })
   @ApiResponse({ status: 200, description: '返回时间段可用状态' })
-  async checkAvailability(@Query() checkAvailabilityDto: CheckAvailabilityDto) {
-    const available = await this.appointmentService.checkTimeSlotAvailability(
+  async checkAvailability(@Body() checkAvailabilityDto: any) {
+    return this.appointmentService.checkTimeSlotAvailability(
       checkAvailabilityDto.productId,
       checkAvailabilityDto.date,
-      checkAvailabilityDto.timeSlotId
+      parseInt(checkAvailabilityDto.timeSlotId, 10) // 转换为数字
     );
-    
-    return {
-      code: 200,
-      message: 'success',
-      data: {
-        available,
-        reason: available ? null : '该时间段已被预约或不可用'
-      }
-    };
   }
 }

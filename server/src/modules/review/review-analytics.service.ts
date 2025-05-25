@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common'; // 添加 NotFoundException
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, MoreThanOrEqual, IsNull, Not, LessThan, LessThanOrEqual } from 'typeorm';
+import { Repository, Between, MoreThanOrEqual, IsNull, Not, LessThan, LessThanOrEqual, In } from 'typeorm'; // 添加 In
 import { Review } from './entities/review.entity';
 import { Product } from '../product/entities/product.entity';
 import { User } from '../user/entities/user.entity';
 import * as moment from 'moment';
 import * as Excel from 'exceljs';
+import { TagCount, ReviewAnalytics } from './interfaces/review-analytics.interface';
 
 @Injectable()
 export class ReviewAnalyticsService {
@@ -25,7 +26,7 @@ export class ReviewAnalyticsService {
     startDate?: string;
     endDate?: string;
     period?: string;
-  }) {
+  }): Promise<ReviewAnalytics> {
     // 处理日期范围
     const { startDate, endDate } = this.getDateRange(params);
     
@@ -94,7 +95,7 @@ export class ReviewAnalyticsService {
       });
       
       if (previousReviews > 0) {
-        reviewsGrowthRate = ((totalReviews - previousReviews) / previousReviews) * 100;
+        reviewsGrowthRate = this.calculateRate(totalReviews - previousReviews, previousReviews);
       } else if (totalReviews > 0) {
         reviewsGrowthRate = 100; // 如果前一个周期没有评价，则增长率为100%
       }
@@ -267,7 +268,7 @@ export class ReviewAnalyticsService {
           product: {
             id: product.id,
             name: product.name,
-            image: product.image,
+            images: product.images, // 修复字段名
             price: product.price
           },
           reviewCount: parseInt(stat.reviewCount),
@@ -459,6 +460,19 @@ export class ReviewAnalyticsService {
   }
   
   /**
+   * 转换关键短语为排序后的数组
+   */
+  private sortPhrases(phrases: Record<string, number>): { phrase: string; count: number }[] {
+    return Object.entries(phrases)
+      .map(([phrase, count]): { phrase: string; count: number } => ({
+        phrase,
+        count: Number(count)
+      }))
+      .sort((a, b) => Number(b.count) - Number(a.count))
+      .slice(0, 10);
+  }
+
+  /**
    * 获取评价情感分析
    */
   async getSentimentAnalysis(params: {
@@ -547,13 +561,6 @@ export class ReviewAnalyticsService {
     });
     
     // 转换关键短语为排序后的数组
-    const sortPhrases = (phrases) => {
-      return Object.entries(phrases)
-        .map(([phrase, count]) => ({ phrase, count }))
-        .sort((a, b) => b.count - a.count)
-        .slice(0, 10);
-    };
-    
     return {
       totalReviews: reviews.length,
       sentimentDistribution: {
@@ -567,8 +574,8 @@ export class ReviewAnalyticsService {
       negativePercentage: reviews.length > 0 
         ? (result.negative / reviews.length) * 100 
         : 0,
-      keyPositivePhrases: sortPhrases(result.keyPositivePhrases),
-      keyNegativePhrases: sortPhrases(result.keyNegativePhrases)
+      keyPositivePhrases: this.sortPhrases(result.keyPositivePhrases),
+      keyNegativePhrases: this.sortPhrases(result.keyNegativePhrases)
     };
   }
   
@@ -781,7 +788,6 @@ export class ReviewAnalyticsService {
       reviews = reviews.map(review => {
         if (review.isAnonymous && review.user) {
           review.user.username = '匿名用户';
-          review.user.avatar = null;
         }
         return review;
       });
@@ -790,6 +796,29 @@ export class ReviewAnalyticsService {
     }
     
     return result;
+  }
+
+  /**
+   * 获取商品评价摘要
+   */
+  async getProductReviewSummary(productId: number) {
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+      select: ['id', 'name', 'images', 'price'] // 使用正确的字段名 images
+    });
+
+    if (!product) {
+      throw new NotFoundException(`Product ${productId} not found`);
+    }
+
+    // 构建返回数据
+    return {
+      productId: product.id,
+      productName: product.name,
+      productImage: product.images[0], // 使用 images 数组的第一张图片
+      productPrice: product.price,
+      // ...其他统计数据...
+    };
   }
 
   /**
@@ -869,7 +898,13 @@ export class ReviewAnalyticsService {
   /**
    * 辅助方法：获取标签使用频率
    */
-  private async getTagFrequency(where: any, limit: number = 50) {
+  private async getTagFrequency(where: any, limit: number = 50): Promise<TagCount[]> {
+    // 定义标签统计的接口
+    interface TagCount {
+      tag: string;
+      count: number;
+    }
+
     // 获取包含标签的评价
     const reviewsWithTags = await this.reviewRepository.find({
       where,
@@ -877,7 +912,7 @@ export class ReviewAnalyticsService {
     });
     
     // 统计标签出现频率
-    const tagCounts = {};
+    const tagCounts: Record<string, number> = {};
     reviewsWithTags.forEach(review => {
       if (review.tags && review.tags.length > 0) {
         review.tags.forEach(tag => {
@@ -886,10 +921,21 @@ export class ReviewAnalyticsService {
       }
     });
     
-    // 转换为排序后的数组
+    // 转换为排序后的数组，添加明确的类型转换
     return Object.entries(tagCounts)
-      .map(([tag, count]) => ({ tag, count }))
-      .sort((a, b) => b.count - a.count)
+      .map(([tag, count]): TagCount => ({ 
+        tag, 
+        count: Number(count) 
+      }))
+      .sort((a, b) => Number(b.count) - Number(a.count))
       .slice(0, limit);
+  }
+
+  /**
+   * 计算正确率
+   */
+  private calculateRate(current: number, total: number): number {
+    if (total === 0) return 0;
+    return (Number(current) / Number(total)) * 100;
   }
 }

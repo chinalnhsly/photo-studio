@@ -13,38 +13,26 @@ export class Studio {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ length: 100 })
+  @Column()
   name: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text' })
   description: string;
 
-  @Column({ length: 200, nullable: true })
+  @Column()
   address: string;
-
-  @Column({ type: 'simple-array', nullable: true })
-  features: string[];
 
   @Column({ type: 'simple-array', nullable: true })
   images: string[];
 
-  @Column({ type: 'int', default: 1 })
-  capacity: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  pricePerHour: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  price: number;
 
   @Column({ default: true })
-  isAvailable: boolean;
-
-  @Column({ type: 'time', nullable: true })
-  openTime: string;
-
-  @Column({ type: 'time', nullable: true })
-  closeTime: string;
+  isActive: boolean;
 
   @Column({ type: 'simple-json', nullable: true })
-  operatingHours: {
+  businessHours: {
     monday: { open: string; close: string; isOpen: boolean };
     tuesday: { open: string; close: string; isOpen: boolean };
     wednesday: { open: string; close: string; isOpen: boolean };
@@ -54,15 +42,21 @@ export class Studio {
     sunday: { open: string; close: string; isOpen: boolean };
   };
 
-  @Column({ default: 60 })
+  @Column({ type: 'boolean', default: true })
+  isAvailable: boolean;
+
+  @Column({ type: 'time', nullable: true })
+  openTime: string;
+
+  @Column({ type: 'time', nullable: true })
+  closeTime: string;
+
+  @Column({ type: 'int', default: 0 })
   bufferMinutes: number;
 
-  @OneToMany(() => Booking, booking => booking.studio)
-  bookings: Booking[];
-
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 }

@@ -7,6 +7,7 @@ import {
   ManyToOne,
   JoinColumn
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Review } from './review.entity';
 
 @Entity('review_images')
@@ -41,7 +42,18 @@ export class ReviewImage {
   @Column({ default: 0 })
   sortOrder: number;
 
-  @CreateDateColumn()
+  @Column({ 
+    type: 'timestamptz',
+    name: 'upload_time'
+  })
+  @ApiProperty({ description: '上传时间' })
+  uploadTime: Date;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
   @UpdateDateColumn()

@@ -9,16 +9,20 @@ import {
   IsDateString,
   Min,
   MaxLength,
+  IsIn,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { BookingStatus } from '../enums/booking-status.enum';
 import { PaymentStatus } from '../enums/payment-status.enum';
 
 export class UpdateBookingDto extends PartialType(CreateBookingDto) {
-  @ApiProperty({ description: '预约状态', enum: BookingStatus, required: false })
+  @ApiProperty({ 
+    description: '预约状态', 
+    enum: ['pending', 'confirmed', 'completed', 'cancelled'],
+    required: false
+  })
   @IsOptional()
-  @IsEnum(BookingStatus)
-  status?: BookingStatus;
+  @IsIn(['pending', 'confirmed', 'completed', 'cancelled'])
+  status?: 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
   @ApiProperty({ description: '支付状态', enum: PaymentStatus, required: false })
   @IsOptional()

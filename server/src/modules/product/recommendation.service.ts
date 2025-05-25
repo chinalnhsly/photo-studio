@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, MoreThanOrEqual } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { UserViewHistory } from '../user/entities/user-view-history.entity';
 import { Category } from './entities/category.entity';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../redis/redis.service';
+import { Tag } from './entities/tag.entity';
 
 @Injectable()
 export class RecommendationService {
@@ -40,7 +41,7 @@ export class RecommendationService {
     const products = await this.productRepository.createQueryBuilder('product')
       .leftJoin('product.viewHistories', 'viewHistories')
       .leftJoin('product.appointments', 'appointments')
-      .where('product.isActive = :isActive', { isActive: true })
+      .where('product.is_active = :isActive', { isActive: true })
       .addSelect('COUNT(viewHistories.id) + COUNT(appointments.id) * 5', 'popularity')
       .groupBy('product.id')
       .orderBy('popularity', 'DESC')
@@ -58,23 +59,15 @@ export class RecommendationService {
    * @param limit 限制返回数量
    */
   async getNewProducts(limit: number = 10): Promise<Product[]> {
-    const cacheKey = `recommendation:new:${limit}`;
-    const cachedData = await this.redisService.get(cacheKey);
-    
-    if (cachedData) {
-      return JSON.parse(cachedData);
-    }
-    
-    const products = await this.productRepository.find({
-      where: { isActive: true },
-      order: { createdAt: 'DESC' },
-      take: limit,
+    return this.productRepository.find({
+      where: { 
+        isActive: true  // 使用正确的属性名
+      },
+      order: { 
+        createdAt: 'DESC'  // 使用正确的属性名
+      },
+      take: limit
     });
-    
-    // 缓存结果
-    await this.redisService.set(cacheKey, JSON.stringify(products), this.CACHE_TTL);
-    
-    return products;
   }
 
   /**
@@ -96,13 +89,28 @@ export class RecommendationService {
       return this.getHotProducts(limit);
     }
 
+    // 定义一个接口来描述 category 的结构
+    interface CategoryType {
+      id: number;
+      name?: string;
+    }
+
     // 统计用户浏览过的商品类别偏好
     const categoryFrequency = new Map<number, number>();
     
     userHistory.forEach(history => {
-      const categoryId = history.product.category.id;
-      const currentCount = categoryFrequency.get(categoryId) || 0;
-      categoryFrequency.set(categoryId, currentCount + 1);
+      if (history?.product?.category) {
+        const category = history.product.category;
+        // 使用类型断言和类型守卫
+        if (category && typeof category === 'object' && !Array.isArray(category)) {
+          const typedCategory = category as CategoryType;
+          if ('id' in typedCategory && typeof typedCategory.id === 'number') {
+            const categoryId = typedCategory.id;
+            const currentCount = categoryFrequency.get(categoryId) || 0;
+            categoryFrequency.set(categoryId, currentCount + 1);
+          }
+        }
+      }
     });
     
     // 按频率排序获取用户偏好的类别
@@ -111,7 +119,9 @@ export class RecommendationService {
       .map(entry => entry[0]);
     
     // 获取已浏览的商品ID列表
-    const viewedProductIds = userHistory.map(history => history.product.id);
+    const viewedProductIds = userHistory
+      .filter(history => history.product && history.product.id)
+      .map(history => history.product.id);
     
     // 按用户偏好类别推荐未浏览过的商品
     const recommendations: Product[] = [];
@@ -119,16 +129,30 @@ export class RecommendationService {
     for (const categoryId of sortedCategories) {
       if (recommendations.length >= limit) break;
       
-      const productsInCategory = await this.productRepository.createQueryBuilder('product')
-        .innerJoin('product.category', 'category')
-        .where('category.id = :categoryId', { categoryId })
-        .andWhere('product.isActive = :isActive', { isActive: true })
-        .andWhere('product.id NOT IN (:...viewedProductIds)', { viewedProductIds })
-        .orderBy('product.rating', 'DESC')
-        .limit(limit - recommendations.length)
-        .getMany();
-      
-      recommendations.push(...productsInCategory);
+      // 确保有有效的商品ID列表再进行查询
+      if (viewedProductIds.length > 0) {
+        const productsInCategory = await this.productRepository.createQueryBuilder('product')
+          .innerJoin('product.category', 'category')
+          .where('category.id = :categoryId', { categoryId })
+          .andWhere('product.is_active = :isActive', { isActive: true })
+          .andWhere('product.id NOT IN (:...viewedProductIds)', { viewedProductIds })
+          .orderBy('product.rating', 'DESC')
+          .limit(limit - recommendations.length)
+          .getMany();
+        
+        recommendations.push(...productsInCategory);
+      } else {
+        // 如果没有有效的浏览记录，直接按类别获取商品
+        const productsInCategory = await this.productRepository.createQueryBuilder('product')
+          .innerJoin('product.category', 'category')
+          .where('category.id = :categoryId', { categoryId })
+          .andWhere('product.is_active = :isActive', { isActive: true })
+          .orderBy('product.rating', 'DESC')
+          .limit(limit - recommendations.length)
+          .getMany();
+        
+        recommendations.push(...productsInCategory);
+      }
     }
     
     // 如果推荐数量不足，补充热门商品
@@ -161,13 +185,19 @@ export class RecommendationService {
       return JSON.parse(cachedData);
     }
     
-    // 获取当前商品信息
+    // 获取当前商品信息并指定类型
     const currentProduct = await this.productRepository.findOne({
       where: { id: productId },
       relations: ['category', 'tags'],
-    });
+    }) as Product & { category: Category };  // 使用类型断言确保 category 存在且类型正确
 
-    if (!currentProduct) {
+    if (!currentProduct || !currentProduct.category || typeof currentProduct.category.id !== 'number') {
+      return [];
+    }
+
+    // 使用类型守卫确保 category.id 存在且为数字
+    const categoryId = Number(currentProduct.category.id);
+    if (isNaN(categoryId)) {
       return [];
     }
 
@@ -175,14 +205,20 @@ export class RecommendationService {
     let query = this.productRepository.createQueryBuilder('product')
       .innerJoin('product.category', 'category')
       .leftJoin('product.tags', 'tags')
-      .where('category.id = :categoryId', { categoryId: currentProduct.category.id })
+      .where('category.id = :categoryId', { categoryId })
       .andWhere('product.id != :productId', { productId })
-      .andWhere('product.isActive = :isActive', { isActive: true });
+      .andWhere('product.is_active = :isActive', { isActive: true });
     
-    // 如果有标签，优先推荐有相同标签的商品
-    if (currentProduct.tags && currentProduct.tags.length > 0) {
-      const tagIds = currentProduct.tags.map(tag => tag.id);
-      
+    // 只处理 Tag[] 类型，确保 tag 是对象且有 id 属性
+    const tagIds: number[] = Array.isArray(currentProduct.tags)
+      ? currentProduct.tags
+          .filter((tag): tag is Tag => 
+            typeof tag === 'object' && tag !== null && 'id' in tag && typeof tag.id === 'number'
+          )
+          .map(tag => tag.id)
+      : [];
+
+    if (tagIds.length > 0) {
       query = query
         .andWhere('tags.id IN (:...tagIds)', { tagIds })
         .addSelect('COUNT(DISTINCT tags.id)', 'tagMatchCount')
@@ -190,7 +226,6 @@ export class RecommendationService {
         .orderBy('tagMatchCount', 'DESC')
         .addOrderBy('product.rating', 'DESC');
     } else {
-      // 如果没有标签，按评分排序
       query = query.orderBy('product.rating', 'DESC');
     }
     
@@ -218,8 +253,8 @@ export class RecommendationService {
     const products = await this.productRepository.createQueryBuilder('product')
       .innerJoin('product.category', 'category')
       .leftJoin('product.viewHistories', 'viewHistories')
-      .where('category.id = :categoryId', { categoryId })
-      .andWhere('product.isActive = :isActive', { isActive: true })
+      .where('category.id = :categoryId', { categoryId: Number(categoryId) })
+      .andWhere('product.is_active = :isActive', { isActive: true })
       .addSelect('COUNT(viewHistories.id)', 'viewCount')
       .groupBy('product.id')
       .orderBy('viewCount', 'DESC')
@@ -247,8 +282,9 @@ export class RecommendationService {
       where: {
         user: { id: userId },
         product: { id: productId },
-        viewedAt: oneDayAgo
-      }
+        viewedAt: MoreThanOrEqual(oneDayAgo),
+      },
+      relations: ['user', 'product'], // 确保关联关系被加载
     });
     
     if (existingRecord) {

@@ -6,6 +6,7 @@ import {
   ManyToOne,
   JoinColumn
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Coupon } from './coupon.entity';
 import { User } from '../../user/entities/user.entity';
 import { Order } from '../../order/entities/order.entity';
@@ -39,6 +40,25 @@ export class CouponUsage {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   discountAmount: number;
 
-  @CreateDateColumn()
+  @Column({ 
+    type: 'timestamptz',
+    name: 'use_time'
+  })
+  @ApiProperty({ description: '使用时间' })
+  useTime: Date;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'expire_time',
+    nullable: true 
+  })
+  @ApiProperty({ description: '过期时间' })
+  expireTime: Date;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 }

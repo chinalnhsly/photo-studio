@@ -10,142 +10,107 @@ import {
   ManyToMany,
   JoinTable
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../user/entities/user.entity';
-import { Photographer } from '../../photographer/entities/photographer.entity';
-import { Studio } from './studio.entity';
 import { Product } from '../../product/entities/product.entity';
-import { BookingNote } from './booking-note.entity';
-import { BookingStatus } from '../enums/booking-status.enum';
-import { PaymentStatus } from '../enums/payment-status.enum';
-import { ShootingType } from '../enums/shooting-type.enum';
+import { BookingSlot } from './booking-slot.entity';
+import { BookingFile } from './booking-file.entity';
+import { TimeSlot } from './time-slot.entity'; // 导入 TimeSlot 实体
+import { Photographer } from '../../photographer/entities/photographer.entity';
+
+export type BookingStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
 @Entity('bookings')
 export class Booking {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ description: '预约ID' })
   id: number;
 
-  @Column({ length: 20, unique: true })
-  bookingNumber: string;
-
   @Column()
+  @ApiProperty({ description: '用户ID' })
   userId: number;
 
   @ManyToOne(() => User)
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column({ nullable: true })
+  @ApiProperty({ description: '产品ID' })
+  productId: number;
+
+  @ManyToOne(() => Product)
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
+
+  @Column({ nullable: true })
+  @ApiProperty({ description: '摄影师ID' })
   photographerId: number;
 
   @ManyToOne(() => Photographer)
-  @JoinColumn({ name: 'photographerId' })
+  @JoinColumn({ name: 'photographer_id' })
   photographer: Photographer;
 
+  @Column({ nullable: true, name: 'time_slot_id' })
+  @ApiProperty({ description: '时间段ID (旧版本兼容)' })
+  timeSlotId: number;
+
+  @ManyToOne(() => TimeSlot)
+  @JoinColumn({ name: 'time_slot_id' })
+  timeSlot: TimeSlot;
+
   @Column({ nullable: true })
-  studioId: number;
+  @ApiProperty({ description: '预约时段ID' })
+  slotId: number;
 
-  @ManyToOne(() => Studio)
-  @JoinColumn({ name: 'studioId' })
-  studio: Studio;
+  @ManyToOne(() => BookingSlot)
+  @JoinColumn({ name: 'slot_id' })
+  slot: BookingSlot;
 
-  @Column({
-    type: 'enum',
-    enum: ShootingType,
-    default: ShootingType.STANDARD
+  @Column({ type: 'timestamptz' })
+  @ApiProperty({ description: '开始时间' })
+  startTime: Date;
+
+  @Column({ type: 'timestamptz' })
+  @ApiProperty({ description: '结束时间' })
+  endTime: Date;
+
+  @Column({ type: 'timestamptz' })
+  @ApiProperty({ description: '预约日期' })
+  bookingDate: Date;
+
+  @Column()
+  @ApiProperty({ description: '联系人姓名' })
+  contactName: string;
+
+  @Column()
+  @ApiProperty({ description: '联系电话' })
+  contactPhone: string;
+
+  @Column({ nullable: true })
+  @ApiProperty({ description: '备注' })
+  notes: string;
+
+  @Column({ 
+    default: 'pending',
+    type: 'varchar'
   })
-  shootingType: ShootingType;
-
-  @Column({ type: 'datetime' })
-  date: Date;
-
-  @Column({ type: 'time' })
-  startTime: string;
-
-  @Column({ type: 'time' })
-  endTime: string;
-
-  @Column({ type: 'text', nullable: true })
-  customerNote: string;
-
-  @Column({ type: 'int', default: 1 })
-  peopleCount: number;
-
-  @Column({ length: 50, nullable: true })
-  customerName: string;
-
-  @Column({ length: 20, nullable: true })
-  customerPhone: string;
-
-  @Column({ length: 100, nullable: true })
-  customerEmail: string;
-
-  @ManyToMany(() => Product)
-  @JoinTable({
-    name: 'booking_products',
-    joinColumn: { name: 'bookingId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'productId', referencedColumnName: 'id' }
-  })
-  products: Product[];
-
-  @OneToMany(() => BookingNote, note => note.booking)
-  notes: BookingNote[];
-
-  @Column({
-    type: 'enum',
-    enum: BookingStatus,
-    default: BookingStatus.PENDING
-  })
+  @ApiProperty({ description: '预约状态', enum: ['pending', 'confirmed', 'completed', 'cancelled'] })
   status: BookingStatus;
 
-  @Column({
-    type: 'enum',
-    enum: PaymentStatus,
-    default: PaymentStatus.UNPAID
+  @OneToMany(() => BookingFile, file => file.booking)
+  files: BookingFile[];
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
   })
-  paymentStatus: PaymentStatus;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  paymentAmount: number;
-
-  @Column({ nullable: true })
-  paymentId: string;
-
-  @Column({ nullable: true })
-  paymentDate: Date;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  depositAmount: number;
-
-  @Column({ default: false })
-  isConfirmed: boolean;
-
-  @Column({ type: 'int', default: 0 })
-  reminderCount: number;
-
-  @Column({ nullable: true })
-  lastReminderDate: Date;
-
-  @Column({ default: false })
-  isRescheduled: boolean;
-
-  @Column({ nullable: true })
-  originalBookingId: number;
-
-  @Column({ default: false })
-  isCancelled: boolean;
-
-  @Column({ nullable: true })
-  cancelledAt: Date;
-
-  @Column({ nullable: true })
-  cancelReason: string;
-
-  @Column({ default: false })
-  isNoShow: boolean;
-
-  @CreateDateColumn()
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
   updatedAt: Date;
 }

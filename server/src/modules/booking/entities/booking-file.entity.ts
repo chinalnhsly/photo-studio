@@ -3,56 +3,46 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
   ManyToOne,
   JoinColumn
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Booking } from './booking.entity';
-
-export type FileType = 'original' | 'processed' | 'preview' | 'contract' | 'other';
 
 @Entity('booking_files')
 export class BookingFile {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ description: '文件ID' })
   id: number;
 
   @Column()
+  @ApiProperty({ description: '预约ID' })
   bookingId: number;
 
   @ManyToOne(() => Booking, booking => booking.files)
-  @JoinColumn({ name: 'bookingId' })
+  @JoinColumn({ name: 'booking_id' })
   booking: Booking;
 
-  @Column({ length: 255 })
-  filename: string;
+  @Column()
+  @ApiProperty({ description: '文件名称' })
+  fileName: string;
 
-  @Column({ length: 255 })
-  originalFilename: string;
+  @Column()
+  @ApiProperty({ description: '文件路径' })
+  filePath: string;
 
-  @Column({ length: 512 })
-  url: string;
-
-  @Column({ length: 100, nullable: true })
-  mimeType: string;
+  @Column()
+  @ApiProperty({ description: '文件类型' })
+  fileType: string;
 
   @Column({ nullable: true })
+  @ApiProperty({ description: '文件大小（字节）' })
   fileSize: number;
 
-  @Column({ length: 20, default: 'original' })
-  fileType: FileType;
-
-  @Column({ type: 'text', nullable: true })
-  description: string;
-
-  @Column({ default: false })
-  isPublic: boolean;
-
-  @Column({ default: 0 })
-  sortOrder: number;
-
-  @CreateDateColumn()
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '上传时间' })
   createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { Appointment } from './entities/appointment.entity';
@@ -33,7 +33,7 @@ export class AppointmentService {
     }
 
     // 获取所有时间段配置
-    const timeSlots = await this.timeSlotRepository.find();
+    const timeSlots = await this.getTimeSlots();
     
     // 获取接下来90天的日期范围
     const startDate = moment().startOf('day');
@@ -57,39 +57,36 @@ export class AppointmentService {
       // 检查当天是否可预约（可能有休息日等限制）
       const available = this.isDateAvailable(currentDate, product);
       
-      // 计算每个时间段的可用状态
-      const timeSlotInfos: TimeSlotInfo[] = timeSlots.map(slot => {
-        const isBooked = appointments.some(
-          app => 
-            moment(app.appointmentDate).format('YYYY-MM-DD') === dateString && 
-            app.timeSlotId === slot.id
-        );
-        
-        return {
-          id: slot.id,
-          startTime: slot.startTime,
-          endTime: slot.endTime,
-          available: available && !isBooked,
-          price: product.price, // 这里可以根据不同时间段设置不同价格
-        };
-      });
-      
-      // 判断当天是否全部时间段都已约满
-      const fullBooked = available && timeSlotInfos.every(slot => !slot.available);
-      
+      // 修改检查逻辑
+      const fullBooked = timeSlots.every(slot => !slot.isAvailable);
+
       result.push({
         date: dateString,
-        available,
+        isAvailable: true,  // 修正属性名
         fullBooked,
         price: product.price,
         weekday: currentDate.day().toString(),
-        timeSlots: timeSlotInfos
+        timeSlots
       });
       
       currentDate.add(1, 'day');
     }
     
     return result;
+  }
+
+  /**
+   * 获取可用时间槽
+   */
+  async getAvailableSlots(params: { productId: number, date: string }) {
+    const timeSlots = await this.getTimeSlots();
+
+    return {
+      date: params.date,
+      isAvailable: true,
+      fullBooked: false,
+      timeSlots
+    };
   }
 
   /**
@@ -134,7 +131,7 @@ export class AppointmentService {
   async checkTimeSlotAvailability(
     productId: number, 
     date: string, 
-    timeSlotId: string
+    timeSlotId: number  // 修改为 number 类型
   ): Promise<boolean> {
     // 查找产品信息
     const product = await this.productRepository.findOne({ 
@@ -182,14 +179,29 @@ export class AppointmentService {
       return false;
     }
     
-    // 3. 周末是否可预约（假设是产品配置）
+    // 3. 周末是否可预约
     const isWeekend = date.day() === 0 || date.day() === 6;
     if (isWeekend && !product.availableOnWeekends) {
       return false;
     }
     
-    // 4. 其他自定义规则...
-    
     return true;
+  }
+
+  /**
+   * 获取时间段信息
+   */
+  async getTimeSlots(): Promise<TimeSlotInfo[]> {
+    const timeSlots = await this.timeSlotRepository.find();
+    
+    const timeSlotInfos: TimeSlotInfo[] = timeSlots.map(slot => ({
+      id: slot.id,
+      startTime: slot.startTime.toISOString(),  // 转换为 ISO 字符串
+      endTime: slot.endTime.toISOString(),      // 转换为 ISO 字符串
+      isAvailable: slot.isAvailable,
+      price: slot.price
+    }));
+
+    return timeSlotInfos;
   }
 }

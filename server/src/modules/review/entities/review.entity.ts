@@ -8,10 +8,12 @@ import {
   JoinColumn,
   OneToMany
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../user/entities/user.entity';
 import { Booking } from '../../booking/entities/booking.entity';
 import { Photographer } from '../../photographer/entities/photographer.entity';
 import { ReviewImage } from './review-image.entity';
+import { Product } from '../../product/entities/product.entity';
 
 @Entity('reviews')
 export class Review {
@@ -55,10 +57,21 @@ export class Review {
   isPublic: boolean;
 
   @Column({ nullable: true })
-  adminReply: string;
+  reply: string;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'reply_time',
+    nullable: true 
+  })
+  @ApiProperty({ description: '回复时间' })
+  replyTime: Date;
+
+  @Column({ default: 'pending' })
+  status: string;
 
   @Column({ nullable: true })
-  adminReplyTime: Date;
+  rejectReason: string;
 
   @OneToMany(() => ReviewImage, image => image.review, {
     cascade: true
@@ -68,9 +81,28 @@ export class Review {
   @Column({ type: 'json', nullable: true })
   tags: string[];
 
-  @CreateDateColumn()
+  @ManyToOne(() => Product)
+  @JoinColumn({ name: 'productId' })
+  product: Product;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'review_date'
+  })
+  @ApiProperty({ description: '评价日期' })
+  reviewDate: Date;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
   updatedAt: Date;
 }

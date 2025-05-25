@@ -33,7 +33,25 @@ export class PointRecord {
   @ApiProperty({ description: '关联订单号', required: false })
   orderNumber: string;
 
-  @CreateDateColumn()
+  @Column({ 
+    type: 'timestamptz',
+    name: 'earned_at'
+  })
+  @ApiProperty({ description: '获取时间' })
+  earnedAt: Date;
+
+  @Column({ 
+    type: 'timestamptz',
+    name: 'expire_at',
+    nullable: true 
+  })
+  @ApiProperty({ description: '过期时间' })
+  expireAt: Date;
+
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
   @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 }

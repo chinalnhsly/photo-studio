@@ -8,7 +8,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { CancelOrderDto } from './dto/cancel-order.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 import { User } from '../auth/decorators/user.decorator';
-import { OrderStatus } from './entities/order.entity';
+import { OrderStatus } from './enums/order-status.enum';
 
 @ApiTags('orders')
 @Controller('orders')

@@ -96,24 +96,22 @@ export class MembershipController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '管理员调整用户积分' })
   @ApiResponse({ status: 200, description: '调整成功' })
-  async adjustUserPoints(
-    @Body() adjustPointsDto: AdjustPointsDto
-  ) {
-    const { userId, points, description } = adjustPointsDto;
+  async adjustUserPoints(@Body() adjustPointsDto: AdjustPointsDto) {
+    const { memberId, points, reason } = adjustPointsDto;
     
     let result;
     if (points > 0) {
       result = await this.membershipService.addPoints(
-        userId,
+        memberId,
         points,
         'adjust',
-        description || '管理员调整'
+        reason || '管理员调整'
       );
     } else {
       result = await this.membershipService.spendPoints(
-        userId,
+        memberId,
         Math.abs(points),
-        description || '管理员调整'
+        reason || '管理员调整'
       );
     }
     

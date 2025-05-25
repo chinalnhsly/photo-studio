@@ -1,15 +1,13 @@
-import { IsNotEmpty, IsString, IsEnum, IsOptional, MaxLength } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ReviewStatusDto {
-  @ApiProperty({ description: '评价状态', enum: ['approved', 'rejected'] })
-  @IsNotEmpty()
-  @IsEnum(['approved', 'rejected'])
+  @IsString()
+  @ApiProperty({ description: '评价状态', enum: ['pending', 'approved', 'rejected'] })
   status: string;
 
-  @ApiProperty({ description: '拒绝原因（当状态为rejected时必填）', required: false })
-  @IsOptional()
   @IsString()
-  @MaxLength(200)
+  @IsOptional()
+  @ApiProperty({ description: '原因说明（当拒绝时必填）', required: false })
   reason?: string;
 }

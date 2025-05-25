@@ -1,29 +1,17 @@
-import { IsNotEmpty, IsOptional, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { PointLogType } from '../enums/point-log-type.enum';
 
 export class AddMemberPointsDto {
+  @IsNumber()
   @ApiProperty({ description: '积分数量' })
-  @IsNotEmpty()
-  @IsNumber()
   points: number;
-  
-  @ApiProperty({ description: '订单ID', required: false })
-  @IsOptional()
-  @IsNumber()
-  orderId?: number;
-  
-  @ApiProperty({ description: '预约ID', required: false })
-  @IsOptional()
-  @IsNumber()
-  bookingId?: number;
-  
-  @ApiProperty({ description: '积分变更描述' })
-  @IsOptional()
+
+  @IsEnum(PointLogType)
+  @ApiProperty({ description: '积分类型', enum: PointLogType })
+  type: PointLogType;
+
   @IsString()
-  description?: string;
-  
-  @ApiProperty({ description: '操作人ID', required: false })
-  @IsOptional()
-  @IsNumber()
-  operatorId?: number;
+  @ApiProperty({ description: '积分说明' })
+  description: string;
 }

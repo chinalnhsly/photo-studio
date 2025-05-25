@@ -41,4 +41,9 @@ export class CreateMemberDto {
   @IsOptional()
   @IsBoolean()
   isSubscribed?: boolean;
+
+  @ApiProperty({ description: '是否激活', required: false })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
 }

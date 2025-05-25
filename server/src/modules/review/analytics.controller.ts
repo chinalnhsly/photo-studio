@@ -5,6 +5,8 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { ReviewAnalyticsService } from './review-analytics.service';
 import { Response } from 'express';
+import { ReviewAnalytics } from './interfaces/review-analytics.interface';
+import { ReviewAnalyticsDto } from './dto/review-analytics.dto';
 
 @ApiTags('review-analytics')
 @Controller('admin/analytics/reviews')
@@ -19,12 +21,16 @@ export class ReviewAnalyticsController {
   @ApiQuery({ name: 'startDate', description: '开始日期', required: false })
   @ApiQuery({ name: 'endDate', description: '结束日期', required: false })
   @ApiQuery({ name: 'period', description: '周期', required: false, enum: ['day', 'week', 'month'] })
-  @ApiResponse({ status: 200, description: '返回评价分析概览数据' })
+  @ApiResponse({ 
+    status: 200, 
+    description: '返回评价分析概览数据',
+    type: ReviewAnalyticsDto 
+  })
   async getReviewAnalytics(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
     @Query('period') period: string = 'week'
-  ) {
+  ): Promise<{ code: number; message: string; data: ReviewAnalyticsDto }> {
     const data = await this.analyticsService.getReviewAnalytics({
       startDate,
       endDate,
@@ -116,9 +122,9 @@ export class ReviewAnalyticsController {
   @ApiQuery({ name: 'endDate', description: '结束日期', required: false })
   @ApiResponse({ status: 200, description: '导出评价分析报告' })
   async exportReviewReport(
+    @Res() res: Response,
     @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
-    @Res() res: Response
+    @Query('endDate') endDate?: string
   ) {
     const report = await this.analyticsService.generateReviewReport({
       startDate,

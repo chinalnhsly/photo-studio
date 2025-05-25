@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, IsNull } from 'typeorm';
 import { Review } from './entities/review.entity';
 import { ReviewImage } from './entities/review-image.entity';
 import { Booking } from '../booking/entities/booking.entity';
@@ -8,6 +8,7 @@ import { Photographer } from '../photographer/entities/photographer.entity';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReplyReviewDto } from './dto/reply-review.dto';
+import * as Excel from 'exceljs';
 
 @Injectable()
 export class ReviewService {
@@ -192,8 +193,9 @@ export class ReviewService {
   async reply(id: number, replyDto: ReplyReviewDto) {
     const review = await this.findOne(id);
 
-    review.adminReply = replyDto.reply;
-    review.adminReplyTime = new Date();
+    // 修改为与实体定义一致的属性名
+    review.reply = replyDto.reply;
+    review.replyTime = new Date();
 
     return this.reviewRepository.save(review);
   }
@@ -275,5 +277,197 @@ export class ReviewService {
         rating: averageRating,
       });
     }
+  }
+
+  async getAdminReviews(params: {
+    page: number;
+    pageSize: number;
+    rating?: number;
+    productName?: string;
+    hasImages?: boolean;
+    status?: string;
+  }) {
+    const query = this.reviewRepository.createQueryBuilder('review')
+      .leftJoinAndSelect('review.product', 'product')
+      .leftJoinAndSelect('review.user', 'user')
+      .leftJoinAndSelect('review.images', 'images');
+
+    if (params.rating) {
+      query.andWhere('review.rating = :rating', { rating: params.rating });
+    }
+
+    if (params.productName) {
+      query.andWhere('product.name LIKE :name', { name: `%${params.productName}%` });
+    }
+
+    if (params.hasImages !== undefined) {
+      if (params.hasImages) {
+        query.andWhere('images.id IS NOT NULL');
+      } else {
+        query.andWhere('images.id IS NULL');
+      }
+    }
+
+    if (params.status) {
+      query.andWhere('review.status = :status', { status: params.status });
+    }
+
+    const [items, total] = await query
+      .skip((params.page - 1) * params.pageSize)
+      .take(params.pageSize)
+      .getManyAndCount();
+
+    return { items, total };
+  }
+
+  async getReviewById(id: number, isAdmin: boolean = false) {
+    const review = await this.reviewRepository.findOne({
+      where: { id },
+      relations: ['product', 'user', 'images']
+    });
+
+    if (!review) {
+      throw new NotFoundException('评价不存在');
+    }
+
+    return review;
+  }
+
+  async replyReview(id: number, replyDto: ReplyReviewDto) {
+    const review = await this.getReviewById(id, true);
+    review.reply = replyDto.reply;
+    review.replyTime = new Date();
+    return this.reviewRepository.save(review);
+  }
+
+  async deleteReviewByAdmin(id: number) {
+    const review = await this.getReviewById(id, true);
+    await this.reviewRepository.remove(review);
+  }
+
+  async batchReplyReviews(reviewIds: number[], reply: string) {
+    const reviews = await this.reviewRepository.findByIds(reviewIds);
+    const updatedReviews = reviews.map(review => {
+      review.reply = reply;
+      review.replyTime = new Date();
+      return review;
+    });
+    
+    await this.reviewRepository.save(updatedReviews);
+    return reviews.length;
+  }
+
+  async setReviewStatus(id: number, status: string, reason?: string) {
+    const review = await this.getReviewById(id, true);
+    review.status = status;
+    review.rejectReason = reason;
+    return this.reviewRepository.save(review);
+  }
+
+  async getUnrepliedCount() {
+    return this.reviewRepository.count({
+      where: {
+        reply: IsNull()
+      }
+    });
+  }
+
+  async getReviewTags() {
+    // 获取所有评价标签及其使用次数
+    const tags = await this.reviewRepository
+      .createQueryBuilder('review')
+      .select('unnest(tags) as tag')
+      .addSelect('COUNT(*) as count')
+      .groupBy('tag')
+      .orderBy('count', 'DESC')
+      .getRawMany();
+    
+    return tags;
+  }
+
+  async saveReviewTag(tagData: { name: string; type?: string }) {
+    // 实现标签保存逻辑
+    return tagData;
+  }
+
+  async deleteReviewTag(id: number) {
+    // 实现标签删除逻辑
+  }
+
+  async exportReviewData(params: any) {
+    const reviews = await this.getAdminReviews({
+      page: 1,
+      pageSize: 1000,
+      ...params
+    });
+
+    const workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet('Reviews');
+
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 10 },
+      { header: '评分', key: 'rating', width: 10 },
+      { header: '内容', key: 'content', width: 50 },
+      { header: '商品', key: 'product', width: 20 },
+      { header: '用户', key: 'user', width: 20 },
+      { header: '时间', key: 'createdAt', width: 20 }
+    ];
+
+    reviews.items.forEach(review => {
+      worksheet.addRow({
+        id: review.id,
+        rating: review.rating,
+        content: review.content,
+        product: review.product?.name,
+        user: review.user?.username,
+        createdAt: review.createdAt
+      });
+    });
+
+    return workbook.xlsx.writeBuffer();
+  }
+
+  async getReviewTrends(startDate: string, endDate: string, photographerId?: number) {
+    const queryBuilder = this.reviewRepository.createQueryBuilder('review');
+
+    if (photographerId) {
+      queryBuilder.where('review.photographerId = :photographerId', { photographerId });
+    }
+
+    queryBuilder
+      .andWhere('review.createdAt BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate
+      })
+      .select('DATE(review.createdAt)', 'date')
+      .addSelect('COUNT(*)', 'count')
+      .addSelect('AVG(review.rating)', 'avgRating')
+      .groupBy('DATE(review.createdAt)')
+      .orderBy('DATE(review.createdAt)', 'ASC');
+
+    return queryBuilder.getRawMany();
+  }
+
+  async getReviewKeywords(photographerId: number, limit: number = 20) {
+    const reviews = await this.reviewRepository.find({
+      where: { photographerId },
+      select: ['content']
+    });
+
+    // 简单的关键词提取实现
+    const keywords = {};
+    reviews.forEach(review => {
+      const words = review.content.split(/\s+/);
+      words.forEach(word => {
+        if (word.length > 1) {
+          keywords[word] = (keywords[word] || 0) + 1;
+        }
+      });
+    });
+
+    return Object.entries(keywords)
+      .map(([keyword, count]) => ({ keyword, count }))
+      .sort((a, b) => (b.count as number) - (a.count as number))
+      .slice(0, limit);
   }
 }

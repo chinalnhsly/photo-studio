@@ -1,15 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Banner } from './entities/banner.entity';
-import { BannerService } from './banner.service';
 import { BannerController } from './banner.controller';
+import { BannerService } from './banner.service';
+import { Banner } from './entities/banner.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Banner]),
-  ],
+  imports: [TypeOrmModule.forFeature([Banner])],
   controllers: [BannerController],
   providers: [BannerService],
-  exports: [BannerService], // 导出服务以便其他模块使用
+  exports: [BannerService]
 })
 export class BannerModule {}

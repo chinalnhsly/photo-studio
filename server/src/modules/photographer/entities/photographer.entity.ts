@@ -4,87 +4,101 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
-  ManyToMany,
-  JoinTable
+  OneToMany
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 import { Booking } from '../../booking/entities/booking.entity';
-import { ShootingType } from '../../booking/enums/shooting-type.enum';
 
 @Entity('photographers')
 export class Photographer {
   @PrimaryGeneratedColumn()
+  @ApiProperty({ description: '摄影师ID' })
   id: number;
 
-  @Column({ length: 100 })
+  @Column()
+  @ApiProperty({ description: '摄影师名称' })
   name: string;
 
-  @Column({ type: 'text', nullable: true })
-  bio: string;
-
   @Column({ nullable: true })
+  @ApiProperty({ description: '头像' })
   avatar: string;
 
-  @Column({ type: 'simple-array', nullable: true })
-  specialties: string[];
+  @Column({ nullable: true, type: 'text' })
+  @ApiProperty({ description: '简介' })
+  bio: string;
 
-  @Column({ type: 'simple-array', nullable: true })
-  portfolioImages: string[];
+  @Column({ nullable: true, type: 'text' })
+  @ApiProperty({ description: '个人传记' })
+  biography: string;
 
-  @Column({ type: 'simple-json', nullable: true })
-  socialLinks: {
-    instagram?: string;
-    facebook?: string;
-    twitter?: string;
-    website?: string;
-  };
+  @Column({ nullable: true })
+  @ApiProperty({ description: '擅长风格' })
+  style: string;
 
-  @Column({ type: 'int', default: 0 })
-  experienceYears: number;
+  @Column({ nullable: true })
+  @ApiProperty({ description: '工作经验（年）' })
+  experience: number;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @ApiProperty({ description: '工作年限' })
+  get yearsOfExperience(): number {
+    return this.experience || 0;
+  }
 
-  @Column({ default: false })
-  isFeatured: boolean;
-
-  @Column({ type: 'decimal', precision: 3, scale: 1, default: 0 })
+  @Column({ type: 'decimal', precision: 5, scale: 2, default: 5.0 })
+  @ApiProperty({ description: '评分' })
   rating: number;
 
-  @Column({ type: 'int', default: 0 })
-  reviewCount: number;
-
   @Column({ nullable: true })
-  email: string;
-
-  @Column({ nullable: true })
+  @ApiProperty({ description: '联系电话' })
   phone: string;
 
-  @Column({ type: 'simple-json', nullable: true })
-  workingHours: {
-    monday: { start: string; end: string; isWorking: boolean };
-    tuesday: { start: string; end: string; isWorking: boolean };
-    wednesday: { start: string; end: string; isWorking: boolean };
-    thursday: { start: string; end: string; isWorking: boolean };
-    friday: { start: string; end: string; isWorking: boolean };
-    saturday: { start: string; end: string; isWorking: boolean };
-    sunday: { start: string; end: string; isWorking: boolean };
-  };
+  @ApiProperty({ description: '电话号码' })
+  get phoneNumber(): string {
+    return this.phone || '';
+  }
 
-  @ManyToMany(() => ShootingType)
-  @JoinTable({
-    name: 'photographer_specialties',
-    joinColumn: { name: 'photographerId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'shootingType', referencedColumnName: 'id' }
-  })
-  shootingTypes: ShootingType[];
+  @Column({ nullable: true })
+  @ApiProperty({ description: '电子邮箱' })
+  email: string;
+
+  @Column({ default: true })
+  @ApiProperty({ description: '是否接单' })
+  isActive: boolean;
+
+  @Column('text', { array: true, nullable: true, default: [] })
+  @ApiProperty({ description: '专长领域', type: [String] })
+  specialties: string[];
+
+  @Column('text', { array: true, nullable: true, default: [] })
+  @ApiProperty({ description: '作品集图片', type: [String] })
+  portfolioImages: string[];
+
+  @Column('text', { array: true, nullable: true, default: [] })
+  @ApiProperty({ description: '使用设备', type: [String] })
+  equipments: string[];
+
+  @Column({ nullable: true })
+  @ApiProperty({ description: '擅长语言' })
+  languagesSpoken: string;
+
+  @Column({ default: false })
+  @ApiProperty({ description: '是否接受加急工作' })
+  acceptsRushJobs: boolean;
 
   @OneToMany(() => Booking, booking => booking.photographer)
   bookings: Booking[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({ 
+    type: 'timestamptz',
+    name: 'created_at'
+  })
+  @ApiProperty({ description: '创建时间' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ 
+    type: 'timestamptz',
+    name: 'updated_at'
+  })
+  @ApiProperty({ description: '更新时间' })
   updatedAt: Date;
 }

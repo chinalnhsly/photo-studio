@@ -1,21 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PhotographerController } from './photographer.controller';
-import { PhotographerService } from './photographer.service';
 import { Photographer } from './entities/photographer.entity';
-import { PhotographStyle } from './entities/photograph-style.entity';
-import { BookingSlot } from '../booking/entities/booking-slot.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Photographer,
-      PhotographStyle,
-      BookingSlot
-    ])
+    TypeOrmModule.forFeature([Photographer])
   ],
-  controllers: [PhotographerController],
-  providers: [PhotographerService],
-  exports: [PhotographerService]
+  exports: [TypeOrmModule] // 导出 TypeOrmModule 以便其他模块使用
 })
 export class PhotographerModule {}
