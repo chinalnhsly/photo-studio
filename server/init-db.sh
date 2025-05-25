@@ -164,7 +164,29 @@ CREATE TABLE IF NOT EXISTS "product_tags" (
   PRIMARY KEY ("product_id", "tag_id")
 );
 
--- 创建索引提高查询性能
+
+
+-- 创建支付表
+CREATE TABLE IF NOT EXISTS "payments" (
+  "id" SERIAL PRIMARY KEY,
+  "order_id" INTEGER NOT NULL REFERENCES "orders"("id") ON DELETE CASCADE,
+  "amount" INTEGER NOT NULL,
+  "status" VARCHAR(255) NOT NULL,
+  "transaction_id" VARCHAR(255),
+  "payment_time" TIMESTAMP WITH TIME ZONE,
+  "expire_time" TIMESTAMP WITH TIME ZONE,
+  "refund_time" TIMESTAMP WITH TIME ZONE,
+  "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+  "updated_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 创建索引-- 创建索引提高查询性能
+CREATE INDEX IF NOT EXISTS "idx_payments_order_id" ON "payments"("order_id");
+CREATE INDEX IF NOT EXISTS "idx_payments_status" ON "payments"("status");
+CREATE INDEX IF NOT EXISTS "idx_payments_transaction_id" ON "payments"("transaction_id");
+
+
+
 CREATE INDEX IF NOT EXISTS "idx_photographers_is_active" ON "photographers"("is_active");
 CREATE INDEX IF NOT EXISTS "idx_products_name" ON "products"("name");
 CREATE INDEX IF NOT EXISTS "idx_bookings_user_id" ON "bookings"("user_id");

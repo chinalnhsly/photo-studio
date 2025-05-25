@@ -50,11 +50,11 @@ export class User {
   @ApiProperty({ description: '用户偏好设置' })
   preferences: Record<string, any>;
 
-  @Column({ default: true })
+  @Column({ name: 'is_active', default: true }) // 修改这里，使用name属性指定正确的列名
   @ApiProperty({ description: '账户是否激活' })
   isActive: boolean;
 
-  @Column({ nullable: true, type: 'timestamptz' })
+  @Column({ name: 'last_login', nullable: true, type: 'timestamptz' }) // 添加name属性
   @ApiProperty({ description: '上次登录时间' })
   lastLogin: Date;
 
