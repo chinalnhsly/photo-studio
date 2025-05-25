@@ -11,7 +11,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../user/entities/user.entity';
 import { OrderItem } from './order-item.entity';
-import { PaymentRecord } from '../../payment/entities/payment-record.entity';
+import { Payment } from '../../payment/entities/payment.entity';
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -71,9 +71,9 @@ export class Order {
   @ApiProperty({ description: '支付ID' })
   paymentId: string;
 
-  // 添加支付关联关系
-  @OneToMany(() => PaymentRecord, payment => payment.order)
-  payments: PaymentRecord[];
+  // 修改支付关联关系
+  @OneToMany(() => Payment, payment => payment.order)
+  payments: Payment[];
 
   // 添加支付相关字段
   @Column({ nullable: true, name: 'transaction_id' })

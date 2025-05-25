@@ -168,7 +168,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = ({ children }) => {
                 placement="left"
                 closable={true}
                 onClose={() => setMobileDrawerVisible(false)}
-                visible={mobileDrawerVisible}
+                open={mobileDrawerVisible}
                 width={200}
               >
                 {/* 移动端抽屉中的菜单 - 修复使用 items */}

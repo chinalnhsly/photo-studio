@@ -2,6 +2,7 @@ import { defineConfig } from 'umi';
 import routes from './config/routes';
 import path from 'path';
 import webpack from 'webpack';
+import sass from 'sass';
 
 export default defineConfig({
   nodeModulesTransform: {
@@ -9,7 +10,6 @@ export default defineConfig({
   },
   routes,
   fastRefresh: {},
-  // 禁用 MFSU 功能，解决依赖问题
   mfsu: false,
   cssLoader: {
     localsConvention: 'camelCase',
@@ -32,7 +32,6 @@ export default defineConfig({
   },
   hash: true,
   antd: {
-    // 禁用 React 严格模式，减轻 findDOMNode 警告
     config: {
       disableReactStrictMode: true
     }
@@ -45,14 +44,14 @@ export default defineConfig({
     '@ant-design/icons/lib/dist': '@ant-design/icons/lib/index.es.js',
     'react': path.resolve(__dirname, './node_modules/react'),
     'react-dom': path.resolve(__dirname, './node_modules/react-dom'),
-    // 添加兼容层，解决 ColorPicker 不存在问题
-    'antd/es/color-picker': path.resolve(__dirname, './src/components/CompatAntd'),
-    'antd/lib/color-picker': path.resolve(__dirname, './src/components/CompatAntd'),
+    'antd/es/color-picker': path.resolve(__dirname, './src/components/CompatAntd/ColorPicker'),
+    'antd/lib/color-picker': path.resolve(__dirname, './src/components/CompatAntd/ColorPicker'),
   },
-  webpack5: {}, 
-  // 删除 externals 配置，让 webpack 正常打包 React
-  chainWebpack(config) {
-    // 添加全局 React 提供
+  chainWebpack(config: import('umi').IWebpackChainConfig) {
+    const rule = (config as any).module.rule('scss').test(/\.scss$/);
+    rule.use('style-loader').loader('style-loader').end();
+    rule.use('css-loader').loader('css-loader').end();
+    rule.use('sass-loader').loader('sass-loader').options({ implementation: sass }).end();
     config.plugin('provide-react').use(webpack.ProvidePlugin, [{
       React: 'react',
     }]);

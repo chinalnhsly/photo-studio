@@ -1,220 +1,139 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Calendar,
-  Card,
-  Select,
-  DatePicker,
-  Modal,
-  Form,
-  TimePicker,
-  Input,
-  message,
-  Tag,
-  Tooltip,
-  Popconfirm,
-  Spin,
-  Button,
-  Row,
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Card, 
+  Calendar, 
+  Badge, 
+  Modal, 
+  Form, 
+  Input, 
+  Select, 
+  TimePicker, // Keep TimePicker if needed elsewhere, otherwise remove
+  DatePicker, // Import DatePicker
+  Button, 
+  message, 
+  Tooltip, 
+  Popconfirm, 
+  Row, 
   Col,
-  Badge,
-  Space,
+  Typography
 } from 'antd';
-import {
-  PlusOutlined,
-  CalendarOutlined,
-  UserOutlined,
-  CameraOutlined,
-  ShopOutlined,
-  ClockCircleOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
 import moment from 'moment';
+// 使用 moment 的类型定义
 type Moment = moment.Moment;
-import { getBookingList } from '@/services/booking';
-import { getPhotographerList } from '@/services/photographer';
-import './BookingCalendar.less';
+import { PlusOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+// Import Booking type along with API functions
+import { getBookingCalendar, createBooking, updateBooking, deleteBooking, Booking } from '@/services/booking';
+import { getPhotographerOptions, getStudioOptions, getCustomerOptions } from '@/services/common';
+import styles from './BookingCalendar.less';
 
-interface BookingEvent {
-  id: number;
-  title: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  customerId: number;
-  customerName: string;
-  photographerId: number;
-  photographerName: string;
-  studioId: number;
-  studioName: string;
-  status: string;
-  color?: string;
-}
+const { Option } = Select;
+// Directly use DatePicker.RangePicker
+const { RangePicker } = DatePicker;
+const { Title } = Typography;
 
-// 定义表单数据类型
-interface BookingFormValues {
-  date: Moment;
-  timeRange: [Moment, Moment];
-  customerId: number;
-  photographerId: number;
-  studioId: number;
-  notes?: string;
-}
+// Use the Booking type directly or create a compatible interface
+// Let's use Booking and add any specific UI state if needed later
+type BookingEvent = Booking; // Use the imported Booking type
 
-// 定义API响应类型
-interface ApiResponse {
-  data: {
-    list?: any[];
-    [key: string]: any;
-  } | any[];
-  success?: boolean;
-  total?: number;
-}
+// 状态颜色映射
+const statusColorMap: Record<string, string> = {
+  pending: 'warning',
+  confirmed: 'processing',
+  cancelled: 'error',
+  completed: 'success',
+  in_progress: 'processing',
+  no_show: 'default',
+  rescheduled: 'warning',
+};
 
-interface BookingFilter {
-  photographerId?: number;
-  studioId?: number;
-  startDate?: string;
-  endDate?: string;
-  status?: string[];
-}
+// 拍摄类型
+const shootingTypes = [
+  { value: 'standard', label: '标准写真' },
+  { value: 'wedding', label: '婚纱摄影' },
+  { value: 'portrait', label: '人像摄影' },
+  { value: 'family', label: '家庭照' },
+  { value: 'children', label: '儿童摄影' },
+  { value: 'maternity', label: '孕妇照' },
+  { value: 'newborn', label: '新生儿' },
+  { value: 'event', label: '活动跟拍' },
+  { value: 'product', label: '商品摄影' },
+  { value: 'commercial', label: '商业摄影' },
+];
 
 const BookingCalendar: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [events, setEvents] = useState<BookingEvent[]>([]);
+  const [form] = Form.useForm();
+  const [events, setEvents] = useState<Booking[]>([]); // State now holds Booking[]
+  const [visible, setVisible] = useState<boolean>(false);
   const [currentDate, setCurrentDate] = useState<Moment>(moment());
   const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<BookingEvent | null>(null);
-  const [detailModalVisible, setDetailModalVisible] = useState<boolean>(false);
-  const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
-  const [photographers, setPhotographers] = useState<any[]>([]);
-  const [filter, setFilter] = useState<BookingFilter>({});
-  const [form] = Form.useForm();
-
-  // 加载预约数据
+  const [mode, setMode] = useState<'create' | 'edit'>('create');
+  const [currentEvent, setCurrentEvent] = useState<Booking | null>(null); // State holds Booking | null
+  const [loading, setLoading] = useState<boolean>(false);
+  const [photographers, setPhotographers] = useState<{ value: number; label: string }[]>([]);
+  const [studios, setStudios] = useState<{ value: number; label: string }[]>([]);
+  const [customers, setCustomers] = useState<{ value: number; label: string }[]>([]);
+  
+  // 初始化数据
   useEffect(() => {
-    fetchEvents();
-  }, [currentDate, filter]);
-
-  // 加载摄影师数据
-  useEffect(() => {
-    fetchPhotographers();
+    fetchCalendarData(moment());
+    fetchOptions();
   }, []);
 
-  // 获取预约数据
-  const fetchEvents = async () => {
+  // 获取预约日历数据
+  const fetchCalendarData = async (date: Moment) => {
     setLoading(true);
     try {
-      // 计算月份的开始和结束日期
-      const startDate = moment(currentDate).startOf('month').format('YYYY-MM-DD');
-      const endDate = moment(currentDate).endOf('month').format('YYYY-MM-DD');
+      const startDate = date.clone().startOf('month').format('YYYY-MM-DD');
+      const endDate = date.clone().endOf('month').format('YYYY-MM-DD');
       
-      const params = {
-        startDate,
-        endDate,
-        ...filter,
-      };
-      
-      const response: ApiResponse = await getBookingList(params);
-      
-      // 转换为日历事件格式
-      // API 返回格式适配处理
-      let bookingList: any[] = [];
-      if (Array.isArray(response.data)) {
-        bookingList = response.data;
-      } else if (response.data && response.data.list) {
-        bookingList = response.data.list;
-      }
-      
-      const bookingEvents = bookingList.map((booking: any) => ({
-        id: booking.id,
-        title: `${booking.customerName} - ${booking.shootingType || '预约'}`,
-        date: booking.date,
-        startTime: booking.startTime,
-        endTime: booking.endTime,
-        customerId: booking.customerId,
-        customerName: booking.customerName,
-        photographerId: booking.photographerId,
-        photographerName: booking.photographerName,
-        studioId: booking.studioId,
-        studioName: booking.studioName,
-        status: booking.status,
-        color: getStatusColor(booking.status),
-      }));
-      
-      setEvents(bookingEvents);
+      const response = await getBookingCalendar({ startDate, endDate });
+      // Ensure response.data is Booking[] before setting state
+      const bookings: Booking[] = response.data || [];
+      setEvents(bookings);
     } catch (error) {
-      console.error('获取预约数据失败:', error);
-      message.error('获取预约数据失败');
+      console.error('获取预约日历数据失败:', error);
+      message.error('获取预约日历数据失败');
     } finally {
       setLoading(false);
     }
   };
 
-  // 获取摄影师列表
-  const fetchPhotographers = async () => {
+  // 获取下拉选项数据
+  const fetchOptions = async () => {
     try {
-      const response: ApiResponse = await getPhotographerList({ isActive: true });
-      if (Array.isArray(response.data)) {
-        setPhotographers(response.data);
-      } else if (response.data && typeof response.data === 'object') {
-        // 确保response.data是对象且有list属性
-        const dataObj = response.data as { list?: any[] };
-        setPhotographers(dataObj.list || []);
-      } else {
-        setPhotographers([]);
-      }
+      const [photographerRes, studioRes, customerRes] = await Promise.all([
+        getPhotographerOptions(),
+        getStudioOptions(),
+        getCustomerOptions(),
+      ]);
+      
+      setPhotographers(photographerRes.data || []);
+      setStudios(studioRes.data || []);
+      setCustomers(customerRes.data || []);
     } catch (error) {
-      console.error('获取摄影师列表失败:', error);
+      console.error('获取选项数据失败:', error);
     }
   };
 
-  // 根据状态获取颜色
-  const getStatusColor = (status: string) => {
-    const statusColorMap: {[key: string]: string} = {
-      'PENDING': '#faad14', // 待确认 - 黄色
-      'CONFIRMED': '#52c41a', // 已确认 - 绿色
-      'COMPLETED': '#1890ff', // 已完成 - 蓝色
-      'IN_PROGRESS': '#722ed1', // 进行中 - 紫色
-      'CANCELLED': '#f5222d', // 已取消 - 红色
-      'NO_SHOW': '#bfbfbf', // 未到店 - 灰色
-      'RESCHEDULED': '#13c2c2', // 已改期 - 青色
-    };
-    return statusColorMap[status] || '#d9d9d9';
-  };
-
-  // 获取状态文本
-  const getStatusText = (status: string) => {
-    const statusTextMap: {[key: string]: string} = {
-      'PENDING': '待确认',
-      'CONFIRMED': '已确认',
-      'COMPLETED': '已完成',
-      'IN_PROGRESS': '进行中',
-      'CANCELLED': '已取消',
-      'NO_SHOW': '未到店',
-      'RESCHEDULED': '已改期',
-    };
-    return statusTextMap[status] || status;
-  };
-
-  // 处理日期单元格渲染
+  // 日期单元格渲染
   const dateCellRender = (date: Moment) => {
     const dateStr = date.format('YYYY-MM-DD');
-    const dailyEvents = events.filter(event => event.date === dateStr);
+    const dateEvents = events.filter(event => event.date === dateStr);
     
     return (
-      <ul className="booking-events">
-        {dailyEvents.map(event => (
+      <ul className={styles.events}>
+        {dateEvents.map(event => (
           <li key={event.id}>
-            <Badge
-              color={event.color}
+            <Badge 
+              status={statusColorMap[event.status] as any || 'default'} 
               text={
-                <Tooltip title={`${event.customerName} - ${event.photographerName}`}>
-                  <span className="event-text" onClick={() => showEventDetails(event)}>
-                    {event.startTime.substring(0, 5)}-{event.endTime.substring(0, 5)} {event.title}
+                <Tooltip title={`${event.customerName} - ${event.startTime}-${event.endTime}`}>
+                  <span className={styles.eventText} onClick={() => handleEventClick(event)}>
+                    {/* Use notes or construct a title */}
+                    {event.notes || `${event.customerName} (${event.startTime})`}
                   </span>
                 </Tooltip>
-              }
+              } 
             />
           </li>
         ))}
@@ -222,261 +141,288 @@ const BookingCalendar: React.FC = () => {
     );
   };
 
-  // 显示预约详情
-  const showEventDetails = (event: BookingEvent) => {
-    setSelectedEvent(event);
-    setDetailModalVisible(true);
-  };
-
-  // 选择日期处理
-  const handleDateSelect = (date: Moment) => {
+  // 处理日期选择
+  const handleSelect = (date: Moment) => {
     setSelectedDate(date);
-    setCreateModalVisible(true);
+    setMode('create');
+    setCurrentEvent(null);
+    form.resetFields();
+    
+    // 设置默认日期和时间
     form.setFieldsValue({
-      date: date,
+      date: date.format('YYYY-MM-DD'),
+      timeRange: [moment('09:00', 'HH:mm'), moment('10:00', 'HH:mm')],
     });
+    
+    setVisible(true);
   };
 
-  // 切换月份
+  // 处理月份变化
   const handlePanelChange = (date: Moment) => {
     setCurrentDate(date);
+    fetchCalendarData(date);
   };
 
-  // 创建新预约
-  const handleCreateBooking = () => {
-    form.validateFields().then((values: BookingFormValues) => {
-      // 通常这里会调用API保存预约
-      message.success('创建预约功能正在开发中');
-      setCreateModalVisible(false);
-      form.resetFields();
+  // 处理事件点击
+  const handleEventClick = (event: Booking) => { // Parameter is now Booking
+    setMode('edit');
+    setCurrentEvent(event);
+    form.setFieldsValue({
+      customerName: event.customerName,
+      customerPhone: event.customerPhone,
+      date: moment(event.date),
+      timeRange: [
+        moment(event.startTime, 'HH:mm'),
+        moment(event.endTime, 'HH:mm'),
+      ],
+      photographerId: event.photographerId,
+      studioId: event.studioId,
+      shootingType: event.shootingType,
+      status: event.status,
+      notes: event.notes, // Use notes field from Booking
     });
+    setVisible(true);
   };
 
-  // 筛选处理
-  const handleFilterChange = (key: string, value: number | string | null) => {
-    setFilter({
-      ...filter,
-      [key]: value,
-    });
+  // 处理表单提交
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
+      setLoading(true);
+
+      const bookingData = {
+        customerName: values.customerName,
+        customerPhone: values.customerPhone,
+        date: moment.isMoment(values.date) ? values.date.format('YYYY-MM-DD') : values.date,
+        startTime: values.timeRange[0].format('HH:mm'),
+        endTime: values.timeRange[1].format('HH:mm'),
+        photographerId: values.photographerId,
+        studioId: values.studioId,
+        shootingType: values.shootingType,
+        status: values.status,
+        notes: values.notes, // notes field from form
+      };
+      
+      if (mode === 'create') {
+        await createBooking(bookingData);
+        message.success('预约创建成功');
+      } else if (mode === 'edit' && currentEvent) {
+        await updateBooking(currentEvent.id, bookingData);
+        message.success('预约更新成功');
+      }
+      
+      setVisible(false);
+      fetchCalendarData(currentDate);
+    } catch (error) {
+      console.error('保存预约失败:', error);
+      // Provide more specific error message if possible
+      const errorMsg = error instanceof Error ? error.message : '保存预约失败';
+      message.error(errorMsg);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // 渲染日历头部
-  const calendarHeader = ({ value, onChange }: any) => {
-    return (
-      <div className="calendar-header">
-        <div className="month-selector">
-          <Button onClick={() => onChange(value.clone().subtract(1, 'month'))}>
-            上个月
-          </Button>
-          <span className="current-month">{value.format('YYYY年MM月')}</span>
-          <Button onClick={() => onChange(value.clone().add(1, 'month'))}>
-            下个月
-          </Button>
-        </div>
-        <Button onClick={() => onChange(moment())}>
-          今天
-        </Button>
-      </div>
-    );
-  };
-
-  // 渲染预约详情
-  const renderEventDetails = () => {
-    if (!selectedEvent) return null;
+  // 处理删除预约
+  const handleDelete = async () => {
+    if (!currentEvent) return;
     
-    return (
-      <div className="event-details">
-        <p>
-          <strong>客户:</strong> {selectedEvent.customerName}
-        </p>
-        <p>
-          <strong>时间:</strong> {selectedEvent.date} {selectedEvent.startTime} - {selectedEvent.endTime}
-        </p>
-        <p>
-          <strong>摄影师:</strong> {selectedEvent.photographerName}
-        </p>
-        <p>
-          <strong>工作室:</strong> {selectedEvent.studioName}
-        </p>
-        <p>
-          <strong>状态:</strong> <Tag color={selectedEvent.color}>{getStatusText(selectedEvent.status)}</Tag>
-        </p>
-      </div>
-    );
+    try {
+      setLoading(true);
+      await deleteBooking(currentEvent.id);
+      message.success('预约删除成功');
+      setVisible(false);
+      fetchCalendarData(currentDate);
+    } catch (error) {
+      console.error('删除预约失败:', error);
+      message.error('删除预约失败');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  return (
-    <div className="booking-calendar-page">
-      <Card
-        title="预约日历"
-        extra={
-          <div className="calendar-filters">
-            <Select
-              placeholder="选择摄影师"
-              allowClear
-              style={{ width: 150, marginRight: 16 }}
-              onChange={(value: number | null) => handleFilterChange('photographerId', value)}
-            >
-              {photographers.map(photographer => (
-                <Select.Option key={photographer.id} value={photographer.id}>
-                  {photographer.name}
-                </Select.Option>
-              ))}
-            </Select>
-            
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => {
-                setSelectedDate(moment());
-                setCreateModalVisible(true);
-                form.setFieldsValue({
-                  date: moment(),
-                });
-              }}
-            >
-              新增预约
-            </Button>
-          </div>
-        }
-      >
-        <Spin spinning={loading}>
-          <div className="status-legend">
-            <div className="legend-title">状态图例:</div>
-            {Object.entries(getStatusText('')).map(([key]) => (
-              key && (
-                <Tag key={key} color={getStatusColor(key)}>
-                  {getStatusText(key)}
-                </Tag>
-              )
-            ))}
-          </div>
-          
-          <Calendar
-            value={currentDate}
-            onSelect={handleDateSelect}
-            onPanelChange={handlePanelChange}
-            dateCellRender={dateCellRender}
-            headerRender={calendarHeader}
-          />
-        </Spin>
-      </Card>
-      
-      {/* 预约详情模态框 */}
-      <Modal
-        title="预约详情"
-        visible={detailModalVisible}
-        onCancel={() => setDetailModalVisible(false)}
-        footer={[
-          <Space key="actions">
-            <Button
-              onClick={() => {
-                setDetailModalVisible(false);
-                window.open(`/booking/edit/${selectedEvent?.id}`, '_blank');
-              }}
-              icon={<EditOutlined />}
-              type="primary"
-            >
-              编辑预约
-            </Button>
-            <Button
-              onClick={() => setDetailModalVisible(false)}
-            >
-              关闭
-            </Button>
-          </Space>
-        ]}
-      >
-        {renderEventDetails()}
-      </Modal>
-      
-      {/* 创建预约模态框 */}
-      <Modal
-        title="创建预约"
-        visible={createModalVisible}
-        onCancel={() => setCreateModalVisible(false)}
-        onOk={handleCreateBooking}
-        okText="创建"
-        cancelText="取消"
-      >
-        <Form
-          form={form}
-          layout="vertical"
-        >
+  // 渲染预约表单
+  const renderBookingForm = () => (
+    <Form form={form} layout="vertical">
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            name="customerName"
+            label="客户姓名"
+            rules={[{ required: true, message: '请输入客户姓名' }]}
+          >
+            <Input placeholder="请输入客户姓名" />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="customerPhone"
+            label="联系电话"
+            rules={[{ required: true, message: '请输入联系电话' }]}
+          >
+            <Input placeholder="请输入联系电话" />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
           <Form.Item
             name="date"
             label="预约日期"
-            rules={[{ required: true, message: '请选择日期' }]}
+            rules={[{ required: true, message: '请选择预约日期' }]}
           >
-            <DatePicker style={{ width: '100%' }} disabled />
+            <Input disabled />
           </Form.Item>
-          
+        </Col>
+        <Col span={12}>
           <Form.Item
             name="timeRange"
             label="时间段"
             rules={[{ required: true, message: '请选择时间段' }]}
           >
-            {/* 直接使用RangePicker组件处理时间范围 */}
-            <DatePicker.RangePicker
-              picker="time"
-              format="HH:mm"
-              style={{ width: '100%' }}
+            <RangePicker // Use the directly imported RangePicker
+              picker="time" // Specify time picker mode
+              format="HH:mm" 
+              minuteStep={15}
             />
           </Form.Item>
-          
-          <Form.Item
-            name="customerId"
-            label="客户"
-            rules={[{ required: true, message: '请选择客户' }]}
-          >
-            <Select
-              placeholder="选择客户"
-              showSearch
-              optionFilterProp="children"
-            >
-              {/* 这里应该动态加载客户列表 */}
-            </Select>
-          </Form.Item>
-          
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
           <Form.Item
             name="photographerId"
             label="摄影师"
-            rules={[{ required: true, message: '请选择摄影师' }]}
           >
-            <Select
-              placeholder="选择摄影师"
-              optionFilterProp="children"
-            >
-              {photographers.map(photographer => (
-                <Select.Option key={photographer.id} value={photographer.id}>
-                  {photographer.name}
-                </Select.Option>
+            <Select placeholder="请选择摄影师" allowClear>
+              {photographers.map(item => (
+                <Option key={item.value} value={item.value}>{item.label}</Option>
               ))}
             </Select>
           </Form.Item>
-          
+        </Col>
+        <Col span={12}>
           <Form.Item
             name="studioId"
             label="工作室"
-            rules={[{ required: true, message: '请选择工作室' }]}
           >
-            <Select
-              placeholder="选择工作室"
-            >
-              {/* 这里应该动态加载工作室列表 */}
+            <Select placeholder="请选择工作室" allowClear>
+              {studios.map(item => (
+                <Option key={item.value} value={item.value}>{item.label}</Option>
+              ))}
             </Select>
           </Form.Item>
-          
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
           <Form.Item
-            name="notes"
-            label="备注"
+            name="shootingType"
+            label="拍摄类型"
+            rules={[{ required: true, message: '请选择拍摄类型' }]}
           >
-            <Input.TextArea rows={3} placeholder="请输入预约备注信息" />
+            <Select placeholder="请选择拍摄类型">
+              {shootingTypes.map(type => (
+                <Option key={type.value} value={type.value}>{type.label}</Option>
+              ))}
+            </Select>
           </Form.Item>
-        </Form>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="status"
+            label="状态"
+            initialValue="pending"
+            rules={[{ required: true, message: '请选择状态' }]}
+          >
+            <Select placeholder="请选择状态">
+              <Option value="pending">待确认</Option>
+              <Option value="confirmed">已确认</Option>
+              <Option value="cancelled">已取消</Option>
+              <Option value="completed">已完成</Option>
+              <Option value="in_progress">进行中</Option>
+              <Option value="no_show">未到店</Option>
+              <Option value="rescheduled">已改期</Option>
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+      <Form.Item name="notes" label="备注">
+        <Input.TextArea rows={4} placeholder="请输入备注" />
+      </Form.Item>
+    </Form>
+  );
+
+  return (
+    <div className="booking-calendar-container">
+      <Card 
+        title={
+          <div className={styles.calendarHeader}>
+            <Title level={4}>预约日历</Title>
+            <div>
+              <Button 
+                type="link" 
+                icon={<LeftOutlined />} 
+                onClick={() => handlePanelChange(currentDate.clone().subtract(1, 'month'))} 
+              />
+              {currentDate.format('YYYY年MM月')}
+              <Button 
+                type="link" 
+                icon={<RightOutlined />} 
+                onClick={() => handlePanelChange(currentDate.clone().add(1, 'month'))} 
+              />
+            </div>
+            <Button 
+              type="primary" 
+              icon={<PlusOutlined />} 
+              onClick={() => handleSelect(moment())} 
+            >
+              新增预约
+            </Button>
+          </div>
+        }
+        bordered={false}
+        loading={loading}
+      >
+        <Calendar 
+          dateCellRender={dateCellRender} 
+          onSelect={handleSelect}
+          onPanelChange={handlePanelChange}
+          value={currentDate}
+        />
+      </Card>
+      
+      <Modal
+        title={mode === 'create' ? '新增预约' : '编辑预约'}
+        open={visible}
+        onCancel={() => setVisible(false)}
+        footer={[
+          mode === 'edit' && (
+            <Popconfirm
+              key="delete"
+              title="确定要删除这个预约吗?"
+              onConfirm={handleDelete}
+              okText="确定"
+              cancelText="取消"
+            >
+              <Button danger loading={loading}>删除</Button>
+            </Popconfirm>
+          ),
+          <Button key="cancel" onClick={() => setVisible(false)}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+            保存
+          </Button>,
+        ].filter(Boolean)}
+        width={720}
+        destroyOnClose
+      >
+        {renderBookingForm()}
       </Modal>
     </div>
   );
 };
 
 export default BookingCalendar;
+

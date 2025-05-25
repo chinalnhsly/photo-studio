@@ -1,5 +1,19 @@
 import request from '../utils/request';
 
+export interface DashboardData {
+  bookingCount: number;
+  customerCount: number;
+  photographerCount: number;
+  studioCount: number;
+  recentBookings: any[];
+  keyMetrics: any[];
+}
+
+// 获取仪表盘数据
+export async function getDashboardData(): Promise<{ data: DashboardData }> {
+  return request('/api/dashboard/overview');
+}
+
 // 获取仪表盘统计数据
 export async function getDashboardStats(params?: { startDate: string; endDate: string }) {
   return request('/api/dashboard/stats', {

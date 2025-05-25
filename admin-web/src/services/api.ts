@@ -1,4 +1,5 @@
 import * as requestMethods from '../utils/requestMethods';
+import request from '@/utils/request';
 
 // 基础API前缀
 const API_PREFIX = '/api';
@@ -162,8 +163,12 @@ export default {
       requestMethods.get(`${API_PREFIX}/gallery/photos`, params),
     getPhotoDetail: (id: string) => 
       requestMethods.get(`${API_PREFIX}/gallery/photos/${id}`),
-    uploadPhotos: (formData: FormData) => 
-      requestMethods.upload(`${API_PREFIX}/gallery/upload`, formData),
+    uploadPhotos: (formData: FormData) =>
+      request(`${API_PREFIX}/gallery/upload`, {
+        method: 'POST',
+        data: formData,
+        requestType: 'form',
+      }),
     updatePhoto: (id: string, data: any) => 
       requestMethods.put(`${API_PREFIX}/gallery/photos/${id}`, data),
     deletePhoto: (id: string) => 

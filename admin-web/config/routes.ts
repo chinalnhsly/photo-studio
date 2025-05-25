@@ -17,9 +17,15 @@ export default [
       {
         path: '/booking',
         name: '预约管理',
+        icon: 'CalendarOutlined', 
         routes: [
+          { path: '/booking', redirect: '/booking/list' }, 
           { path: '/booking/list', component: 'booking/BookingList', name: '预约列表' },
           { path: '/booking/calendar', component: 'booking/BookingCalendar', name: '预约日历' },
+          { path: '/booking/create', component: 'booking/BookingForm', name: '新建预约', hideInMenu: true },
+          { path: '/booking/edit/:id', component: 'booking/BookingForm', name: '编辑预约', hideInMenu: true },
+          { path: '/booking/detail/:id', component: 'booking/BookingDetail', name: '预约详情', hideInMenu: true },
+          { path: '/booking/analytics', component: 'booking/BookingAnalytics', name: '预约分析' },
         ],
       },
       // 摄影师管理路由

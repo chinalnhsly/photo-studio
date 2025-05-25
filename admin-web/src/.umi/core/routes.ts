@@ -39,7 +39,13 @@ export function getRoutes() {
       {
         "path": "/booking",
         "name": "预约管理",
+        "icon": "CalendarOutlined",
         "routes": [
+          {
+            "path": "/booking",
+            "redirect": "/booking/list",
+            "exact": true
+          },
           {
             "path": "/booking/list",
             "component": require('/home/liyong/photostudio/admin-web/src/pages/booking/BookingList').default,
@@ -50,6 +56,33 @@ export function getRoutes() {
             "path": "/booking/calendar",
             "component": require('/home/liyong/photostudio/admin-web/src/pages/booking/BookingCalendar').default,
             "name": "预约日历",
+            "exact": true
+          },
+          {
+            "path": "/booking/create",
+            "component": require('/home/liyong/photostudio/admin-web/src/pages/booking/BookingForm').default,
+            "name": "新建预约",
+            "hideInMenu": true,
+            "exact": true
+          },
+          {
+            "path": "/booking/edit/:id",
+            "component": require('/home/liyong/photostudio/admin-web/src/pages/booking/BookingForm').default,
+            "name": "编辑预约",
+            "hideInMenu": true,
+            "exact": true
+          },
+          {
+            "path": "/booking/detail/:id",
+            "component": require('/home/liyong/photostudio/admin-web/src/pages/booking/BookingDetail').default,
+            "name": "预约详情",
+            "hideInMenu": true,
+            "exact": true
+          },
+          {
+            "path": "/booking/analytics",
+            "component": require('/home/liyong/photostudio/admin-web/src/pages/booking/BookingAnalytics').default,
+            "name": "预约分析",
             "exact": true
           }
         ]

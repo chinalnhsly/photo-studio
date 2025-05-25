@@ -27,7 +27,6 @@ import {
   Modal,
   Descriptions
 } from 'antd';
-//import type { FilterOptionConfig, OptionFilterProp } from 'antd/lib/select';
 import {
   UserOutlined,
   CalendarOutlined,
@@ -49,24 +48,32 @@ import {
 import { useParams, useLocation } from 'umi';
 import { history } from '../../utils/compatibility';
 import moment from 'moment';
-import { 
-  checkAvailability, 
-  createBooking, 
-  getBookingDetail, 
+import {
+  checkAvailability,
+  createBooking,
+  getBookingDetail,
   updateBooking,
-  getAvailableTimeslots,
-  BookingDetailResponse, 
-  AvailableTimeslotsResponse, 
+  getAvailableTimeSlots,
+  BookingDetailResponse,
+  AvailableTimeslotsResponse,
   AvailabilityCheckResponse,
-  CreateBookingResponse
+  CreateBookingResponse,
+  TimeSlot,
+  Booking
 } from '../../services/booking';
+import {
+  getPhotographerOptions,
+  getStudioOptions,
+  getCustomerOptions,
+  getPackageOptions,
+} from '../../services/common';
 import './BookingForm.scss';
 
 const { Step } = Steps;
 const { Option } = Select;
 const { TextArea } = Input;
 const { Title, Text } = Typography;
-const { RangePicker } = TimePicker  as any;
+const { RangePicker } = DatePicker;
 
 // 预约创建/编辑表单
 const BookingForm: React.FC = () => {
@@ -78,7 +85,7 @@ const BookingForm: React.FC = () => {
   const initialPhotographerId = queryParams.get('photographerId');
   const initialStudioId = queryParams.get('studioId');
   const initialDate = queryParams.get('date');
-  
+
   const isEdit = !!id;
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -90,7 +97,7 @@ const BookingForm: React.FC = () => {
     email: string;
     avatar: null | string;
   }
-  
+
   const [customerSearchResults, setCustomerSearchResults] = useState<Customer[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
   const [customerSearchLoading, setCustomerSearchLoading] = useState(false);
@@ -101,7 +108,7 @@ const BookingForm: React.FC = () => {
     rating: number;
     avatar: null | string;
   }
-  
+
   const [photographerOptions, setPhotographerOptions] = useState<Photographer[]>([]);
   interface Studio {
     id: number;
@@ -109,20 +116,14 @@ const BookingForm: React.FC = () => {
     address: string;
     equipments: string[];
   }
-  
+
   const [studioOptions, setStudioOptions] = useState<Studio[]>([]);
   const [photographerLoading, setPhotographerLoading] = useState(false);
   const [studioLoading, setStudioLoading] = useState(false);
-  interface AvailableTimeslot {
-    isAvailable: boolean;
-    startTime: string;
-    endTime: string;
-    // Add other properties used in your code if needed
-  }
-  
-  const [availableTimeSlots, setAvailableTimeSlots] = useState<AvailableTimeslot[]>([]);
+
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<TimeSlot[]>([]);
   const [timeSlotLoading, setTimeSlotLoading] = useState(false);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | null>(null);
   const [availabilityChecked, setAvailabilityChecked] = useState(false);
   const [availabilityStatus, setAvailabilityStatus] = useState<'available' | 'conflict' | null>(null);
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
@@ -130,8 +131,9 @@ const BookingForm: React.FC = () => {
     type: string;
     startTime: string;
     endTime: string;
+    resourceName?: string;
   }
-  
+
   const [conflicts, setConflicts] = useState<Conflict[]>([]);
   const [shootingTypeOptions, setShootingTypeOptions] = useState([
     '个人写真', '婚纱摄影', '全家福', '儿童摄影', '商业摄影', '活动拍摄', '证件照'
@@ -145,7 +147,7 @@ const BookingForm: React.FC = () => {
     duration: number;
     includedServices: string[];
   }
-  
+
   const [packageOptions, setPackageOptions] = useState<Package[]>([]);
   const [packageLoading, setPackageLoading] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -171,7 +173,7 @@ const BookingForm: React.FC = () => {
   // 当日期或摄影师或工作室变化时，更新可用时间段
   useEffect(() => {
     const { date, photographerId, studioId } = form.getFieldsValue(['date', 'photographerId', 'studioId']);
-    
+
     if (date && photographerId && studioId) {
       fetchAvailableTimeSlots(date.format('YYYY-MM-DD'), photographerId, studioId);
     }
@@ -180,46 +182,46 @@ const BookingForm: React.FC = () => {
   // 获取初始数据
   const fetchInitialData = async () => {
     setLoading(true);
-    
+
     try {
       // 加载摄影师数据
       await fetchPhotographers();
-      
+
       // 加载工作室数据
       await fetchStudios();
-      
+
       // 加载套餐数据
       await fetchPackages();
-      
+
       // 如果有URL参数，设置初始值
       if (initialCustomerId) {
         await fetchCustomerById(initialCustomerId);
       }
-      
+
       const initialFormValues: any = {};
-      
+
       if (initialPhotographerId) {
         initialFormValues.photographerId = Number(initialPhotographerId);
       }
-      
+
       if (initialStudioId) {
         initialFormValues.studioId = Number(initialStudioId);
       }
-      
+
       if (initialDate) {
         initialFormValues.date = moment(initialDate);
       } else {
         // 默认选择明天日期
         initialFormValues.date = moment().add(1, 'days');
       }
-      
+
       form.setFieldsValue(initialFormValues);
-      
+
       // 如果有初始摄影师、工作室和日期，获取可用时间段
       if (initialPhotographerId && initialStudioId && initialFormValues.date) {
         fetchAvailableTimeSlots(
-          initialFormValues.date.format('YYYY-MM-DD'), 
-          Number(initialPhotographerId), 
+          initialFormValues.date.format('YYYY-MM-DD'),
+          Number(initialPhotographerId),
           Number(initialStudioId)
         );
       }
@@ -237,7 +239,7 @@ const BookingForm: React.FC = () => {
     try {
       const response: BookingDetailResponse = await getBookingDetail(Number(id));
       const bookingData = response.data;
-      
+
       // 设置选中的客户
       setSelectedCustomer({
         id: bookingData.customerId,
@@ -246,14 +248,14 @@ const BookingForm: React.FC = () => {
         email: bookingData.customerEmail,
         avatar: bookingData.customerAvatar,
       });
-      
+
       // 加载摄影师和工作室选项
       await Promise.all([
         fetchPhotographers(),
         fetchStudios(),
         fetchPackages()
       ]);
-      
+
       // 设置表单值
       form.setFieldsValue({
         customerId: bookingData.customerId,
@@ -261,7 +263,7 @@ const BookingForm: React.FC = () => {
         studioId: bookingData.studioId,
         date: moment(bookingData.date),
         timeRange: [
-          moment(bookingData.startTime, 'HH:mm'), 
+          moment(bookingData.startTime, 'HH:mm'),
           moment(bookingData.endTime, 'HH:mm')
         ],
         shootingType: bookingData.shootingType,
@@ -269,25 +271,26 @@ const BookingForm: React.FC = () => {
         notes: bookingData.notes,
         staffNotes: bookingData.staffNotes,
       });
-      
+
       // 如果有套餐，设置选中的套餐
       if (bookingData.packageId) {
-        const packageInfo = packageOptions.find(pkg => pkg.id === bookingData.packageId);
+        const loadedPackages = await fetchPackages();
+        const packageInfo = loadedPackages.find(pkg => pkg.id === bookingData.packageId);
         if (packageInfo) {
           setSelectedPackage(packageInfo);
           calculatePrice(packageInfo);
         }
       }
-      
+
       // 获取可用时间段
       if (bookingData.date && bookingData.photographerId && bookingData.studioId) {
         fetchAvailableTimeSlots(
-          bookingData.bookingDate || bookingData.date, 
-          bookingData.photographerId, 
+          bookingData.date,
+          bookingData.photographerId,
           bookingData.studioId
         );
       }
-      
+
     } catch (error) {
       console.error('获取预约详情失败', error);
       message.error('无法加载预约详情，请刷新页面重试');
@@ -302,7 +305,7 @@ const BookingForm: React.FC = () => {
     try {
       // 模拟API调用，获取摄影师列表
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // 示例数据
       const mockPhotographers = [
         { id: 1, name: '李明', specialty: ['婚纱摄影', '写真摄影'], rating: 4.8, avatar: null },
@@ -310,7 +313,7 @@ const BookingForm: React.FC = () => {
         { id: 3, name: '张艺', specialty: ['商业摄影', '形象照'], rating: 4.9, avatar: null },
         { id: 4, name: '赵勇', specialty: ['婚纱摄影', '活动拍摄'], rating: 4.6, avatar: null },
       ];
-      
+
       setPhotographerOptions(mockPhotographers);
     } catch (error) {
       console.error('获取摄影师失败', error);
@@ -326,14 +329,14 @@ const BookingForm: React.FC = () => {
     try {
       // 模拟API调用，获取工作室列表
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // 示例数据
       const mockStudios = [
         { id: 1, name: '阳光摄影工作室', address: '北京市海淀区中关村大街1号', equipments: ['背景布', '柔光灯', '反光板'] },
         { id: 2, name: '星空摄影基地', address: '北京市朝阳区建国路88号', equipments: ['专业闪光灯', '大型摄影棚', '水下摄影设备'] },
         { id: 3, name: '艺术空间摄影', address: '北京市西城区西单北大街120号', equipments: ['复古场景', '自然光摄影区', '中式风格布景'] },
       ];
-      
+
       setStudioOptions(mockStudios);
     } catch (error) {
       console.error('获取工作室失败', error);
@@ -349,7 +352,7 @@ const BookingForm: React.FC = () => {
     try {
       // 模拟API调用，获取套餐列表
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // 示例数据
       const mockPackages = [
         {
@@ -389,11 +392,13 @@ const BookingForm: React.FC = () => {
           includedServices: ['15张精修照片', '提供电子版', '儿童玩具道具'],
         },
       ];
-      
+
       setPackageOptions(mockPackages);
+      return mockPackages;
     } catch (error) {
       console.error('获取套餐列表失败', error);
       message.error('获取套餐列表失败');
+      return [];
     } finally {
       setPackageLoading(false);
     }
@@ -405,7 +410,7 @@ const BookingForm: React.FC = () => {
     try {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // 示例数据
       const mockCustomer = {
         id: Number(customerId),
@@ -417,12 +422,12 @@ const BookingForm: React.FC = () => {
         birthday: '1990-01-15',
         tags: ['重要客户', '婚纱客户']
       };
-      
+
       setSelectedCustomer(mockCustomer);
-      
+
       // 设置客户ID到表单
       form.setFieldsValue({ customerId: Number(customerId) });
-      
+
     } catch (error) {
       console.error('获取客户信息失败', error);
       message.error('获取客户信息失败');
@@ -437,24 +442,24 @@ const BookingForm: React.FC = () => {
       setCustomerSearchResults([]);
       return;
     }
-    
+
     setCustomerSearchLoading(true);
-    
+
     try {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // 示例数据
       const mockResults = [
         { id: 101, name: '张小明', phoneNumber: '13800138000', email: 'zhangxm@example.com', avatar: null },
         { id: 102, name: '李明', phoneNumber: '13900139000', email: 'liming@example.com', avatar: null },
         { id: 103, name: '王小红', phoneNumber: '13700137000', email: 'wangxh@example.com', avatar: null },
-      ].filter(item => 
-        item.name.includes(value) || 
-        item.phoneNumber.includes(value) || 
+      ].filter(item =>
+        item.name.includes(value) ||
+        item.phoneNumber.includes(value) ||
         item.email.includes(value)
       );
-      
+
       setCustomerSearchResults(mockResults);
     } catch (error) {
       console.error('搜索客户失败', error);
@@ -486,24 +491,16 @@ const BookingForm: React.FC = () => {
   // 获取可用时间段
   const fetchAvailableTimeSlots = async (date: string, photographerId: number, studioId: number) => {
     if (!date || !photographerId || !studioId) return;
-    
+
     setTimeSlotLoading(true);
     try {
-      const response: AvailableTimeslotsResponse = await getAvailableTimeslots({
+      const response: AvailableTimeslotsResponse = await getAvailableTimeSlots({
         date,
         photographerId,
         studioId
       });
-      
-      // 确保类型兼容
-      const slots: AvailableTimeslot[] = response.data.timeSlots.map(slot => ({
-        startTime: slot.startTime,
-        endTime: slot.endTime,
-        isAvailable: slot.available,
-        photographerId: slot.photographerId,
-        photographerName: slot.photographerName
-      }));
-      setAvailableTimeSlots(slots);
+
+      setAvailableTimeSlots(response.data || []);
     } catch (error) {
       console.error('获取可用时间段失败', error);
       message.error('获取可用时间段失败');
@@ -514,11 +511,20 @@ const BookingForm: React.FC = () => {
   };
 
   // 选择时间段
-  const handleSelectTimeSlot = (slot: any) => {
-    if (slot.isAvailable) {
-      setSelectedTimeSlot(slot);
-      form.setFieldsValue({
-        timeRange: [moment(slot.startTime, 'HH:mm'), moment(slot.endTime, 'HH:mm')]
+  const handleSelectTimeSlot = (slot: TimeSlot) => {
+    setSelectedTimeSlot(slot);
+    form.setFieldsValue({
+      timeRange: [moment(slot.startTime, 'HH:mm'), moment(slot.endTime, 'HH:mm')]
+    });
+    const currentDate = form.getFieldValue('date');
+    if (currentDate && moment.isMoment(currentDate)) {
+      checkAvailability({
+        date: currentDate.format('YYYY-MM-DD'),
+        startTime: slot.startTime,
+        endTime: slot.endTime,
+        photographerId: form.getFieldValue('photographerId'),
+        studioId: form.getFieldValue('studioId'),
+        ...(isEdit ? { excludeBookingId: Number(id) } : {})
       });
     }
   };
@@ -526,16 +532,16 @@ const BookingForm: React.FC = () => {
   // 检查可用性
   const handleCheckAvailability = async () => {
     const formValues = await form.validateFields([
-      'date', 
-      'photographerId', 
-      'studioId', 
+      'date',
+      'photographerId',
+      'studioId',
       'timeRange'
     ]);
-    
+
     if (!formValues) return;
-    
+
     setAvailabilityLoading(true);
-    
+
     try {
       const checkResult: AvailabilityCheckResponse = await checkAvailability({
         date: formValues.date.format('YYYY-MM-DD'),
@@ -543,26 +549,24 @@ const BookingForm: React.FC = () => {
         studioId: formValues.studioId,
         startTime: formValues.timeRange[0].format('HH:mm'),
         endTime: formValues.timeRange[1].format('HH:mm'),
-        ...(isEdit ? { bookingId: Number(id) } : {})
+        ...(isEdit ? { excludeBookingId: Number(id) } : {})
       });
-      
+
       setAvailabilityChecked(true);
-      
+
       if (checkResult.data.available) {
         setAvailabilityStatus('available');
         setConflicts([]);
       } else {
-        message.error(`预约时间冲突: ${checkResult.data.conflictReason || '选择的时间已被预订'}`);
+        message.error(`预约时间冲突: ${checkResult.data.reason || '选择的时间已被预订'}`);
         setAvailabilityStatus('conflict');
-        // 正确处理冲突数据
-        const conflictData: Conflict[] = checkResult.data.alternativeTimeSlots 
-          ? checkResult.data.alternativeTimeSlots.flatMap(alt => 
-              alt.timeSlots.map(slot => ({
-                type: 'time',
-                startTime: slot.startTime,
-                endTime: slot.endTime
-              }))
-            )
+        const conflictData: Conflict[] = checkResult.data.conflicts
+          ? checkResult.data.conflicts.map(conflict => ({
+            type: conflict.type,
+            startTime: conflict.startTime,
+            endTime: conflict.endTime,
+            resourceName: conflict.resourceName,
+          }))
           : [];
         setConflicts(conflictData);
       }
@@ -580,7 +584,7 @@ const BookingForm: React.FC = () => {
     const selectedPkg = packageOptions.find(pkg => pkg.id === packageId);
     setSelectedPackage(selectedPkg ?? null);
     calculatePrice(selectedPkg);
-    
+
     // 如果套餐中指定了拍摄类型，自动选择
     if (selectedPkg && selectedPkg.shootingTypes && selectedPkg.shootingTypes.length === 1) {
       form.setFieldsValue({ shootingType: selectedPkg.shootingTypes[0] });
@@ -598,12 +602,12 @@ const BookingForm: React.FC = () => {
       });
       return;
     }
-    
+
     const basePrice = packageInfo.price;
     const additionalFees = 0; // 可以根据各种条件计算附加费用
     const discountAmount = 0; // 可以根据会员等级、优惠券等计算折扣
     const totalPrice = basePrice + additionalFees - discountAmount;
-    
+
     setPriceDetails({
       basePrice,
       additionalFees,
@@ -616,7 +620,7 @@ const BookingForm: React.FC = () => {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      
+
       const submitData = {
         ...values,
         date: values.date.format('YYYY-MM-DD'),
@@ -624,9 +628,9 @@ const BookingForm: React.FC = () => {
         endTime: values.timeRange[1].format('HH:mm'),
         totalPrice: priceDetails.totalPrice
       };
-      
+
       setSubmitting(true);
-      
+
       if (isEdit) {
         await updateBooking(Number(id), submitData);
         message.success('预约更新成功');
@@ -636,7 +640,7 @@ const BookingForm: React.FC = () => {
         message.success('预约创建成功');
         setFormSubmitted(true);
         setBookingCreated(true);
-        setBookingNumber(response.data.bookingNumber);
+        setBookingNumber(response.data.bookingNumber || '');
       }
     } catch (error) {
       console.error('提交预约失败', error);
@@ -660,11 +664,11 @@ const BookingForm: React.FC = () => {
       } else if (currentStep === 1) {
         // 验证预约时间和资源
         await form.validateFields(['date', 'photographerId', 'studioId', 'timeRange']);
-        
+
         // 检查可用性
         if (!availabilityChecked || availabilityStatus !== 'available') {
           await handleCheckAvailability();
-          
+
           // 如果检查后依然有冲突，阻止前进
           if (availabilityStatus === 'conflict') {
             return;
@@ -674,7 +678,7 @@ const BookingForm: React.FC = () => {
         // 验证服务信息
         await form.validateFields(['shootingType', 'packageId']);
       }
-      
+
       // 进入下一步
       setCurrentStep(currentStep + 1);
     } catch (error) {
@@ -712,13 +716,13 @@ const BookingForm: React.FC = () => {
         >
           <Input type="hidden" />
         </Form.Item>
-        
+
         {selectedCustomer ? (
           <div className="selected-customer">
             <div className="customer-info">
-              <Avatar 
-                size={64} 
-                icon={<UserOutlined />} 
+              <Avatar
+                size={64}
+                icon={<UserOutlined />}
                 src={selectedCustomer.avatar}
               />
               <div className="customer-details">
@@ -729,7 +733,7 @@ const BookingForm: React.FC = () => {
                 </div>
               </div>
             </div>
-            <Button 
+            <Button
               onClick={handleResetCustomer}
               icon={<CloseOutlined />}
             >
@@ -742,7 +746,7 @@ const BookingForm: React.FC = () => {
               <div className="empty-icon"><UserOutlined /></div>
               <div className="empty-text">请搜索并选择客户</div>
             </div>
-            
+
             <div className="customer-search">
               <Input.Search
                 placeholder="输入客户姓名或手机号搜索"
@@ -751,19 +755,19 @@ const BookingForm: React.FC = () => {
                 onSearch={handleSearchCustomer}
                 style={{ width: 300 }}
               />
-              
+
               <div className="search-results">
                 {customerSearchLoading && (
                   <div className="loading-container">
                     <Spin />
                   </div>
                 )}
-                
+
                 {!customerSearchLoading && customerSearchResults.length > 0 && (
                   <div className="customer-list">
                     {customerSearchResults.map(customer => (
-                      <div 
-                        key={customer.id} 
+                      <div
+                        key={customer.id}
                         className="customer-item"
                         onClick={() => handleSelectCustomer(customer)}
                       >
@@ -776,14 +780,14 @@ const BookingForm: React.FC = () => {
                     ))}
                   </div>
                 )}
-                
+
                 {!customerSearchLoading && customerSearchResults.length === 0 && (
                   <div className="no-results">
-                    <Empty 
-                      description="未找到客户" 
+                    <Empty
+                      description="未找到客户"
                     />
-                    <Button 
-                      type="primary" 
+                    <Button
+                      type="primary"
                       icon={<PlusOutlined />}
                       onClick={handleCreateCustomer}
                       style={{ marginTop: 16 }}
@@ -811,50 +815,50 @@ const BookingForm: React.FC = () => {
               label="预约日期"
               rules={[{ required: true, message: '请选择预约日期' }]}
             >
-              <DatePicker 
-              style={{ width: '100%' }}
-              format="YYYY-MM-DD"
-              disabledDate={(current: moment.Moment | null): boolean => {
-                // 不能选择今天之前的日期
-                return Boolean(current && current < moment().startOf('day'));
-              }}
-              placeholder="选择预约日期"
+              <DatePicker
+                style={{ width: '100%' }}
+                format="YYYY-MM-DD"
+                disabledDate={(current: moment.Moment | null): boolean => {
+                  // 不能选择今天之前的日期
+                  return Boolean(current && current < moment().startOf('day'));
+                }}
+                placeholder="选择预约日期"
               />
             </Form.Item>
           </Col>
-          
+
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               name="photographerId"
               label="摄影师"
               rules={[{ required: true, message: '请选择摄影师' }]}
             >
-                <Select 
-                placeholder="选择摄影师" 
+              <Select
+                placeholder="选择摄影师"
                 loading={photographerLoading}
                 showSearch
                 filterOption={(input: string, option: any) => {
                   const optionText = typeof option === 'string' ? option : (option.label as string);
                   return optionText.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                 }}
-                >
+              >
                 {photographerOptions.map((photographer: Photographer) => (
                   <Option key={photographer.id} value={photographer.id}>
-                  {photographer.name}
+                    {photographer.name}
                   </Option>
                 ))}
-                </Select>
+              </Select>
             </Form.Item>
           </Col>
-          
+
           <Col xs={24} sm={12} md={8}>
             <Form.Item
               name="studioId"
               label="工作室"
               rules={[{ required: true, message: '请选择工作室' }]}
             >
-              <Select 
-                placeholder="选择工作室" 
+              <Select
+                placeholder="选择工作室"
                 loading={studioLoading}
                 showSearch
                 filterOption={(input: string, option: any) => {
@@ -871,88 +875,87 @@ const BookingForm: React.FC = () => {
             </Form.Item>
           </Col>
         </Row>
-        
+
         {/* 显示可用时间段 */}
         <div className="available-slots">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div className="section-title">可用时间段</div>
             {timeSlotLoading && <Spin size="small" />}
           </div>
-          
+
           {!timeSlotLoading && availableTimeSlots.length > 0 && (
             <div className="time-slots">
-              {availableTimeSlots.map((slot, index) => (
-                <Tag
+              {availableTimeSlots.map((slot: TimeSlot, index: number) => (
+                <Button
                   key={index}
-                  color={slot.isAvailable ? 'blue' : 'default'}
+                  type={selectedTimeSlot === slot ? 'primary' : 'default'}
+                  disabled={!slot.available}
                   onClick={() => handleSelectTimeSlot(slot)}
-                  style={{ 
-                    cursor: slot.isAvailable ? 'pointer' : 'not-allowed',
-                    opacity: slot.isAvailable ? 1 : 0.5
-                  }}
                 >
                   {slot.startTime}-{slot.endTime}
-                </Tag>
+                </Button>
               ))}
             </div>
           )}
-          
-      {!timeSlotLoading && availableTimeSlots.length === 0 && (
-        <Empty
-          description="无可用时间段" 
-        />
-      )}
+
+          {!timeSlotLoading && availableTimeSlots.length === 0 && (
+            <Empty
+              description="无可用时间段"
+            />
+          )}
         </div>
-        
+
         <Form.Item
           name="timeRange"
           label="预约时间段"
           rules={[{ required: true, message: '请选择预约时间段' }]}
         >
-          <RangePicker 
+          <RangePicker
             format="HH:mm"
             style={{ width: '100%' }}
             minuteStep={15}
             placeholder={['开始时间', '结束时间']}
           />
         </Form.Item>
-        
+
         {/* 可用性检查结果 */}
         <div className="availability-section">
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             onClick={handleCheckAvailability}
             loading={availabilityLoading}
             icon={<CheckCircleOutlined />}
           >
             检查可用性
           </Button>
-          
+
           {availabilityChecked && (
             <div className="availability-result">
               {availabilityStatus === 'available' ? (
-                <Alert 
-                  message="所选时间段可预约" 
-                  type="success" 
-                  showIcon 
+                <Alert
+                  message="所选时间段可预约"
+                  type="success"
+                  showIcon
                 />
               ) : (
-                <Alert 
-                  message="所选时间段存在冲突" 
+                <Alert
+                  message="所选时间段存在冲突"
                   description={
                     <div className="conflicts-list">
                       {conflicts.map((conflict, index) => (
                         <div key={index} className="conflict-item">
                           <div className="conflict-type">
-                            {conflict.type === 'photographer' ? '摄影师时间冲突' : '工作室时间冲突'}
+                            {conflict.type === 'photographer' ? `摄影师冲突 (${conflict.resourceName || ''})` :
+                              conflict.type === 'studio' ? `工作室冲突 (${conflict.resourceName || ''})` :
+                                '时间冲突'}
                           </div>
                           <div>已被预约: {conflict.startTime} - {conflict.endTime}</div>
                         </div>
                       ))}
                     </div>
                   }
-                  type="error" 
-                  showIcon 
+                  type="error"
+                  showIcon
                 />
               )}
             </div>
@@ -980,28 +983,33 @@ const BookingForm: React.FC = () => {
               </Select>
             </Form.Item>
           </Col>
-          
+
           <Col xs={24} md={12}>
             <Form.Item
               name="packageId"
               label="选择套餐"
               rules={[{ required: true, message: '请选择套餐' }]}
             >
-              <Select 
+              <Select
                 placeholder="选择套餐"
                 onChange={handleSelectPackage}
                 loading={packageLoading}
-              >
-                {packageOptions.map(pkg => (
-                  <Option key={pkg.id} value={pkg.id}>
-                    {pkg.name} - ¥{pkg.price}
-                  </Option>
-                ))}
-              </Select>
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input: string, option?: { label: string; value: number; alt: string }) =>
+                  (option?.label ?? '').toLowerCase().includes(input.toLowerCase()) ||
+                  (option?.alt ?? '').toLowerCase().includes(input.toLowerCase())
+                }
+                options={packageOptions.map(pkg => ({
+                  value: pkg.id,
+                  label: `${pkg.name} (¥${pkg.price})`,
+                  alt: pkg.name,
+                }))}
+              />
             </Form.Item>
           </Col>
         </Row>
-        
+
         {/* 套餐详情 */}
         {selectedPackage && (
           <div className="package-details">
@@ -1017,9 +1025,9 @@ const BookingForm: React.FC = () => {
             </div>
           </div>
         )}
-        
+
         <Divider />
-        
+
         {/* 价格详情 */}
         <div className="price-details">
           <div className="price-item">
@@ -1043,9 +1051,9 @@ const BookingForm: React.FC = () => {
             <span className="price-value">¥{priceDetails.totalPrice.toFixed(2)}</span>
           </div>
         </div>
-        
+
         <Divider />
-        
+
         {/* 备注 */}
         <Row gutter={16}>
           <Col xs={24}>
@@ -1053,21 +1061,21 @@ const BookingForm: React.FC = () => {
               name="notes"
               label="客户备注"
             >
-              <TextArea 
+              <TextArea
                 rows={4}
                 placeholder="请输入客户特殊需求或其他备注"
               />
             </Form.Item>
           </Col>
         </Row>
-        
+
         <Row gutter={16}>
           <Col xs={24}>
             <Form.Item
               name="staffNotes"
               label="内部备注"
             >
-              <TextArea 
+              <TextArea
                 rows={4}
                 placeholder="供工作人员查看的内部备注"
               />
@@ -1085,7 +1093,7 @@ const BookingForm: React.FC = () => {
     const selectedStudio = studioOptions.find(s => s.id === formValues.studioId);
     const startTime = formValues.timeRange?.[0]?.format('HH:mm');
     const endTime = formValues.timeRange?.[1]?.format('HH:mm');
-    
+
     return (
       <div className="review-form">
         <div className="info-card">
@@ -1098,7 +1106,7 @@ const BookingForm: React.FC = () => {
             )}
           </Descriptions>
         </div>
-        
+
         <div className="info-card">
           <Title level={5}>预约信息</Title>
           <Descriptions bordered column={{ xxl: 3, xl: 3, lg: 2, md: 2, sm: 1, xs: 1 }}>
@@ -1108,7 +1116,7 @@ const BookingForm: React.FC = () => {
             <Descriptions.Item label="套餐选择">{selectedPackage?.name}</Descriptions.Item>
           </Descriptions>
         </div>
-        
+
         <div className="info-card">
           <Title level={5}>资源信息</Title>
           <Row gutter={16}>
@@ -1146,7 +1154,7 @@ const BookingForm: React.FC = () => {
             </Col>
           </Row>
         </div>
-        
+
         <div className="info-card">
           <Title level={5}>价格信息</Title>
           <div className="price-details">
@@ -1172,14 +1180,14 @@ const BookingForm: React.FC = () => {
             </div>
           </div>
         </div>
-        
+
         {formValues.notes && (
           <div className="info-card">
             <Title level={5}>客户备注</Title>
             <div className="note-content">{formValues.notes}</div>
           </div>
         )}
-        
+
         {formValues.staffNotes && (
           <div className="info-card">
             <Title level={5}>内部备注</Title>
@@ -1219,7 +1227,7 @@ const BookingForm: React.FC = () => {
   // 步骤操作按钮
   const renderStepsAction = () => {
     if (currentStep === 4) return null; // 成功页面不需要按钮
-    
+
     return (
       <div className="steps-action">
         {currentStep > 0 && (
@@ -1233,8 +1241,8 @@ const BookingForm: React.FC = () => {
           </Button>
         )}
         {currentStep === 3 && (
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             onClick={handleSubmit}
             loading={submitting}
           >
@@ -1255,7 +1263,7 @@ const BookingForm: React.FC = () => {
           <Title level={4}>{isEdit ? '编辑预约' : '创建预约'}</Title>
         </div>
       </div>
-      
+
       <Card>
         <Steps current={currentStep} className="booking-steps">
           <Step title="选择客户" icon={<UserOutlined />} />
@@ -1263,7 +1271,7 @@ const BookingForm: React.FC = () => {
           <Step title="选择服务" icon={<CameraOutlined />} />
           <Step title="确认预约" icon={<CheckCircleOutlined />} />
         </Steps>
-        
+
         <Spin spinning={loading}>
           <Form
             form={form}
@@ -1273,7 +1281,7 @@ const BookingForm: React.FC = () => {
               {renderStepContent()}
             </div>
           </Form>
-          
+
           {renderStepsAction()}
         </Spin>
       </Card>

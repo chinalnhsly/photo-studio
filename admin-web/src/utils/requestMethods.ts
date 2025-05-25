@@ -1,101 +1,194 @@
+import { RequestOptionsInit } from 'umi-request';
 import request from './request';
-// 导入必要的类型
-import type { RequestOptionsInit } from 'umi-request';
-
-// 创建一个完全独立的新接口，而不是扩展现有接口
-export interface CustomRequestOptions {
-  params?: Record<string, any>;
-  data?: any;
-  responseType?: 'blob' | 'text' | 'json' | 'arrayBuffer';
-  headers?: Record<string, string>;
-  // 可以添加其他需要的属性
-}
 
 /**
- * 通用GET请求方法
- * @param url API路径
+ * GET 请求方法
+ * @param url 请求路径
  * @param params 查询参数
- * @returns Promise
+ * @param options 请求选项
  */
-export function get<T = any>(url: string, params?: any, options?: CustomRequestOptions): Promise<T> {
-  // 使用类型断言转换为request接受的类型
-  return request.get(url, params, options as any);
+export async function get<T = any>(
+  url: string,
+  params?: any,
+  options?: RequestOptionsInit
+): Promise<T> {
+  const requestOptions: RequestOptionsInit = {
+    method: 'GET',
+    params,
+    ...(options || {}),
+  };
+  return request<T>(url, requestOptions);
 }
 
 /**
- * 通用POST请求方法
- * @param url API路径
+ * POST 请求方法
+ * @param url 请求路径
  * @param data 请求体数据
- * @returns Promise
+ * @param options 请求选项
  */
-export function post<T = any>(url: string, data?: any, options?: CustomRequestOptions): Promise<T> {
-  return request.post(url, data, options as any);
+export async function post<T = any>(
+  url: string,
+  data?: any,
+  options?: RequestOptionsInit
+): Promise<T> {
+  const requestOptions: RequestOptionsInit = {
+    method: 'POST',
+    data,
+    ...(options || {}),
+  };
+  return request<T>(url, requestOptions);
 }
 
 /**
- * 通用PUT请求方法
- * @param url API路径
+ * PUT 请求方法
+ * @param url 请求路径
  * @param data 请求体数据
- * @returns Promise
+ * @param options 请求选项
  */
-export function put<T = any>(url: string, data?: any, options?: CustomRequestOptions): Promise<T> {
-  return request.put(url, data, options as any);
+export async function put<T = any>(
+  url: string,
+  data?: any,
+  options?: RequestOptionsInit
+): Promise<T> {
+  const requestOptions: RequestOptionsInit = {
+    method: 'PUT',
+    data,
+    ...(options || {}),
+  };
+  return request<T>(url, requestOptions);
 }
 
 /**
- * 通用DELETE请求方法
- * @param url API路径
- * @returns Promise
+ * DELETE 请求方法
+ * @param url 请求路径
+ * @param options 请求选项
  */
-export function del<T = any>(url: string, options?: CustomRequestOptions): Promise<T> {
-  return request.delete(url, options as any);
+export async function del<T = any>(
+  url: string,
+  options?: RequestOptionsInit
+): Promise<T> {
+  const requestOptions: RequestOptionsInit = {
+    method: 'DELETE',
+    ...(options || {}),
+  };
+  return request<T>(url, requestOptions);
+}
+
+/**
+ * PATCH 请求方法
+ * @param url 请求路径
+ * @param data 请求体数据
+ * @param options 请求选项
+ */
+export async function patch<T = any>(
+  url: string,
+  data?: any,
+  options?: RequestOptionsInit
+): Promise<T> {
+  const requestOptions: RequestOptionsInit = {
+    method: 'PATCH',
+    data,
+    ...(options || {}),
+  };
+  return request<T>(url, requestOptions);
+}
+
+/**
+ * 下载文件
+ * @param url 请求路径
+ * @param params 查询参数
+ * @param filename 保存的文件名
+ */
+export async function downloadFile(
+  url: string,
+  params?: Record<string, any>,
+  filename?: string
+): Promise<void> {
+  const requestOptions: RequestOptionsInit = {
+    method: 'GET',
+    params,
+    responseType: 'blob',
+  };
+  
+  const blob = await request<Blob>(url, requestOptions);
+  
+  // 创建下载链接
+  const downloadUrl = window.URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = downloadUrl;
+  link.download = filename || 'download';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  window.URL.revokeObjectURL(downloadUrl);
+}
+
+/**
+ * 上传文件
+ * @param url 请求路径
+ * @param file 文件对象
+ * @param name 文件字段名
+ * @param data 其他表单数据
+ */
+export async function uploadFile<T = any>(
+  url: string,
+  file: File | Blob,
+  name: string = 'file',
+  data?: Record<string, any>
+): Promise<T> {
+  const formData = new FormData();
+  formData.append(name, file);
+  
+  if (data) {
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+  }
+  
+  const requestOptions: RequestOptionsInit = {
+    method: 'POST',
+    data: formData,
+    requestType: 'form',
+  };
+  
+  return request<T>(url, requestOptions);
 }
 
 /**
  * 文件上传方法
- * @param url API路径
- * @param formData FormData对象
- * @returns Promise
+ * @param url 上传接口地址
+ * @param file 文件对象
+ * @param extraData 额外表单字段
+ * @param options 其他 request 配置
  */
-export function upload<T = any>(url: string, formData: FormData): Promise<T> {
-  // 对于FormData，不要设置Content-Type，让浏览器自动处理
-  const requestOptions: RequestOptionsInit = {
-    // 不设置任何headers，让浏览器自动添加正确的Content-Type
-  };
-  
-  return request.post(url, formData, requestOptions);
-}
-
-/**
- * 文件下载方法
- * @param url API路径
- * @param params 查询参数
- * @param filename 下载后的文件名
- * @returns Promise
- */
-export async function download(url: string, params?: any, filename?: string): Promise<Blob> {
-  // 使用带有类型断言的对象
-  const response = await request.get(url, params, {
-    responseType: 'blob'
-  } as any);
-  
-  // 如果指定了文件名，则执行下载
-  if (filename && response instanceof Blob) {
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(response);
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(link.href);
+export async function upload(
+  url: string,
+  file: File,
+  extraData?: Record<string, any>,
+  options?: Record<string, any>
+) {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (extraData) {
+    Object.keys(extraData).forEach(key => {
+      formData.append(key, extraData[key]);
+    });
   }
-  
-  return response;
+  return request(url, {
+    method: 'POST',
+    data: formData,
+    requestType: 'form',
+    ...options,
+  });
 }
 
 export default {
   get,
   post,
   put,
-  delete: del,
+  del,
+  patch,
+  downloadFile,
+  uploadFile,
   upload,
-  download,
 };

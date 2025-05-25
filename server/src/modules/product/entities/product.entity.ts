@@ -16,66 +16,50 @@ import { Tag } from './tag.entity';
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
-  @ApiProperty({ description: '商品ID' })
+  @ApiProperty({ description: '产品ID' })
   id: number;
 
-  @Column({ length: 255 })
-  @ApiProperty({ description: '商品名称' })
+  @Column()
+  @ApiProperty({ description: '产品名称' })
   name: string;
 
-  @Column('text', { nullable: true })
-  @ApiProperty({ description: '商品描述' })
+  @Column({ type: 'text', nullable: true })
+  @ApiProperty({ description: '产品描述' })
   description: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  @ApiProperty({ description: '商品价格' })
+  @ApiProperty({ description: '价格' })
   price: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
-  @ApiProperty({ description: '商品原价' })
-  originalPrice: number;
+  @Column('text', { array: true, default: '{}' })
+  @ApiProperty({ description: '产品图片', type: [String] })
+  images: string[];
 
   @Column({ nullable: true })
-  @ApiProperty({ description: '折扣百分比' })
-  discountPercent: number;
+  @ApiProperty({ description: '分类ID' })
+  categoryId: number;
+
+  @ManyToOne(() => Category, category => category.products)
+  @JoinColumn({ name: 'category_id' })
+  categoryObj: Category;
+
+  // 用于兼容代码中的 product.category 访问
+  @ApiProperty({ description: '分类信息' })
+  get category(): Category {
+    return this.categoryObj;
+  }
 
   @Column({ default: 0 })
   @ApiProperty({ description: '库存数量' })
   stock: number;
 
-  @Column({ nullable: true })
-  @ApiProperty({ description: '商品分类' })
-  category: string;
-
-  @Column({ nullable: true })
-  @ApiProperty({ description: '商品图片URL' })
-  imageUrl: string;
-
-  // 添加图片数组字段
-  @Column('text', { array: true, nullable: true, default: [] })
-  @ApiProperty({ 
-    description: '商品图片列表', 
-    type: [String],
-    example: ['https://example.com/image1.jpg', 'https://example.com/image2.jpg']
-  })
-  images: string[];
-
-  // 添加周末可用字段
-  @Column({ default: true })
-  @ApiProperty({ description: '周末是否可预约' })
+  @Column({ default: false })
+  @ApiProperty({ description: '周末是否可用' })
   availableOnWeekends: boolean;
 
   @Column({ default: true })
   @ApiProperty({ description: '是否激活' })
   isActive: boolean;
-
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: 'category_id' })
-  @ApiProperty({ description: '所属分类' })
-  categoryObj: Category;
-
-  @Column({ nullable: true, name: 'category_id' })
-  categoryId: number;
 
   @ManyToMany(() => Tag, tag => tag.products)
   @JoinTable({
@@ -83,7 +67,7 @@ export class Product {
     joinColumn: { name: 'product_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'tag_id', referencedColumnName: 'id' }
   })
-  @ApiProperty({ description: '商品标签' })
+  @ApiProperty({ description: '产品标签', type: [Tag] })
   tags: Tag[];
 
   @CreateDateColumn({ 

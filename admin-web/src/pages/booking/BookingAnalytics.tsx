@@ -16,7 +16,6 @@ import './BookingAnalytics.scss';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Title, Text } = Typography;
-const { TabPane } = Tabs;
 
 const BookingAnalytics: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -481,26 +480,34 @@ const BookingAnalytics: React.FC = () => {
             }}
             defaultActiveTabKey="chart"
           >
-            <Tabs defaultActiveKey="chart">
-              <TabPane tab="图表视图" key="chart">
-                {photographerStats.length > 0 ? (
-                  <Column {...photographerChartConfig} height={350} />
-                ) : (
-                  <Empty description="暂无数据" />
-                )}
-              </TabPane>
-              
-              <TabPane tab="表格视图" key="table">
-                <Table
-                  dataSource={photographerStats}
-                  columns={photographerColumns}
-                  rowKey="id"
-                  pagination={false}
-                  size="middle"
-                  className="photographer-table"
-                />
-              </TabPane>
-            </Tabs>
+            <Tabs
+              defaultActiveKey="chart"
+              items={[
+                {
+                  label: '图表视图',
+                  key: 'chart',
+                  children: photographerStats.length > 0 ? (
+                    <Column {...photographerChartConfig} height={350} />
+                  ) : (
+                    <Empty description="暂无数据" />
+                  ),
+                },
+                {
+                  label: '表格视图',
+                  key: 'table',
+                  children: (
+                    <Table
+                      dataSource={photographerStats}
+                      columns={photographerColumns}
+                      rowKey="id"
+                      pagination={false}
+                      size="middle"
+                      className="photographer-table"
+                    />
+                  ),
+                },
+              ]}
+            />
           </Card>
         </div>
       </Spin>

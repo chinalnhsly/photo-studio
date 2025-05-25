@@ -1,5 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
+import { Product } from './product.entity';
 
 @Entity('categories')
 export class Category {
@@ -7,7 +15,7 @@ export class Category {
   @ApiProperty({ description: '分类ID' })
   id: number;
 
-  @Column({ length: 100 })
+  @Column()
   @ApiProperty({ description: '分类名称' })
   name: string;
 
@@ -20,16 +28,19 @@ export class Category {
   parentId: number;
 
   @Column({ default: 0 })
-  @ApiProperty({ description: '排序权重' })
+  @ApiProperty({ description: '排序序号' })
   sortOrder: number;
 
   @Column({ default: true })
-  @ApiProperty({ description: '是否启用' })
+  @ApiProperty({ description: '是否激活' })
   isActive: boolean;
 
   @Column({ nullable: true })
   @ApiProperty({ description: '分类图标' })
   icon: string;
+
+  @OneToMany(() => Product, product => product.categoryObj)
+  products: Product[];
 
   @CreateDateColumn({ 
     type: 'timestamptz',

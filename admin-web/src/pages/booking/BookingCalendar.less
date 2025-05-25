@@ -172,3 +172,57 @@
     }
   }
 }
+
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.eventText {
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-block;
+  
+  &:hover {
+    color: #1890ff;
+    text-decoration: underline;
+  }
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  
+  h4 {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 576px) {
+    > div:nth-child(2) {
+      order: 3;
+      margin-top: 16px;
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+:global {
+  .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
+    background: #1890ff;
+  }
+  
+  .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-color: #1890ff;
+  }
+  
+  .ant-badge-status-text {
+    font-size: 12px;
+  }
+}

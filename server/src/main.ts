@@ -10,30 +10,38 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = configuration();
 
-  // 全局验证管道
+  // 启用 CORS
+  app.enableCors();
+
+  // 启用全局验证管道
   app.useGlobalPipes(new ValidationPipe({
-    whitelist: true,
     transform: true,
+    whitelist: true,
+    forbidNonWhitelisted: true,
   }));
 
   // 全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  // CORS配置
-  app.enableCors();
-
-  // Swagger配置
+  // 配置 Swagger
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('PhotoStudio API')
-    .setDescription('影楼管理系统 API 文档')
+    .setTitle('影楼商城 API')
+    .setDescription('影楼商城系统后端API文档')
     .setVersion('1.0')
+    .addTag('auth', '认证模块')
+    .addTag('bookings', '预约管理')
+    .addTag('photographers', '摄影师管理')
+    .addTag('products', '商品管理')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(config.port);
-  console.log(`Application is running on: http://localhost:${config.port}`);
+  // 获取配置的端口或使用默认值
+  const port = process.env.PORT || config.port;
+  await app.listen(port);
+  console.log(`应用程序运行在: http://localhost:${port}`);
+  console.log(`Swagger UI 可访问: http://localhost:${port}/api`);
 }
 
 bootstrap();

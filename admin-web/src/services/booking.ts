@@ -1,76 +1,130 @@
-import request from "umi-request";
+import request from '@/utils/request';
+
+// --- 接口定义 ---
+export interface Booking {
+  id: number;
+  bookingNumber?: string; // 添加预约号
+  customerId: number;
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string; // 添加客户邮箱
+  customerAvatar?: string; // 添加客户头像
+  photographerId?: number;
+  photographerName?: string;
+  studioId?: number;
+  studioName?: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  shootingType: string;
+  status: string;
+  notes?: string;
+  staffNotes?: string; // 添加内部备注
+  packageId?: number;
+  packageName?: string;
+  createdAt: string;
+  updatedAt: string;
+  // 可以根据实际API返回添加更多字段
+}
+
+export interface TimeSlot {
+  startTime: string;
+  endTime: string;
+  available: boolean;
+  photographerId?: number; // 可选，用于显示冲突信息
+  photographerName?: string; // 可选
+  studioId?: number; // 可选
+  studioName?: string; // 可选
+}
+
+// --- 响应类型定义 ---
+export interface BookingDetailResponse {
+  data: Booking;
+}
+
+export interface AvailableTimeslotsResponse {
+  // data 应该直接是 TimeSlot 数组，而不是包含 timeSlots 的对象
+  data: TimeSlot[];
+}
+
+export interface AvailabilityCheckResponse {
+  data: {
+    available: boolean;
+    reason?: string; // 如果不可用，提供原因
+    // 添加 alternativeTimeSlots 定义 (结构根据实际API调整)
+    alternativeTimeSlots?: Array<{
+      photographerId?: number;
+      studioId?: number;
+      timeSlots: TimeSlot[];
+    }>;
+    // 或者更简单的冲突信息
+    conflicts?: Array<{
+      type: 'photographer' | 'studio' | 'time';
+      startTime: string;
+      endTime: string;
+      resourceId?: number;
+      resourceName?: string;
+    }>
+  };
+}
+
+export interface CreateBookingResponse {
+  data: Booking; // 假设创建成功后返回预约详情
+  message?: string;
+  code?: number;
+}
+
+export interface UpdateBookingResponse {
+  data: Booking; // 假设更新成功后返回预约详情
+  message?: string;
+  code?: number;
+}
+
+// --- API 函数 ---
 
 // 获取预约列表
-export async function getBookingList(params?: any) {
+export async function getBookingList(params?: any): Promise<{ data: { items: Booking[], total: number } }> {
   return request('/api/bookings', {
+    method: 'GET',
     params,
   });
 }
 
 // 获取预约详情
-export async function getBookingById(id: number) {
-  return request(`/api/bookings/${id}`);
+export async function getBookingDetail(id: number): Promise<BookingDetailResponse> {
+  return request(`/api/bookings/${id}`, {
+    method: 'GET',
+  });
 }
 
 // 创建预约
-export async function createBooking(data: {
-  customerId: number;
-  studioId: number;
-  photographerId: number;
-  packageId: number;
-  bookingDate: string;
-  bookingTime: string;
-  duration?: number;
-  additionalServices?: number[];
-  notes?: string;
-  contactName?: string;
-  contactPhone?: string;
-  contactEmail?: string;
-}) {
-  return request<CreateBookingResponse>('/api/bookings', {
+export async function createBooking(data: any): Promise<CreateBookingResponse> {
+  return request('/api/bookings', {
     method: 'POST',
     data,
   });
 }
 
 // 更新预约
-export async function updateBooking(id: number, data: {
-  bookingDate?: string;
-  bookingTime?: string;
-  photographerId?: number;
-  packageId?: number;
-  additionalServices?: number[];
-  notes?: string;
-  adminNotes?: string;
-  status?: string;
-  paymentStatus?: string;
-  discount?: number;
-}) {
-  return request<{ success: boolean; message?: string }>(`/api/bookings/${id}`, {
+export async function updateBooking(id: number, data: any): Promise<UpdateBookingResponse> {
+  return request(`/api/bookings/${id}`, {
     method: 'PUT',
     data,
   });
 }
 
-// 取消预约
-export async function cancelBooking(id: number, reason: string) {
-  return request(`/api/bookings/${id}/cancel`, {
-    method: 'POST',
-    data: { reason },
+// 删除预约
+export async function deleteBooking(id: number): Promise<{ message?: string; code?: number }> {
+  return request(`/api/bookings/${id}`, {
+    method: 'DELETE',
   });
 }
 
 // 更新预约状态
-export interface BookingStatusUpdate {
-  status: string;
-  cancellationReason?: string;
-  adminNotes?: string;
-}
-
-export async function updateBookingStatus(id: number, data: BookingStatusUpdate) {
+export async function updateBookingStatus(id: number, status: string): Promise<{ message?: string; code?: number }> {
   return request(`/api/bookings/${id}/status`, {
     method: 'PUT',
-    data,
+    data: { status },
   });
 }
 
@@ -79,213 +133,131 @@ export async function getAvailableTimeSlots(params: {
   date: string;
   studioId?: number;
   photographerId?: number;
-}) {
+}): Promise<AvailableTimeslotsResponse> {
   return request('/api/bookings/available-slots', {
-    params,
-  });
-}
-
-// 获取预约统计数据
-export interface BookingStatsParams {
-  startDate?: string;
-  endDate?: string;
-  studioId?: number;
-}
-
-export interface BookingStatsData {
-  totalBookings: number;
-  completedBookings: number;
-  canceledBookings: number;
-  pendingBookings: number;
-  confirmedBookings: number;
-  totalRevenue: number;
-  avgBookingsPerDay: number;
-}
-
-export async function getBookingStats(params?: BookingStatsParams) {
-  return request<{ data: BookingStatsData; success: boolean }>('/api/bookings/stats', {
     method: 'GET',
     params,
   });
 }
 
-// 获取预约趋势数据
-export interface BookingTrendsParams {
-  startDate?: string;
-  endDate?: string;
-  studioId?: number;
-  type?: 'day' | 'week' | 'month'; // 按日/周/月聚合
-}
-
-export interface BookingTrendItem {
-  date: string;
-  bookings: number;
-  revenue?: number;
-}
-
-export async function getBookingTrends(params?: BookingTrendsParams) {
-  return request<{ data: BookingTrendItem[]; success: boolean }>('/api/bookings/trends', {
-    method: 'GET',
-    params,
-  });
-}
-
-// 获取摄影师工作负荷
-export interface PhotographerWorkloadParams {
-  startDate?: string;
-  endDate?: string;
-  studioId?: number;
-}
-
-export interface PhotographerWorkloadItem {
-  photographerId: number;
-  photographerName: string;
-  totalBookings: number;
-  completedBookings: number;
-  upcomingBookings: number;
-  workHours: number;
-  avatar?: string;
-}
-
-export async function getPhotographerWorkload(params?: PhotographerWorkloadParams) {
-  return request<{ data: PhotographerWorkloadItem[]; success: boolean }>('/api/photographers/workload', {
-    method: 'GET',
-    params,
-  });
-}
-
-// 预约详情响应类型
-export interface BookingDetailResponse {
-  success: boolean;
-  data: {
-    id: number;
-    customerName: string;
-    customerPhone: string;
-    customerEmail?: string;
-    customerAvatar?: string;
-    customerId: number;
-    studioId: number;
-    studioName: string;
-    photographerId: number;
-    photographerName: string;
-    packageId: number;
-    packageName: string;
-    packagePrice: number;
-    status: string;
-    bookingDate: string;
-    bookingTime: string;
-    date?: string; // 兼容日期格式
-    startTime?: string; // 开始时间
-    endTime?: string; // 结束时间
-    duration: number;
-    shootingType?: string;
-    totalPrice: number;
-    discount?: number;
-    finalPrice: number;
-    paymentStatus: string;
-    paymentMethod?: string;
-    notes?: string;
-    adminNotes?: string;
-    staffNotes?: string;
-    createdAt: string;
-    updatedAt: string;
-    additionalServices?: {
-      id: number;
-      name: string;
-      price: number;
-    }[];
-    timeline?: {
-      time: string;
-      status: string;
-      description: string;
-      operator?: string;
-    }[];
-  };
-}
-
-// 获取预约详情
-export async function getBookingDetail(id: number) {
-  return request<BookingDetailResponse>(`/api/bookings/${id}/detail`);
-}
-
-// 可用时间段类型
-export interface AvailableTimeslot {
-  startTime: string;
-  endTime: string;
-  available: boolean;
-  photographerId?: number;
-  photographerName?: string;
-}
-
-// 可用时间段响应类型
-export interface AvailableTimeslotsResponse {
-  success: boolean;
-  data: {
-    date: string;
-    timeSlots: AvailableTimeslot[];
-  };
-}
-
-// 获取可用时间段
-export async function getAvailableTimeslots(params: {
-  date: string;
-  studioId: number;
-  packageId?: number;
-  photographerId?: number;
-}) {
-  return request<AvailableTimeslotsResponse>('/api/bookings/available-timeslots', {
-    method: 'GET',
-    params,
-  });
-}
-
-// 可用性检查响应类型
-export interface AvailabilityCheckResponse {
-  success: boolean;
-  data: {
-    available: boolean;
-    isAvailable?: boolean; // 兼容字段
-    conflictReason?: string;
-    conflicts?: string; // 兼容字段
-    alternativeTimeSlots?: {
-      date: string;
-      timeSlots: {
-        startTime: string;
-        endTime: string;
-        photographerId?: number;
-        photographerName?: string;
-      }[];
-    }[];
-  };
-}
-
-// 检查时间段可用性
+/**
+ * 检查特定时间段的可用性
+ * @param params - 查询参数
+ */
 export async function checkAvailability(params: {
   date: string;
   startTime: string;
   endTime: string;
-  studioId: number;
+  studioId?: number;
   photographerId?: number;
-  packageId?: number;
-}) {
-  return request<AvailabilityCheckResponse>('/api/bookings/check-availability', {
-    method: 'POST',
-    data: params,
+  excludeBookingId?: number; // 编辑时排除当前预约
+}): Promise<AvailabilityCheckResponse> {
+  // 注意：这里使用了之前定义的 checkTimeSlotConflict 接口路径
+  // 如果后端有专门的 checkAvailability 接口，请修改路径
+  return request('/api/bookings/check-conflict', {
+    method: 'GET',
+    params,
   });
 }
 
-// 创建预约响应类型
-export interface CreateBookingResponse {
-  success: boolean;
-  data: {
-    id: number;
-    bookingNumber: string;
-    customerId: number;
-    customerName: string;
-    bookingDate: string;
-    bookingTime: string;
-    status: string;
-    createdAt: string;
-  };
-  message?: string;
+// 批量操作预约
+export async function batchOperateBookings(ids: number[], action: string): Promise<{ message?: string; code?: number }> {
+  return request('/api/bookings/batch', {
+    method: 'POST',
+    data: { ids, action },
+  });
+}
+
+// 获取预约日历数据
+export async function getBookingCalendar(params: {
+  startDate: string;
+  endDate: string;
+  studioId?: number;
+  photographerId?: number;
+}): Promise<{ data: Booking[] }> { // 假设返回 Booking 数组
+  return request('/api/bookings/calendar', {
+    method: 'GET',
+    params,
+  });
+}
+
+// 检查时间段冲突 (保留，checkAvailability 可能调用此接口)
+export async function checkTimeSlotConflict(params: {
+  date: string;
+  startTime: string;
+  endTime: string;
+  studioId?: number;
+  photographerId?: number;
+  excludeBookingId?: number;
+}): Promise<AvailabilityCheckResponse> {
+  return request('/api/bookings/check-conflict', {
+    method: 'GET',
+    params,
+  });
+}
+
+// 发送预约提醒
+export async function sendBookingReminder(id: number): Promise<{ message?: string; code?: number }> {
+  return request(`/api/bookings/${id}/send-reminder`, {
+    method: 'POST',
+  });
+}
+
+// 获取预约统计
+export async function getBookingStatistics(params?: {
+  startDate?: string;
+  endDate?: string;
+  studioId?: number;
+  photographerId?: number;
+}): Promise<{ data: any }> { // 具体类型根据API定义
+  return request('/api/bookings/statistics', {
+    method: 'GET',
+    params,
+  });
+}
+
+/**
+ * 获取预约关键统计数据
+ * @param params - 查询参数，例如 { startDate, endDate, period }
+ */
+export async function getBookingStats(params?: {
+  startDate?: string;
+  endDate?: string;
+  period?: 'daily' | 'weekly' | 'monthly';
+}): Promise<{ data: any }> { // 具体类型根据API定义
+  return request('/api/bookings/stats', {
+    method: 'GET',
+    params,
+  });
+}
+
+/**
+ * 获取预约趋势数据
+ * @param params - 查询参数，例如 { startDate, endDate, period, metric }
+ */
+export async function getBookingTrends(params?: {
+  startDate?: string;
+  endDate?: string;
+  period?: 'daily' | 'weekly' | 'monthly';
+  metric?: 'count' | 'revenue'; // 示例指标
+}): Promise<{ data: any }> { // 具体类型根据API定义
+  return request('/api/bookings/trends', {
+    method: 'GET',
+    params,
+  });
+}
+
+/**
+ * 获取摄影师工作量数据
+ * @param params - 查询参数，例如 { startDate, endDate, photographerId }
+ */
+export async function getPhotographerWorkload(params?: {
+  startDate?: string;
+  endDate?: string;
+  photographerId?: number;
+}): Promise<{ data: any }> { // 具体类型根据API定义
+  return request('/api/photographers/workload', {
+    method: 'GET',
+    params,
+  });
 }

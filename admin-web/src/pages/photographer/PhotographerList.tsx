@@ -298,7 +298,13 @@ const PhotographerList: React.FC = () => {
               批量删除
             </Button>,
           ]}
-          request={getPhotographerList}
+          request={async (params) => {
+            const res = await getPhotographerList(params);
+            return {
+              data: res.data.items, // 兼容 mock 返回的 items
+              total: res.data.total,
+            };
+          }}
           columns={columns}
           rowSelection={{
             onChange: (selectedRowKeys: React.Key[]) => {

@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToMany,
+} from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { Product } from './product.entity';
 
@@ -17,8 +23,11 @@ export class Tag {
   description: string;
 
   @Column({ default: 0 })
-  @ApiProperty({ description: '排序权重' })
+  @ApiProperty({ description: '排序序号' })
   sortOrder: number;
+
+  @ManyToMany(() => Product, product => product.tags)
+  products: Product[];
 
   @CreateDateColumn({ 
     type: 'timestamptz',
@@ -26,7 +35,4 @@ export class Tag {
   })
   @ApiProperty({ description: '创建时间' })
   createdAt: Date;
-
-  @ManyToMany(() => Product, product => product.tags)
-  products: Product[];
 }
