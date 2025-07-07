@@ -1,0 +1,226 @@
+.points-mall-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-bottom: 30px;
+  
+  .header-section {
+    background: linear-gradient(45deg, #ff6b81, #ff9f43);
+    padding: 30px 20px;
+    border-radius: 0 0 20px 20px;
+    color: white;
+    
+    .points-info {
+      display: flex;
+      align-items: baseline;
+      
+      .points-label {
+        font-size: 28px;
+        margin-right: 10px;
+      }
+      
+      .points-value {
+        font-size: 46px;
+        font-weight: bold;
+        margin-right: auto;
+      }
+      
+      .points-detail {
+        font-size: 26px;
+        opacity: 0.9;
+      }
+    }
+  }
+  
+  .category-tabs {
+    display: flex;
+    background-color: white;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      font-size: 28px;
+      color: #666;
+      position: relative;
+      
+      &.active {
+        color: #ff6b81;
+        font-weight: bold;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -20px;
+          left: 30%;
+          right: 30%;
+          height: 4px;
+          background-color: #ff6b81;
+          border-radius: 2px;
+        }
+      }
+    }
+  }
+  
+  .items-list {
+    padding: 0 20px;
+    
+    .item-card {
+      display: flex;
+      background-color: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      
+      .item-image {
+        width: 160px;
+        height: 160px;
+        border-radius: 8px;
+        margin-right: 20px;
+      }
+      
+      .item-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        
+        .item-name {
+          font-size: 30px;
+          font-weight: bold;
+          color: #333;
+          margin-bottom: 10px;
+        }
+        
+        .item-desc {
+          font-size: 26px;
+          color: #999;
+          margin-bottom: 15px;
+          
+          /* autoprefixer: ignore next */
+          display: -webkit-box;
+          /* autoprefixer: ignore next */
+          -webkit-line-clamp: 2;
+          /* autoprefixer: ignore next */
+          -webkit-box-orient: vertical;
+          
+          /* 备用方案 */
+          overflow: hidden;
+          text-overflow: ellipsis;
+          max-height: 2.6em; /* 基于行高和行数 */
+        }
+        
+        .item-bottom {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 15px;
+          margin-top: auto;
+          
+          .points-required {
+            display: flex;
+            align-items: baseline;
+            
+            .points-num {
+              font-size: 36px;
+              font-weight: bold;
+              color: #ff6b81;
+              margin-right: 5px;
+            }
+            
+            .points-text {
+              font-size: 26px;
+              color: #999;
+            }
+          }
+          
+          .item-sold {
+            font-size: 24px;
+            color: #999;
+          }
+        }
+        
+        .redeem-btn {
+          width: 160px;
+          height: 60px;
+          background-color: #ff6b81;
+          color: white;
+          border-radius: 30px;
+          font-size: 26px;
+          text-align: center;
+          line-height: 60px;
+          align-self: flex-end;
+          
+          &.disabled {
+            background-color: #f0f0f0;
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+  
+  .mall-notice {
+    margin: 20px;
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .notice-header {
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      
+      .notice-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    
+    .notice-content {
+      .notice-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .notice-dot {
+          font-size: 30px;
+          color: #ff6b81;
+          margin-right: 10px;
+          line-height: 1;
+        }
+        
+        .notice-text {
+          flex: 1;
+          font-size: 26px;
+          color: #666;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+  
+  .empty-items {
+    padding: 100px 0;
+    text-align: center;
+    color: #999;
+    font-size: 28px;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 28px;
+  color: #999;
+}

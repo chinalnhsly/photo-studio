@@ -1,0 +1,280 @@
+.checkin-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  padding-bottom: 50px;
+  
+  .header-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    
+    .info-section {
+      background: linear-gradient(45deg, #ff6b81, #ff9f43);
+      padding: 20px;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .info-left {
+        .today-date {
+          font-size: 36px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          display: block;
+        }
+        
+        .continuous-days {
+          font-size: 26px;
+          opacity: 0.9;
+        }
+      }
+      
+      .info-right {
+        .checkin-btn {
+          width: 160px;
+          height: 70px;
+          line-height: 70px;
+          background-color: white;
+          color: #ff6b81;
+          font-size: 28px;
+          font-weight: bold;
+          border-radius: 35px;
+          
+          &::after {
+            border: none;
+          }
+          
+          &.disabled {
+            background-color: rgba(255, 255, 255, 0.5);
+            color: rgba(255, 255, 255, 0.9);
+          }
+        }
+      }
+    }
+    
+    .calendar-section {
+      padding: 20px;
+      
+      .calendar-header {
+        display: flex;
+        
+        .week-day {
+          flex: 1;
+          text-align: center;
+          padding: 10px 0;
+          font-size: 26px;
+          color: #999;
+        }
+      }
+      
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        grid-gap: 10px;
+        margin-top: 15px;
+        
+        .calendar-day {
+          aspect-ratio: 1/1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          background-color: #f8f8f8;
+          border-radius: 50%;
+          
+          &.empty {
+            background-color: transparent;
+          }
+          
+          .day-number {
+            font-size: 26px;
+            color: #666;
+            z-index: 1;
+          }
+          
+          .checked-icon {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            bottom: 8px;
+            color: white;
+            background-color: #ff6b81;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          &.today {
+            border: 1px solid #ff6b81;
+            
+            .day-number {
+              color: #ff6b81;
+            }
+          }
+          
+          &.checked {
+            background-color: #ffecee;
+          }
+        }
+      }
+    }
+  }
+  
+  .rewards-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    padding: 20px;
+    
+    .card-title {
+      margin-bottom: 20px;
+      
+      .title-text {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    
+    .rewards-list {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-gap: 10px;
+      
+      .reward-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        .reward-badge {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background-color: #f0f0f0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 10px;
+          
+          .badge-text {
+            font-size: 24px;
+            color: #666;
+          }
+        }
+        
+        .reward-info {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          
+          .reward-points {
+            font-size: 24px;
+            color: #ff6b81;
+            margin-bottom: 5px;
+          }
+          
+          .reward-status {
+            font-size: 22px;
+            color: #999;
+          }
+        }
+        
+        &.completed {
+          .reward-badge {
+            background-color: #ff6b81;
+            
+            .badge-text {
+              color: white;
+            }
+          }
+          
+          .reward-info {
+            .reward-status {
+              color: #52c41a;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .rules-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    padding: 20px;
+    
+    .card-title {
+      margin-bottom: 15px;
+      
+      .title-text {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    
+    .rules-content {
+      .rule-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .rule-dot {
+          font-size: 30px;
+          color: #ff6b81;
+          margin-right: 10px;
+          line-height: 1;
+        }
+        
+        .rule-text {
+          flex: 1;
+          font-size: 26px;
+          color: #666;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+  
+  .points-entry {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    padding: 25px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .entry-text {
+      font-size: 28px;
+      color: #333;
+    }
+    
+    .entry-arrow {
+      font-size: 28px;
+      color: #999;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 28px;
+  color: #999;
+}

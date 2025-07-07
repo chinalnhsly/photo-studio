@@ -1,0 +1,78 @@
+.customer-edit-page {
+  .page-title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .customer-form {
+    .form-sections {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .main-info-section {
+      display: flex;
+      
+      .avatar-section {
+        margin-right: 24px;
+        width: 120px;
+        
+        .ant-form-item-control {
+          text-align: center;
+        }
+      }
+      
+      .basic-info {
+        flex: 1;
+      }
+    }
+    
+    .additional-info {
+      margin-top: 24px;
+      
+      .ant-select-selection-item-content {
+        display: inline-flex;
+      }
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      
+      button + button {
+        margin-left: 12px;
+      }
+    }
+    
+    .avatar-uploader {
+      .ant-upload {
+        width: 100px;
+        height: 100px;
+        
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .customer-edit-page {
+    .main-info-section {
+      flex-direction: column;
+      
+      .avatar-section {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 24px;
+        
+        .ant-form-item-control {
+          text-align: left;
+        }
+      }
+    }
+  }
+}

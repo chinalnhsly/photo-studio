@@ -1,0 +1,149 @@
+.order-detail-page {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .page-title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .action-card {
+    margin-bottom: 24px;
+    
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  
+  .order-info-card {
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      
+      .order-title {
+        display: flex;
+        align-items: center;
+        
+        h4 {
+          margin-bottom: 0;
+          margin-right: 12px;
+        }
+        
+        .order-status {
+          .ant-tag {
+            margin-right: 8px;
+          }
+        }
+      }
+      
+      .order-amount {
+        text-align: right;
+        
+        .paid-amount {
+          display: block;
+          margin-top: 4px;
+        }
+      }
+    }
+    
+    .info-section {
+      margin-bottom: 24px;
+      
+      h5 {
+        margin-bottom: 16px;
+        font-weight: 500;
+      }
+    }
+    
+    .order-progress {
+      margin-bottom: 24px;
+    }
+    
+    .timeline-item {
+      .ant-typography {
+        display: block;
+        line-height: 1.5;
+      }
+    }
+  }
+  
+  .order-steps {
+    margin: 24px 0;
+  }
+  
+  .payment-info {
+    .amount-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      
+      &.total {
+        padding-top: 12px;
+        border-top: 1px dashed #f0f0f0;
+        font-weight: 500;
+        font-size: 16px;
+        
+        .value {
+          color: #f5222d;
+        }
+      }
+    }
+  }
+  
+  .timeline-time {
+    color: rgba(0, 0, 0, 0.45);
+  }
+  
+  .modal-tip {
+    color: rgba(0, 0, 0, 0.65);
+    margin-top: 16px;
+    background-color: #fffbe6;
+    padding: 8px 12px;
+    border-radius: 4px;
+  }
+  
+  .empty-data {
+    padding: 48px;
+    text-align: center;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+  }
+  
+  .payment-form {
+    .form-item {
+      margin-bottom: 16px;
+      
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+@media print {
+  .action-card,
+  .ant-btn,
+  .ant-message {
+    display: none !important;
+  }
+  
+  .ant-card {
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  .ant-card-body {
+    padding: 0 !important;
+  }
+}

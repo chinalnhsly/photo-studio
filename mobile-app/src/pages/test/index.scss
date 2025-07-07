@@ -1,0 +1,12 @@
+.test-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  
+  .test-text {
+    font-size: 36px;
+    color: #333;
+  }
+}

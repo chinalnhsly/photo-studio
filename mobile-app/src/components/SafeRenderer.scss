@@ -1,0 +1,24 @@
+// SafeRenderer组件的样式
+
+// 无样式包装容器，让子元素直接显示
+.safe-renderer-wrapper {
+  // 使用更兼容的CSS属性
+  display: inline;  // 比contents更兼容
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  width: auto;
+  height: auto;
+  
+  // 在小程序环境中应该更保守地处理样式
+  &:empty {
+    display: none;  // 如果没有子元素，不显示
+  }
+}
+
+// 安全元素包装器
+.safe-element {
+  display: inline;  // 允许元素自然排列
+}

@@ -1,0 +1,228 @@
+.booking-calendar-page {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .filter-card {
+    margin-bottom: 24px;
+    
+    .filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    
+    .view-switcher {
+      margin-bottom: 16px;
+    }
+    
+    @media (max-width: 576px) {
+      .ant-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .filter-controls {
+        margin-top: 16px;
+        width: 100%;
+        justify-content: space-between;
+        
+        .ant-select {
+          margin-right: 8px;
+          margin-bottom: 8px;
+          width: 48%;
+        }
+        
+        .ant-btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  .calendar-card {
+    background: #fff;
+
+    // 覆盖 Calendar 组件样式
+    .ant-picker-calendar-header {
+      padding: 12px 24px;
+    }
+    
+    .booking-events {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      
+      li {
+        margin-bottom: 4px;
+        padding: 2px 4px;
+        border-radius: 2px;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        transition: background-color 0.3s;
+        
+        &:hover {
+          background-color: #f0f0f0;
+        }
+      }
+    }
+    
+    // 减小单元格内边距，显示更多内容
+    .ant-picker-calendar-date-content {
+      height: 70px;
+      overflow-y: auto;
+      
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+      
+      &::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 2px;
+      }
+    }
+    
+    // 强调今天的单元格
+    .ant-picker-cell-today .ant-picker-calendar-date {
+      border-color: #1890ff;
+    }
+  }
+  
+  .booking-calendar-events {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    
+    li {
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 12px;
+    }
+  }
+
+  // 日历单元格装饰
+  .ant-picker-calendar-date {
+    &:hover {
+      background: #e6f7ff;
+    }
+  }
+  
+  .ant-picker-calendar-date-today {
+    .ant-picker-calendar-date-value {
+      color: #1890ff;
+      font-weight: 500;
+    }
+  }
+  
+  .booking-day-full {
+    background-color: #fff1f0;
+  }
+  
+  .booking-day-available {
+    background-color: #f6ffed;
+  }
+  
+  .booking-day-partial {
+    background-color: #fffbe6;
+  }
+
+  // 详情弹窗样式
+  .event-details {
+    .event-header {
+      margin-bottom: 16px;
+      
+      .event-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+        h5 {
+          margin: 0;
+        }
+      }
+    }
+    
+    .event-body {
+      .event-info-item {
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        
+        .anticon {
+          margin-right: 8px;
+          color: rgba(0, 0, 0, 0.45);
+        }
+      }
+    }
+  }
+}
+
+// 响应式调整
+@media (max-width: 768px) {
+  .booking-calendar-page {
+    padding: 16px;
+    
+    .ant-picker-panel {
+      .ant-picker-calendar-date-content {
+        height: auto !important;
+      }
+    }
+  }
+}
+
+.events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.eventText {
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  display: inline-block;
+  
+  &:hover {
+    color: #1890ff;
+    text-decoration: underline;
+  }
+}
+
+.calendarHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  
+  h4 {
+    margin-bottom: 0;
+  }
+  
+  @media (max-width: 576px) {
+    > div:nth-child(2) {
+      order: 3;
+      margin-top: 16px;
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+:global {
+  .ant-picker-cell-in-view.ant-picker-cell-selected .ant-picker-cell-inner {
+    background: #1890ff;
+  }
+  
+  .ant-picker-cell-in-view.ant-picker-cell-today .ant-picker-cell-inner::before {
+    border-color: #1890ff;
+  }
+  
+  .ant-badge-status-text {
+    font-size: 12px;
+  }
+}

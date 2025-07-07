@@ -1,0 +1,69 @@
+.mobile-header {
+  padding: 0 16px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  z-index: 100;
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+    
+    .menu-trigger {
+      padding: 0;
+      font-size: 18px;
+      margin-right: 12px;
+    }
+    
+    .header-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.85);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  
+  .header-right {
+    cursor: pointer;
+  }
+}
+
+.mobile-menu-drawer {
+  .user-info {
+    padding: 24px 0;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 16px;
+    
+    .user-name {
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+    
+    .user-role {
+      color: rgba(0, 0, 0, 0.45);
+      font-size: 12px;
+    }
+  }
+  
+  .ant-menu-item {
+    margin: 0;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile-header {
+    display: none;
+  }
+}
+
+// 添加页面内容的顶部间距，避免被Header遮挡
+.has-mobile-header {
+  padding-top: 50px;
+}

@@ -1,0 +1,209 @@
+.payment-form-container {
+  padding: 16px 0;
+  
+  .payment-summary {
+    background-color: #f8f8f8;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-top: 16px;
+    
+    .ant-row {
+      margin-bottom: 8px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+  
+  .payment-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+    
+    .payment-method-option {
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      padding: 12px;
+      width: 100%;
+      height: 70px;
+      margin-right: 0 !important;
+      
+      &:hover {
+        border-color: #1890ff;
+      }
+      
+      &.ant-radio-wrapper-checked {
+        border-color: #1890ff;
+        background-color: #e6f7ff;
+      }
+      
+      .payment-method-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        
+        .channel-icon {
+          font-size: 24px;
+          margin-bottom: 4px;
+          
+          &.wechat {
+            color: #7bb32e;
+          }
+          
+          &.alipay {
+            color: #1677ff;
+          }
+          
+          &.bank {
+            color: #faad14;
+          }
+          
+          &.cash {
+            color: #52c41a;
+          }
+        }
+      }
+    }
+  }
+  
+  .form-actions {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  // 支付处理中样式
+  .payment-processing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    .qrcode-container {
+      margin-bottom: 24px;
+      border: 1px solid #f0f0f0;
+      padding: 16px;
+      background: #fff;
+    }
+    
+    .payment-instructions {
+      margin-bottom: 24px;
+      
+      .payment-amount {
+        margin-top: 16px;
+        
+        .amount {
+          font-size: 18px;
+          color: #f5222d;
+        }
+      }
+    }
+    
+    .payment-actions {
+      margin-top: 24px;
+    }
+    
+    .offline-payment-info {
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 24px;
+      
+      .offline-instructions {
+        ol {
+          padding-left: 16px;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  
+  // 支付结果样式
+  .payment-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    
+    .result-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      
+      &.success {
+        color: #52c41a;
+      }
+      
+      &.error {
+        color: #f5222d;
+      }
+    }
+    
+    .result-details {
+      margin: 24px 0;
+      text-align: left;
+      width: 100%;
+      max-width: 320px;
+      
+      .result-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        
+        .label {
+          color: rgba(0, 0, 0, 0.45);
+        }
+        
+        .value {
+          font-weight: 500;
+        }
+      }
+    }
+    
+    .result-actions {
+      margin-top: 24px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .payment-methods {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}
+
+.payment-form {
+  max-width: 800px;
+  margin: 0 auto;
+  
+  .payment-steps {
+    margin-bottom: 24px;
+  }
+  
+  .qrcode-container {
+    display: flex;
+    justify-content: center;
+    padding: 24px 0;
+    
+    .qrcode-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .qrcode-tip {
+        margin-top: 16px;
+        color: #666;
+      }
+    }
+    
+    .qrcode-loading {
+      padding: 60px 0;
+    }
+  }
+  
+  .payment-actions {
+    display: flex;
+    justify-content: center;
+  }
+}

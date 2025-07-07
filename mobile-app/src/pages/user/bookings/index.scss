@@ -1,0 +1,122 @@
+.bookings-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  
+  .tabs {
+    display: flex;
+    background-color: #fff;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+    
+    .tab-item {
+      flex: 1;
+      text-align: center;
+      font-size: 28px;
+      color: #666;
+      position: relative;
+      
+      &.active {
+        color: #ff6b81;
+        font-weight: bold;
+        
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -15px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 40px;
+          height: 3px;
+          background-color: #ff6b81;
+        }
+      }
+    }
+  }
+  
+  .booking-list {
+    padding: 20px;
+    
+    .booking-card {
+      display: flex;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      
+      .booking-image {
+        width: 160px;
+        height: 160px;
+        flex-shrink: 0;
+      }
+      
+      .booking-info {
+        flex: 1;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        
+        .booking-header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 15px;
+          
+          .booking-name {
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+          }
+          
+          .booking-status {
+            font-size: 24px;
+          }
+        }
+        
+        .booking-details {
+          .booking-date, .booking-time {
+            font-size: 26px;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+          }
+          
+          .booking-price {
+            font-size: 30px;
+            font-weight: bold;
+            color: #ff6b81;
+            margin-top: 10px;
+            display: block;
+          }
+        }
+      }
+    }
+    
+    .empty-list {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 0;
+      
+      .empty-icon {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 20px;
+      }
+      
+      .empty-text {
+        color: #999;
+        font-size: 28px;
+      }
+    }
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #999;
+    font-size: 28px;
+  }
+}

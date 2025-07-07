@@ -1,0 +1,148 @@
+.sales-analytics-page {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .filter-card {
+    margin-bottom: 16px;
+    
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      
+      .filter-label {
+        margin-right: 8px;
+      }
+      
+      .date-filter, .unit-filter {
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
+        margin-bottom: 8px;
+      }
+      
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: flex-start;
+        
+        .date-filter, .unit-filter {
+          margin-bottom: 16px;
+          width: 100%;
+        }
+        
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+  
+  .analytics-tabs {
+    .ant-tabs-content {
+      margin-top: 16px;
+    }
+  }
+  
+  .content-card {
+    margin-bottom: 24px;
+    
+    .stats-row {
+      margin-bottom: 24px;
+      
+      .stat-card {
+        height: 100%;
+        
+        .ant-statistic-title {
+          color: rgba(0, 0, 0, 0.45);
+        }
+        
+        .ant-statistic-content {
+          font-size: 24px;
+        }
+        
+        .stat-footer {
+          margin-top: 8px;
+          font-size: 14px;
+          
+          .trend-up {
+            color: #52c41a;
+            margin-right: 8px;
+          }
+          
+          .trend-down {
+            color: #ff4d4f;
+            margin-right: 8px;
+          }
+          
+          .comparison-text {
+            color: rgba(0, 0, 0, 0.45);
+          }
+        }
+      }
+    }
+    
+    .chart-card {
+      margin-bottom: 16px;
+      
+      .ant-card-head {
+        border-bottom: 0;
+      }
+      
+      .chart-container {
+        margin-top: 8px;
+      }
+    }
+    
+    .table-card {
+      margin-bottom: 24px;
+      
+      .ant-card-head {
+        border-bottom: 0;
+      }
+      
+      .ant-table {
+        margin-top: 8px;
+      }
+    }
+    
+    .data-row {
+      margin-bottom: 24px;
+    }
+  }
+  
+  .details-placeholder {
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.45);
+  }
+  
+  // 图表风格优化
+  :global {
+    .g2-tooltip {
+      background-color: rgba(255, 255, 255, 0.96) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+      border-radius: 4px !important;
+    }
+    
+    .g2-tooltip-title {
+      font-weight: 500 !important;
+    }
+  }
+  
+  // 响应式调整
+  @media (max-width: 576px) {
+    padding: 12px;
+    
+    .content-card {
+      .ant-tabs-tab {
+        padding: 8px 12px;
+      }
+      
+      .stat-card {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+.basic-settings-page {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .settings-card {
+    .section-title {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 24px;
+      color: rgba(0, 0, 0, 0.85);
+    }
+    
+    .logo-uploader {
+      .ant-upload {
+        width: 200px;
+        height: 80px;
+        margin-bottom: 16px;
+      }
+    }
+    
+    .business-hour-item {
+      margin-bottom: 16px;
+      
+      .day-label {
+        font-weight: 500;
+      }
+    }
+    
+    .holiday-item {
+      margin-bottom: 16px;
+      
+      .remove-button {
+        color: #ff4d4f;
+        cursor: pointer;
+        font-size: 16px;
+        
+        &:hover {
+          color: #ff7875;
+        }
+      }
+    }
+    
+    .template-item {
+      margin-bottom: 24px;
+      
+      .template-variables {
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 12px;
+        margin-bottom: 16px;
+        
+        span {
+          margin-right: 8px;
+        }
+        
+        .ant-tag {
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+  
+  @media (max-width: 576px) {
+    padding: 12px;
+    
+    .settings-card {
+      .ant-form-item {
+        margin-bottom: 12px;
+      }
+    }
+  }
+}

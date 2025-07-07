@@ -1,0 +1,403 @@
+.user-reviews-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  
+  .at-tabs__header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+  }
+  
+  .at-tabs__body {
+    padding-top: 80px;
+  }
+  
+  // 页面头部
+  .page-header {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    position: relative;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
+    .back-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+  
+  // 加载状态
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #999;
+  }
+  
+  // 空状态
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    
+    .empty-image {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 16px;
+    }
+    
+    .empty-text {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+    
+    .go-shopping-button {
+      width: 180px;
+      height: 40px;
+      line-height: 40px;
+      background-color: #1890ff;
+      color: #fff;
+      font-size: 14px;
+      border-radius: 20px;
+      text-align: center;
+    }
+  }
+  
+  .reviews-scrollview {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    padding: 16px;
+  }
+  
+  // 单个评价项
+  .review-item {
+    background-color: #fff;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    
+    // 评价头部（商品信息）
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      
+      .product-info {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        
+        .product-image {
+          width: 60px;
+          height: 60px;
+          border-radius: 4px;
+          margin-right: 12px;
+          background-color: #f5f5f5;
+        }
+        
+        .product-name {
+          flex: 1;
+          font-size: 14px;
+          color: #333;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+        }
+      }
+      
+      .review-actions {
+        .delete-button {
+          font-size: 13px;
+          color: #ff4d4f;
+          padding: 6px 10px;
+        }
+      }
+    }
+    
+    // 评价内容
+    .review-content {
+      padding: 16px;
+      
+      .rating-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        
+        .review-date {
+          font-size: 12px;
+          color: #999;
+        }
+      }
+      
+      .review-text {
+        font-size: 14px;
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 12px;
+        display: block;
+      }
+      
+      // 评价图片
+      .review-images {
+        display: flex;
+        flex-wrap: wrap;
+        
+        .review-image {
+          width: calc(33.33% - 8px);
+          height: 80px;
+          margin-right: 8px;
+          margin-bottom: 8px;
+          border-radius: 4px;
+          background-color: #f5f5f5;
+          
+          &:nth-child(3n) {
+            margin-right: 0;
+          }
+        }
+      }
+    }
+  }
+  
+  // 底部无更多数据
+  .no-more {
+    text-align: center;
+    padding: 16px 0;
+    color: #999;
+    font-size: 12px;
+  }
+  
+  // 评价详情浮层
+  .review-detail {
+    padding: 16px 0;
+    
+    .review-detail-content {
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .review-detail-images {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 16px;
+      
+      .detail-image {
+        width: calc(33.33% - 8px);
+        height: 100px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        border-radius: 4px;
+        
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+    }
+    
+    .review-detail-reply {
+      margin-top: 16px;
+      padding: 12px;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      
+      .reply-title {
+        font-size: 13px;
+        font-weight: bold;
+        color: #666;
+        margin-bottom: 8px;
+      }
+      
+      .reply-content {
+        font-size: 13px;
+        color: #666;
+        line-height: 1.5;
+      }
+    }
+  }
+}
+
+.my-reviews-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  
+  // 加载状态
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #999;
+  }
+  
+  // 空状态
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    
+    .empty-icon {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 16px;
+    }
+    
+    .empty-text {
+      font-size: 14px;
+      color: #999;
+    }
+  }
+  
+  // 评价列表滚动区域
+  .reviews-scroll {
+    height: calc(100vh - 45px); // 减去标签页高度
+  }
+  
+  // 评价列表
+  .reviews-list {
+    padding: 16px;
+    
+    .review-item {
+      background-color: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      padding: 16px;
+      
+      .review-header {
+        margin-bottom: 12px;
+        
+        .booking-info {
+          .booking-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            
+            .photographer-name {
+              font-weight: 500;
+              font-size: 16px;
+              color: #333;
+            }
+            
+            .booking-date {
+              font-size: 14px;
+              color: #999;
+            }
+          }
+          
+          .rating-row {
+            display: flex;
+            align-items: center;
+            
+            .recommended-tag {
+              margin-left: 12px;
+            }
+          }
+        }
+      }
+      
+      .review-content {
+        .content-text {
+          font-size: 15px;
+          color: #333;
+          line-height: 1.5;
+          margin-bottom: 12px;
+          display: block;
+        }
+        
+        .review-images {
+          display: flex;
+          margin-bottom: 12px;
+          
+          .review-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            margin-right: 8px;
+            background-color: #f0f0f0;
+          }
+          
+          .image-more {
+            width: 80px;
+            height: 80px;
+            border-radius: 6px;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+          }
+        }
+        
+        .review-tags {
+          display: flex;
+          flex-wrap: wrap;
+          margin-bottom: 12px;
+          
+          .tag {
+            margin-right: 8px;
+            margin-bottom: 8px;
+            background-color: #f5f5f5;
+          }
+        }
+      }
+      
+      .admin-reply {
+        background-color: #f5f7fa;
+        padding: 12px;
+        border-radius: 8px;
+        
+        .reply-label {
+          color: #1890ff;
+          font-weight: 500;
+          font-size: 14px;
+          margin-bottom: 4px;
+          display: block;
+        }
+        
+        .reply-content {
+          font-size: 14px;
+          color: #666;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+  
+  // 底部加载更多
+  .no-more {
+    text-align: center;
+    padding: 16px;
+    color: #999;
+    font-size: 12px;
+  }
+}

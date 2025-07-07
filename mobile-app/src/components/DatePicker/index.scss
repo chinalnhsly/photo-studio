@@ -1,0 +1,166 @@
+.date-picker {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  
+  .date-picker-loading,
+  .date-picker-error {
+    padding: 40px 0;
+    text-align: center;
+    color: #999;
+  }
+  
+  .date-picker-error {
+    color: #ff4d4f;
+  }
+  
+  .calendar-container {
+    .month-block {
+      margin-bottom: 24px;
+      
+      .month-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        padding-left: 8px;
+        border-left: 3px solid #1890ff;
+      }
+      
+      .weekday-row {
+        display: flex;
+        margin-bottom: 8px;
+        
+        .weekday-label {
+          flex: 1;
+          text-align: center;
+          font-size: 14px;
+          color: #999;
+          padding: 8px 0;
+        }
+      }
+      
+      .date-grid {
+        display: flex;
+        flex-wrap: wrap;
+        
+        .date-cell {
+          width: 14.28%;
+          height: 64px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          border-radius: 4px;
+          margin: 1px;
+          
+          &.available {
+            background-color: #f7f7f7;
+            cursor: pointer;
+            
+            &:hover {
+              background-color: #e6f7ff;
+            }
+          }
+          
+          &.unavailable {
+            color: #d9d9d9;
+            cursor: not-allowed;
+          }
+          
+          &.selected {
+            background-color: #1890ff;
+            color: #fff;
+            
+            .date-price {
+              color: #fff;
+            }
+          }
+          
+          &.full-booked {
+            background-color: #fff2f0;
+            
+            .full-booked-mark {
+              position: absolute;
+              bottom: 4px;
+              font-size: 10px;
+              color: #ff4d4f;
+            }
+          }
+          
+          .date-number {
+            font-size: 16px;
+            font-weight: 500;
+          }
+          
+          .date-price {
+            font-size: 12px;
+            color: #ff4d4f;
+            margin-top: 4px;
+          }
+        }
+      }
+    }
+  }
+  
+  .time-slot-container {
+    margin-top: 24px;
+    
+    .time-slot-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      padding-left: 8px;
+      border-left: 3px solid #1890ff;
+    }
+    
+    .time-slot-list {
+      white-space: nowrap;
+      padding: 8px 0;
+      
+      .time-slot-item {
+        display: inline-block;
+        margin-right: 12px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid #e8e8e8;
+        
+        &.available {
+          background-color: #f7f7f7;
+          cursor: pointer;
+          
+          &:hover {
+            background-color: #e6f7ff;
+            border-color: #1890ff;
+          }
+        }
+        
+        &.unavailable {
+          color: #d9d9d9;
+          cursor: not-allowed;
+        }
+        
+        &.selected {
+          background-color: #1890ff;
+          border-color: #1890ff;
+          color: #fff;
+          
+          .time-slot-price {
+            color: #fff;
+          }
+        }
+        
+        .time-slot-text {
+          font-size: 14px;
+        }
+        
+        .time-slot-price {
+          font-size: 12px;
+          color: #ff4d4f;
+          margin-left: 8px;
+        }
+      }
+    }
+  }
+}

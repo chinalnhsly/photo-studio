@@ -1,0 +1,150 @@
+.package-detail-page {
+  padding: 24px;
+  background: #f0f2f5;
+  
+  .action-card {
+    margin-bottom: 24px;
+    
+    .detail-actions {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+  
+  .detail-card {
+    .package-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      
+      .package-title {
+        display: flex;
+        align-items: center;
+        
+        h3 {
+          margin: 0;
+          margin-right: 16px;
+        }
+      }
+      
+      .package-price {
+        .current-price {
+          font-size: 24px;
+          font-weight: bold;
+          color: #f5222d;
+          margin-right: 12px;
+        }
+        
+        .original-price {
+          font-size: 16px;
+          text-decoration: line-through;
+          color: #bfbfbf;
+        }
+      }
+    }
+    
+    .package-cover {
+      margin-bottom: 24px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .package-descriptions {
+      margin-bottom: 24px;
+    }
+    
+    .photographer-info {
+      display: flex;
+      align-items: center;
+      
+      .photographer-name {
+        margin-left: 8px;
+      }
+    }
+    
+    .package-features {
+      margin-top: 24px;
+      
+      h5 {
+        margin-bottom: 16px;
+      }
+      
+      .feature-item {
+        display: flex;
+        align-items: center;
+        
+        .feature-icon {
+          color: #52c41a;
+          margin-right: 8px;
+        }
+      }
+    }
+    
+    .package-description {
+      margin: 24px 0;
+      
+      h5 {
+        margin-bottom: 16px;
+      }
+    }
+    
+    .package-gallery {
+      h5 {
+        margin-bottom: 16px;
+      }
+      
+      .gallery-container {
+        .gallery-item {
+          margin-bottom: 16px;
+          border-radius: 4px;
+          overflow: hidden;
+        }
+      }
+      
+      .no-gallery {
+        background-color: #f9f9f9;
+        border-radius: 4px;
+        padding: 48px;
+        text-align: center;
+        color: #bfbfbf;
+        
+        .anticon {
+          font-size: 48px;
+          margin-bottom: 16px;
+        }
+        
+        p {
+          font-size: 16px;
+          margin: 0;
+        }
+      }
+    }
+  }
+  
+  .package-detail-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+  }
+  
+  .package-detail-error {
+    padding: 48px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .package-detail-page {
+    padding: 12px;
+    
+    .package-header {
+      flex-direction: column;
+      align-items: flex-start;
+      
+      .package-title {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}

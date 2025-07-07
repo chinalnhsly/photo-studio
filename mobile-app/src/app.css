@@ -1,0 +1,9 @@
+/* 全局样式 */
+page {
+  font-size: 28px;
+  color: #333;
+  --primary-color: #ff6b81;
+  --background-color: #f8f9fa;
+  --text-color: #333333;
+  --light-text: #999999;
+}

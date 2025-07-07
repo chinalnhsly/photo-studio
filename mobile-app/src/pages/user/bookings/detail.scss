@@ -1,0 +1,304 @@
+.booking-detail-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 80px; // 为底部操作预留空间
+  
+  // 加载和错误状态
+  .loading-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    
+    text {
+      color: #999;
+      margin-bottom: 16px;
+    }
+    
+    .back-button {
+      width: 120px;
+      height: 36px;
+      line-height: 36px;
+      background-color: #1890ff;
+      color: #fff;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+  }
+  
+  // 顶部导航
+  .header {
+    position: relative;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 12px;
+    
+    .back-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+  
+  // 状态卡片
+  .status-card {
+    margin: 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .status-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+    }
+    
+    .status-info {
+      flex: 1;
+      
+      .status-text {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 4px;
+        display: block;
+      }
+      
+      .status-desc {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  }
+  
+  // 流程卡片
+  .process-card {
+    margin: 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  // 信息卡片
+  .info-card {
+    margin: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      
+      .card-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+      }
+      
+      .booking-number {
+        font-size: 12px;
+      }
+    }
+    
+    .info-content {
+      padding: 16px;
+      
+      .photographer-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid #f0f0f0;
+        
+        .avatar {
+          width: 60px;
+          height: 60px;
+          border-radius: 30px;
+          margin-right: 12px;
+          background-color: #f5f5f5;
+        }
+        
+        .photographer-details {
+          flex: 1;
+          
+          .photographer-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+          }
+          
+          .rating-row {
+            display: flex;
+            align-items: center;
+            
+            .stars {
+              display: flex;
+              
+              .star {
+                color: #e8e8e8;
+                font-size: 14px;
+                
+                &.filled {
+                  color: #ffb400;
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      .booking-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        
+        .info-item {
+          .info-label {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 4px;
+            display: block;
+          }
+          
+          .info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+            
+            &.ellipsis {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // 备注卡片
+  .notes-card {
+    margin: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      
+      .card-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+      }
+    }
+    
+    .notes-content {
+      padding: 16px;
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+  }
+  
+  // 时间线卡片
+  .timeline-card {
+    margin: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .card-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      
+      .card-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+      }
+    }
+    
+    .at-timeline {
+      padding: 16px;
+    }
+  }
+  
+  // 底部操作
+  .action-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    z-index: 90;
+    padding-bottom: env(safe-area-inset-bottom);
+    
+    .action-button {
+      height: 44px;
+      line-height: 44px;
+      border-radius: 22px;
+      font-size: 15px;
+      
+      &.primary {
+        background-color: #1890ff;
+        color: #fff;
+        width: 49%;
+        
+        &.full {
+          width: 100%;
+        }
+      }
+      
+      &.secondary {
+        background-color: #fff;
+        color: #1890ff;
+        border: 1px solid #1890ff;
+        width: 49%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

@@ -1,0 +1,170 @@
+.points-detail-page {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding-bottom: 30px;
+  
+  .header-section {
+    background: linear-gradient(45deg, #ff6b81, #ff9f43);
+    padding: 30px 20px;
+    border-radius: 0 0 20px 20px;
+    color: white;
+    
+    .points-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .points-info-left {
+        .points-label {
+          font-size: 28px;
+          margin-bottom: 5px;
+          display: block;
+        }
+        
+        .points-value {
+          font-size: 46px;
+          font-weight: bold;
+        }
+      }
+      
+      .exchange-btn {
+        padding: 10px 30px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 30px;
+        font-size: 28px;
+      }
+    }
+  }
+  
+  .rules-card {
+    margin: 20px;
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .rules-header {
+      margin-bottom: 15px;
+      
+      .rules-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    
+    .rules-content {
+      .rules-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .rule-dot {
+          font-size: 30px;
+          color: #ff6b81;
+          margin-right: 10px;
+          line-height: 1;
+        }
+        
+        .rule-text {
+          flex: 1;
+          font-size: 26px;
+          color: #666;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+  
+  .detail-list {
+    margin: 20px;
+    background-color: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    .detail-header {
+      margin-bottom: 20px;
+      
+      .detail-title {
+        font-size: 32px;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+    
+    .records-list {
+      .record-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px 0;
+        border-bottom: 1px solid #f0f0f0;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+        
+        .record-left {
+          .record-title {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+            display: block;
+          }
+          
+          .record-time {
+            font-size: 24px;
+            color: #999;
+            margin-bottom: 5px;
+            display: block;
+          }
+          
+          .record-desc {
+            font-size: 24px;
+            color: #666;
+            display: block;
+          }
+        }
+        
+        .record-right {
+          display: flex;
+          align-items: center;
+          
+          .record-points {
+            font-size: 32px;
+            font-weight: bold;
+            
+            &.earn {
+              color: #ff6b81;
+            }
+            
+            &.spend {
+              color: #333;
+            }
+          }
+        }
+      }
+    }
+    
+    .empty-records {
+      padding: 50px 0;
+      text-align: center;
+      color: #999;
+      font-size: 28px;
+    }
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 28px;
+  color: #999;
+}

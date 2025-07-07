@@ -1,0 +1,265 @@
+.order-detail-page {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  
+  // 加载状态
+  .order-detail-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #999;
+  }
+  
+  // 错误状态
+  .order-detail-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;
+    
+    text {
+      color: #999;
+      margin-bottom: 20px;
+    }
+    
+    .back-button {
+      width: 200px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background-color: #1890ff;
+      color: #fff;
+      border-radius: 20px;
+      font-size: 14px;
+    }
+  }
+  
+  // 滚动区域
+  .order-detail-scroll {
+    padding-bottom: 80px;
+    height: calc(100vh - 80px);
+  }
+  
+  // 订单状态区域
+  .status-section {
+    padding: 24px 16px;
+    
+    .status-content {
+      color: #fff;
+      
+      .status-text {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+      }
+      
+      .status-desc {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+    }
+  }
+  
+  // 时间轴区域
+  .timeline-section {
+    margin: 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  // 通用样式 - 区块
+  .appointment-section,
+  .product-section,
+  .order-info-section,
+  .price-section {
+    margin: 0 16px 16px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    
+    // 区块标题
+    .section-title {
+      font-size: 16px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      
+      .at-icon {
+        margin-right: 8px;
+      }
+    }
+  }
+  
+  // 信息项通用样式
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    
+    .label {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .value {
+      color: #333;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: right;
+      word-break: break-all;
+    }
+  }
+  
+  // 商品卡片
+  .product-card {
+    display: flex;
+    padding: 10px 0;
+    
+    .product-image {
+      width: 70px;
+      height: 70px;
+      border-radius: 4px;
+      background-color: #f7f7f7;
+      margin-right: 12px;
+    }
+    
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      
+      .product-name {
+        font-size: 15px;
+        font-weight: 500;
+      }
+      
+      .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        .price {
+          font-size: 16px;
+          font-weight: 600;
+          color: #ff4d4f;
+        }
+        
+        .quantity {
+          font-size: 13px;
+          color: #999;
+        }
+      }
+    }
+  }
+  
+  // 价格区域
+  .price-section {
+    .price-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+      color: #666;
+      
+      &.total {
+        font-size: 16px;
+        color: #333;
+        font-weight: 500;
+        margin-top: 12px;
+        
+        .total-price {
+          color: #ff4d4f;
+          font-size: 18px;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  
+  // 底部操作栏
+  .action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+    
+    .left-actions,
+    .right-actions {
+      display: flex;
+    }
+    
+    .action-button {
+      margin-left: 10px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 14px;
+      border-radius: 20px;
+      text-align: center;
+      
+      &.contact {
+        width: 100px;
+        background-color: #fff;
+        color: #666;
+        border: 1px solid #d9d9d9;
+      }
+      
+      &.cancel {
+        width: 100px;
+        background-color: #fff;
+        color: #666;
+        border: 1px solid #d9d9d9;
+      }
+      
+      &.pay {
+        width: 120px;
+        background-color: #1890ff;
+        color: #fff;
+      }
+      
+      &.contact-wide {
+        width: 160px;
+        background-color: #1890ff;
+        color: #fff;
+      }
+    }
+  }
+  
+  // 取消订单模态框
+  .cancel-modal-content {
+    padding: 16px;
+    
+    .modal-subtitle {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: block;
+    }
+    
+    .reason-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      &.active {
+        color: #1890ff;
+      }
+    }
+  }
+}

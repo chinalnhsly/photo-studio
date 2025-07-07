@@ -1,0 +1,277 @@
+.coupon-list-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  position: relative;
+  
+  // 提高Tabs的层级，让底部固定按钮不遮挡
+  .at-tabs {
+    z-index: 1;
+  }
+  
+  .tab-content {
+    min-height: calc(100vh - 80px);
+    padding: 16px;
+  }
+  
+  // 加载状态
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #999;
+  }
+  
+  // 空状态
+  .empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 0;
+    
+    .empty-image {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 16px;
+    }
+    
+    .empty-text {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 16px;
+    }
+    
+    .get-coupon-button {
+      width: 160px;
+      height: 40px;
+      line-height: 40px;
+      font-size: 14px;
+    }
+  }
+  
+  // 优惠券列表
+  .coupon-scroll {
+    max-height: calc(100vh - 120px);
+  }
+  
+  // 优惠券卡片
+  .coupon-card {
+    display: flex;
+    background-color: #fff;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
+    // 已使用或已过期状态
+    &.used, &.expired {
+      opacity: 0.8;
+      
+      &::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.05);
+        z-index: 1;
+      }
+    }
+    
+    // 优惠券左侧
+    .coupon-left {
+      width: 120px;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #f8f8f8;
+      
+      // 不同类型的优惠券样式
+      .coupon-value {
+        margin-bottom: 8px;
+        text-align: center;
+        
+        &.discount {
+          color: #ff9800;
+          
+          .value-number {
+            font-size: 28px;
+            font-weight: 600;
+          }
+          
+          .value-unit {
+            font-size: 16px;
+          }
+        }
+        
+        &.amount {
+          color: #ff4d4f;
+          
+          .value-symbol {
+            font-size: 16px;
+            position: relative;
+            top: -10px;
+          }
+          
+          .value-number {
+            font-size: 32px;
+            font-weight: 600;
+          }
+        }
+        
+        &.free-shipping {
+          color: #52c41a;
+          
+          .value-text {
+            font-size: 22px;
+            font-weight: 600;
+          }
+        }
+      }
+      
+      .min-amount {
+        font-size: 12px;
+        color: #999;
+        text-align: center;
+      }
+    }
+    
+    // 左右分隔线
+    .coupon-divider {
+      position: relative;
+      width: 0;
+      height: 100%;
+      border-left: 1px dashed #e8e8e8;
+      
+      &::before, &::after {
+        content: "";
+        position: absolute;
+        left: -5px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #f5f5f5;
+      }
+      
+      &::before {
+        top: -5px;
+      }
+      
+      &::after {
+        bottom: -5px;
+      }
+    }
+    
+    // 优惠券右侧
+    .coupon-right {
+      flex: 1;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      .coupon-info {
+        flex: 1;
+        
+        .coupon-name {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 8px;
+          display: flex;
+          align-items: center;
+          
+          .at-icon {
+            margin-right: 6px;
+          }
+        }
+        
+        .coupon-desc {
+          font-size: 13px;
+          color: #666;
+          margin-bottom: 8px;
+          display: block;
+        }
+        
+        .coupon-time {
+          font-size: 12px;
+          color: #999;
+        }
+      }
+      
+      .use-button {
+        margin-left: 12px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 13px;
+      }
+      
+      .coupon-status-tag {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transform: rotate(45deg);
+        position: absolute;
+        right: -30px;
+        top: -30px;
+        
+        text {
+          transform: rotate(-45deg);
+          font-size: 12px;
+          color: #fff;
+          margin-bottom: 24px;
+          margin-right: 24px;
+        }
+        
+        &.used {
+          background-color: #999;
+        }
+        
+        &.expired {
+          background-color: #ff4d4f;
+        }
+      }
+    }
+    
+    // 使用限制提示
+    .coupon-restrictions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: rgba(0, 0, 0, 0.05);
+      padding: 4px 0;
+      text-align: center;
+      
+      .restrictions-text {
+        font-size: 10px;
+        color: #999;
+      }
+    }
+  }
+  
+  // 底部固定按钮
+  .bottom-button-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    
+    .get-more-button {
+      height: 40px;
+      line-height: 40px;
+      font-size: 14px;
+    }
+  }
+}

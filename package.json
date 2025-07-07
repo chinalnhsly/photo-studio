@@ -1,0 +1,39 @@
+{
+  "name": "photostudio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "摄影工作室管理系统",
+  "workspaces": [
+    "admin-web",
+    "mobile-app"
+  ],
+  "scripts": {
+    "start:admin": "cd admin-web && npm start",
+    "start:mobile": "cd mobile-app && npm start",
+    "build:admin": "cd admin-web && npm run build",
+    "build:mobile": "cd mobile-app && npm run build"
+  },
+  "resolutions": {
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "mini-create-react-context": "0.4.1",
+    "react-redux": "7.2.9",
+    "use-sync-external-store": "1.2.0"
+  },
+  "engines": {
+    "node": ">=16",
+    "yarn": ">=1.22.0",
+    "npm": "please-use-yarn"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/photostudio.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "packageManager": "yarn@1.22.22",
+  "dependencies": {
+    "react-redux": "7.2.9",
+    "use-sync-external-store": "1.2.0"
+  }
+}

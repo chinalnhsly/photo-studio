@@ -1,0 +1,387 @@
+.photographer-detail-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 60px; // 为底部操作按钮留出空间
+  
+  // 加载和错误状态
+  .loading-container,
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    
+    text {
+      color: #999;
+      margin-bottom: 16px;
+    }
+    
+    .back-button {
+      width: 120px;
+      height: 36px;
+      line-height: 36px;
+      background-color: #1890ff;
+      color: #fff;
+      border-radius: 18px;
+      font-size: 14px;
+    }
+  }
+  
+  // 顶部导航
+  .header {
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
+    
+    .back-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .header-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  // 摄影师基本信息
+  .photographer-banner {
+    height: 240px;
+    position: relative;
+    
+    .photographer-cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .banner-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0));
+      display: flex;
+      align-items: flex-end;
+      
+      .photographer-avatar-container {
+        margin-right: 12px;
+        
+        .photographer-avatar {
+          width: 60px;
+          height: 60px;
+          border-radius: 30px;
+          border: 2px solid #fff;
+        }
+      }
+      
+      .basic-info {
+        flex: 1;
+        
+        .photographer-name {
+          font-size: 18px;
+          font-weight: 600;
+          color: #fff;
+          margin-bottom: 6px;
+          display: block;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .rating-row {
+          display: flex;
+          align-items: center;
+          margin-bottom: 6px;
+          
+          .rating-value {
+            font-size: 12px;
+            color: #ffb400;
+            margin: 0 8px 0 4px;
+          }
+          
+          .booking-count {
+            font-size: 12px;
+            color: #fff;
+          }
+        }
+        
+        .specialties {
+          display: flex;
+          flex-wrap: wrap;
+          
+          .at-tag {
+            margin-right: 6px;
+            margin-bottom: 6px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+  
+  // 内容标签页
+  .at-tabs__header {
+    background-color: #fff;
+  }
+  
+  .tab-content {
+    height: calc(100vh - 300px);
+    background-color: #f5f5f5;
+    padding: 16px;
+  }
+  
+  // 个人介绍标签页
+  .section {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    
+    .section-header {
+      margin-bottom: 12px;
+      
+      .section-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        position: relative;
+        padding-left: 12px;
+        
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 3px;
+          bottom: 3px;
+          width: 4px;
+          background-color: #1890ff;
+          border-radius: 2px;
+        }
+      }
+    }
+    
+    .biography {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+    }
+    
+    .specialties-grid {
+      display: flex;
+      flex-wrap: wrap;
+      
+      .specialty-item {
+        width: 25%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 16px;
+        
+        .specialty-icon {
+          width: 48px;
+          height: 48px;
+          background-color: #f0f7ff;
+          border-radius: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 8px;
+          
+          .icon-image {
+            width: 24px;
+            height: 24px;
+          }
+        }
+        
+        .specialty-name {
+          font-size: 12px;
+          color: #666;
+          text-align: center;
+        }
+      }
+    }
+    
+    .info-list {
+      .info-item {
+        display: flex;
+        margin-bottom: 12px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .info-label {
+          width: 80px;
+          font-size: 14px;
+          color: #999;
+        }
+        
+        .info-value {
+          flex: 1;
+          font-size: 14px;
+          color: #333;
+        }
+      }
+    }
+    
+    .equipment-list {
+      display: flex;
+      flex-wrap: wrap;
+      
+      .equipment-item {
+        display: flex;
+        align-items: center;
+        width: 50%;
+        margin-bottom: 8px;
+        
+        .equipment-name {
+          font-size: 13px;
+          color: #666;
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+  
+  // 作品集标签页
+  .portfolio-grid {
+    display: flex;
+    flex-wrap: wrap;
+    
+    .portfolio-item {
+      width: calc(33.33% - 8px);
+      margin-right: 8px;
+      margin-bottom: 8px;
+      
+      &:nth-child(3n) {
+        margin-right: 0;
+      }
+      
+      .portfolio-image {
+        width: 100%;
+        height: 120px;
+        border-radius: 6px;
+        object-fit: cover;
+      }
+    }
+  }
+  
+  // 可预约时间标签页
+  .availability-list {
+    .date-card {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      
+      .date-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        
+        .date-badge {
+          width: 40px;
+          height: 50px;
+          background-color: #1890ff;
+          border-radius: 6px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          margin-right: 12px;
+          
+          .date-day {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+          }
+          
+          .date-month {
+            font-size: 12px;
+            color: #e6f7ff;
+          }
+        }
+        
+        .date-full {
+          font-size: 16px;
+          color: #333;
+          font-weight: 500;
+        }
+      }
+      
+      .time-slots {
+        display: flex;
+        flex-wrap: wrap;
+        
+        .time-slot {
+          display: flex;
+          align-items: center;
+          background-color: #f0f7ff;
+          padding: 6px 10px;
+          border-radius: 4px;
+          margin-right: 8px;
+          margin-bottom: 8px;
+          
+          .time-range {
+            font-size: 12px;
+            color: #1890ff;
+            margin-left: 4px;
+          }
+        }
+      }
+    }
+  }
+  
+  // 底部预约按钮
+  .action-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 16px;
+    background-color: #fff;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    z-index: 90;
+    padding-bottom: env(safe-area-inset-bottom);
+    
+    .booking-button {
+      flex: 1;
+      height: 44px;
+      line-height: 44px;
+      background-color: #1890ff;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 22px;
+    }
+  }
+  
+  // 图片预览浮层
+  .image-preview {
+    padding: 16px;
+    
+    .preview-image {
+      width: 100%;
+      border-radius: 8px;
+    }
+  }
+}
