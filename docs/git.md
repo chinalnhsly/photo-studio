@@ -105,7 +105,7 @@ git commit -m "Initial commit: Photo Studio Management System"
 3. 创建 GitHub 仓库:
 ```bash
 # 将你的 GitHub 用户名替换到以下命令中
-git remote add origin https://github.com/chinalnhsly@hotmail.com/photo-studio.git
+git remote add origin https://github.com/chinalnhsly/photo-studio.git
 
 # 推送代码到主分支
 git branch -M main
